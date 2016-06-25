@@ -1,28 +1,15 @@
 package es.uva.tfg.hector.tfg;
 
-import java.util.Arrays;
-
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Matrix;
 import android.graphics.RectF;
+import android.graphics.SurfaceTexture;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorEventListener2;
 import android.hardware.SensorManager;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.util.Log;
-import android.util.Size;
-import android.util.SizeF;
-import android.view.Surface;
-import android.view.TextureView;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
@@ -31,6 +18,20 @@ import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.params.StreamConfigurationMap;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.util.Size;
+import android.util.SizeF;
+import android.view.Surface;
+import android.view.TextureView;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.Arrays;
 
 public class MainActivity extends Activity {
 
@@ -123,7 +124,7 @@ public class MainActivity extends Activity {
         @Override
         public void onSurfaceTextureUpdated(SurfaceTexture surface) {
             // TODO Auto-generated method stub  
-            Log.e(TAG, "onSurfaceTextureUpdated");
+           // Log.e(TAG, "onSurfaceTextureUpdated");
         }
 
     };
@@ -307,7 +308,25 @@ public class MainActivity extends Activity {
                 ((TextView)findViewById(R.id.indicador)).setEnabled(true);
             } else {
                 ((TextView)findViewById(R.id.indicador)).setEnabled(false);
+            }
 
+            View column = (View)findViewById(R.id.column);
+            DisplayMetrics metrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            int width = metrics.widthPixels;
+            Resources resources = getApplicationContext().getResources();
+            int resourceId = resources.getIdentifier("navigation_bar_width", "dimen", "android");
+            if (resourceId > 0) {
+                width += resources.getDimensionPixelSize(resourceId);
+            }
+
+            int pos = width/2 - (int)(azimuth * (width/fov));
+            if(azimuth >= fov/2) {
+                column.setX(0);
+            } else if(azimuth <= -fov/2){
+                column.setX(width - 10);
+            } else {
+                column.setX(pos);
             }
         }
 

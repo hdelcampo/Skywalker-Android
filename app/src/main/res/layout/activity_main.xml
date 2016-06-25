@@ -13,6 +13,22 @@
         android:id="@+id/textura"
         android:layout_alignParentTop="true" />
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true">
+
+        <View
+            android:layout_width="5dp"
+            android:layout_height="fill_parent"
+            android:background="#ff0015"
+            android:id="@+id/column"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true" />
+    </FrameLayout>
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="wrap_content"
@@ -91,7 +107,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Norte a la vista"
+        android:text="Nort in sight"
         android:id="@+id/indicador"
         android:layout_above="@+id/linearLayout2"
         android:layout_centerHorizontal="true"
