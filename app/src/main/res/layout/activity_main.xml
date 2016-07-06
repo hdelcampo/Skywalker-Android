@@ -7,11 +7,17 @@
     tools:context="es.uva.tfg.hector.tfg.MainActivity"
     android:id="@+id/container">
 
-    <TextureView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/textura"
-        android:layout_alignParentTop="true" />
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/cameraContainer">
+
+        <TextureView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/textura"
+            android:layout_alignParentTop="true" />
+    </FrameLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
