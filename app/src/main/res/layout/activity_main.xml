@@ -51,8 +51,8 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="x = 300"
                 android:id="@+id/xRotation"
-                android:layout_below="@+id/yRotation"
-                android:layout_alignStart="@+id/yRotation" />
+                android:layout_below="@id/yRotation"
+                android:layout_alignStart="@id/yRotation" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -60,8 +60,8 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="y = 200"
                 android:id="@+id/yRotation"
-                android:layout_below="@+id/zRotation"
-                android:layout_alignStart="@+id/zRotation" />
+                android:layout_below="@id/zRotation"
+                android:layout_alignStart="@id/zRotation" />
 
             <TextView
                 android:layout_width="wrap_content"
