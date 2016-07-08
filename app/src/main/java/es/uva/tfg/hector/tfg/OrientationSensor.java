@@ -6,6 +6,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener2;
 import android.hardware.SensorManager;
+import android.view.Display;
+import android.view.Surface;
 
 /**
  * Created by Hector Del Campo Pando on 06/07/2016.
@@ -18,18 +20,14 @@ public class OrientationSensor{
     private SensorManager manager;
 
     /**
+     *
+     */
+    private Display display;
+
+    /**
      * Orientation's sensors.
      */
-    private Sensor sensorAc;    //Acceleration sensor
-            Sensor sensorMf;    //Magnetic field sensor
-
-    // Gravity rotational data
-    private float gravity[];
-    // Magnetic rotational data
-    private float magnetic[]; //for magnetic rotational data
-    private float accels[] = new float[3];
-    private float mags[] = new float[3];
-    private float[] values = new float[3];
+    private Sensor sensorRt;    //Rotation vector
 
     /**
      * Orientation's degrees.
@@ -47,38 +45,97 @@ public class OrientationSensor{
     private SensorEventListener2 sEvent = new SensorEventListener2(){
 
         /**
+         * Value to filter data.
+         */
+        private static final float ALPHA = 0.25f;
+
+        /**
+         * Sensor's values.
+         */
+        private float[] rotateVector;
+
+        /**
          * {@inheritDoc}
          */
         @Override
         public void onSensorChanged(SensorEvent sensorEvent) {
-            switch (sensorEvent.sensor.getType()) {
-                case Sensor.TYPE_MAGNETIC_FIELD:
-                    mags = sensorEvent.values.clone();
-                    break;
-                case Sensor.TYPE_ACCELEROMETER:
-                    accels = sensorEvent.values.clone();
-                    break;
+            if(sensorEvent.sensor.getType() != Sensor.TYPE_ROTATION_VECTOR) {
+                return;
             }
 
-            if (mags != null && accels != null) {
-                gravity = new float[9];
-                magnetic = new float[9];
-                SensorManager.getRotationMatrix(gravity, magnetic, accels, mags);
-                float[] outGravity = new float[9];
-                SensorManager.remapCoordinateSystem(gravity, SensorManager.AXIS_X,SensorManager.AXIS_Z, outGravity);
-                SensorManager.getOrientation(outGravity, values);
+            rotateVector = lowFilter(sensorEvent.values.clone(), rotateVector);
 
-                azimuth = values[0] * 57.2957795f;
-                pitch = values[1] * 57.2957795f;
-                roll = values[2] * 57.2957795f;
-                mags = null;
-                accels = null;
+            float[] rotationMatrix = new float[16];
+            SensorManager.getRotationMatrixFromVector(rotationMatrix, rotateVector);
 
-                if(null != activity) {
-                    activity.updateDegrees();
-                }
+            /* Compensate device orientation */
+            float[] remappedRotationMatrix = new float[16];
+            remapCoordinates(rotationMatrix, remappedRotationMatrix);
+
+            float[] orientationValues = new float[3];
+            SensorManager.getOrientation(remappedRotationMatrix, orientationValues);
+            azimuth = (float)Math.toDegrees(orientationValues[0]);
+            pitch = (float)Math.toDegrees(orientationValues[1]);
+            roll = (float)Math.toDegrees(orientationValues[2]);
+
+            if(null != activity) {
+                activity.updateDegrees();
+                activity.updateSlider();
+            }
+        }
+
+        /**
+         * Remaps coordinates considering device rotation.
+         * Note that input and output parameters can't be the same.
+         * @param rotationMatrix input to be remaped.
+         * @param remappedRotationMatrix output remaped.
+         */
+        private void remapCoordinates(float[] rotationMatrix, float[] remappedRotationMatrix) {
+            switch (display.getRotation()) {
+                case Surface.ROTATION_0:
+                    SensorManager.remapCoordinateSystem(rotationMatrix,
+                            SensorManager.AXIS_X,
+                            SensorManager.AXIS_Y,
+                            remappedRotationMatrix);
+                    break;
+                case Surface.ROTATION_90:
+                    SensorManager.remapCoordinateSystem(rotationMatrix,
+                            SensorManager.AXIS_Y,
+                            SensorManager.AXIS_MINUS_X,
+                            remappedRotationMatrix);
+                    break;
+                case Surface.ROTATION_180:
+                    SensorManager.remapCoordinateSystem(rotationMatrix,
+                            SensorManager.AXIS_MINUS_X,
+                            SensorManager.AXIS_MINUS_Y,
+                            remappedRotationMatrix);
+                    break;
+                case Surface.ROTATION_270:
+                    SensorManager.remapCoordinateSystem(rotationMatrix,
+                            SensorManager.AXIS_MINUS_Y,
+                            SensorManager.AXIS_X,
+                            remappedRotationMatrix);
+                    break;
+            }
+        }
+
+        /**
+         * Low pass filters the input data and returns corrected values.
+         * @param input data to be filtered.
+         * @param previousValues previous data vector.
+         */
+        private float[] lowFilter(float[] input, float[] previousValues){
+            if(null == previousValues){
+                return input;
             }
 
+            float[] output = new float[input.length];
+
+            for(int i = 0; i<input.length; i++){
+                output[i] = previousValues[i] + ALPHA * (input[i] - previousValues[i]);
+            }
+
+            return output;
         }
 
         /**
@@ -102,10 +159,10 @@ public class OrientationSensor{
      * Creates a new {@link OrientationSensor} instating acceleration and magnetic field sensors.
      * @param activity where the sensor will be used.
      */
-    private OrientationSensor(Activity activity){
+    private OrientationSensor(Activity activity, Display display){
+        this.display = display;
         manager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
-        sensorAc = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        sensorMf = manager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        sensorRt = manager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
         this.activity = (MainActivity) activity;
     }
 
@@ -113,16 +170,15 @@ public class OrientationSensor{
      * Retrieves a new {@link OrientationSensor}, beware events won't be registered until {@link #registerEvents()} is called.
      * @param activity where the sensor will be used.
      */
-    public static OrientationSensor createSensor(Activity activity){
-        return new OrientationSensor(activity);
+    public static OrientationSensor createSensor(Activity activity, Display display){
+        return new OrientationSensor(activity, display);
     }
 
     /**
      * Starts registering sensors changes.
      */
     public void registerEvents(){
-        manager.registerListener( sEvent, sensorAc, SensorManager.SENSOR_DELAY_NORMAL);
-        manager.registerListener( sEvent, sensorMf, SensorManager.SENSOR_DELAY_NORMAL);
+        manager.registerListener(sEvent, sensorRt, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     /**
