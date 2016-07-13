@@ -1,7 +1,10 @@
 package es.uva.tfg.hector.tfg;
 
 import android.app.Activity;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.view.Surface;
 import android.view.View;
 import android.widget.TextView;
 
@@ -34,7 +37,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        orientationSensor = OrientationSensor.createSensor(this);
+        orientationSensor = OrientationSensor.createSensor(this, getWindowManager().getDefaultDisplay());
         setContentView(R.layout.activity_main);
         if (null == savedInstanceState) {
             getFragmentManager().beginTransaction()
@@ -72,4 +75,61 @@ public class MainActivity extends Activity {
         degreeText.setText("Pitch " + String.valueOf(orientationSensor.getPitch()));
     }
 
+    public void updateSlider(){
+        if(getWindowManager().getDefaultDisplay().getRotation() == Surface.ROTATION_0 ||
+                getWindowManager().getDefaultDisplay().getRotation() == Surface.ROTATION_180) {
+            updateSliderPortrait();
+        } else {
+            updateSliderLandscape();
+        }
+    }
+
+    private void updateSliderPortrait() {
+        View column = (View)findViewById(R.id.column);
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        int width = metrics.widthPixels;
+
+        float azimuth = orientationSensor.getAzimuth(),
+                pitch = orientationSensor.getPitch(),
+                roll = orientationSensor.getRoll();
+
+        float fov = ((CameraFragment) (getFragmentManager().findFragmentById(R.id.cameraContainer))).getFOVHeight();
+
+        int pos = width/2 - (int)(azimuth * (width/fov));
+        if(azimuth >= fov/2) {
+            column.setX(0);
+        } else if(azimuth <= -fov/2){
+            column.setX(width - 10);
+        } else {
+            column.setX(pos);
+        }
+    }
+
+    private void updateSliderLandscape(){
+        View column = (View)findViewById(R.id.column);
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        int width = metrics.widthPixels;
+        Resources resources = getApplicationContext().getResources();
+        int resourceId = resources.getIdentifier("navigation_bar_width", "dimen", "android");
+        if (resourceId > 0) {
+            width += resources.getDimensionPixelSize(resourceId);
+        }
+
+        float azimuth = orientationSensor.getAzimuth(),
+                pitch = orientationSensor.getPitch(),
+                roll = orientationSensor.getRoll();
+
+        float fov = ((CameraFragment) (getFragmentManager().findFragmentById(R.id.cameraContainer))).getFOVWidth();
+
+        int pos = width/2 - (int)(azimuth * (width/fov));
+        if(azimuth >= fov/2) {
+            column.setX(0);
+        } else if(azimuth <= -fov/2){
+            column.setX(width - 10);
+        } else {
+            column.setX(pos);
+        }
+    }
 }  

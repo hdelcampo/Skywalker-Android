@@ -119,7 +119,8 @@ public class CameraFragment extends Fragment{
     /**
      * Field of view of the selected camera, and the selected configuration for that camera.
      */
-    private float fov;
+    private float fovWidth,
+                 fovHeight;
 
     /**
      * Selected camera
@@ -150,6 +151,7 @@ public class CameraFragment extends Fragment{
             StreamConfigurationMap map = cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
             mPreviewSize = map.getOutputSizes(SurfaceTexture.class)[0];
             manager.openCamera(cameraId, mStateCallback, null);
+            evaluateFOV();
         } catch (CameraAccessException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -271,8 +273,24 @@ public class CameraFragment extends Fragment{
         //TODO ARRAY?
         float fLength = cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS)[0];
 
-        float lfov = (float) (2 * Math.atan(sSize.getWidth() / (2 * fLength)));
-        fov = (float) Math.toDegrees(lfov);
+        fovWidth = (float) Math.toDegrees((2 * Math.atan(sSize.getWidth() / (2 * fLength))));
+        fovHeight = (float) Math.toDegrees((2 * Math.atan(sSize.getHeight() / (2 * fLength))));
+    }
+
+    /**
+     * Retrieves camera current fov width.
+     * @return fov width in degrees.
+     */
+    public float getFOVWidth(){
+        return fovWidth;
+    }
+
+    /**
+     * Retrieves camera current fov width.
+     * @return fov width in degrees.
+     */
+    public float getFOVHeight(){
+        return fovHeight;
     }
 
 }
