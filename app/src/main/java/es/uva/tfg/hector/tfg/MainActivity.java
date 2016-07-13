@@ -94,7 +94,7 @@ public class MainActivity extends Activity {
                 pitch = orientationSensor.getPitch(),
                 roll = orientationSensor.getRoll();
 
-        float fov = ((CameraFragment) (getFragmentManager().findFragmentById(R.id.cameraContainer))).getFOVHeight();
+        float fov = 80;//((CameraFragment) (getFragmentManager().findFragmentById(R.id.cameraContainer))).getFOVHeight();
 
         int pos = width/2 - (int)(azimuth * (width/fov));
         if(azimuth >= fov/2) {
@@ -121,7 +121,7 @@ public class MainActivity extends Activity {
                 pitch = orientationSensor.getPitch(),
                 roll = orientationSensor.getRoll();
 
-        float fov = ((CameraFragment) (getFragmentManager().findFragmentById(R.id.cameraContainer))).getFOVWidth();
+        float fov = 80;//((CameraFragment) (getFragmentManager().findFragmentById(R.id.cameraContainer))).getFOVWidth();
 
         int pos = width/2 - (int)(azimuth * (width/fov));
         if(azimuth >= fov/2) {
