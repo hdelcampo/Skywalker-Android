@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/TFG.iml" filepath="$PROJECT_DIR$/TFG.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SkyWalker-App/SkyWalker-App.iml" filepath="$PROJECT_DIR$/SkyWalker-App/SkyWalker-App.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SkyWalker-App-Android.iml" filepath="$PROJECT_DIR$/SkyWalker-App-Android.iml" />
     </modules>
   </component>
 </project>
