@@ -4,8 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener2;
+import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
 import android.view.Display;
 
 import java.util.Observable;
@@ -14,6 +15,8 @@ import java.util.Observable;
  * Created by Hector Del Campo Pando on 06/07/2016.
  */
 public class OrientationSensor extends Observable{
+
+    private static final String TAG = "Orientation sensor";
 
     /**
      * Sensor's manager.
@@ -43,7 +46,7 @@ public class OrientationSensor extends Observable{
     /**
      * Listener for the sensors
      */
-    private SensorEventListener2 sEvent = new SensorEventListener2(){
+    private SensorEventListener sEvent = new SensorEventListener(){
 
         /**
          * Value to filter data.
@@ -124,13 +127,6 @@ public class OrientationSensor extends Observable{
 
         }
 
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void onFlushCompleted(Sensor sensor) {
-
-        }
     };
 
     /**
@@ -138,6 +134,8 @@ public class OrientationSensor extends Observable{
      * @param activity where the sensor will be used.
      */
     private OrientationSensor(Activity activity, Display display){
+        Log.e(TAG, "Test");
+
         this.display = display;
         manager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
         sensorRt = manager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);

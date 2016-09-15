@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.SurfaceTexture;
+import android.util.Log;
 import android.view.TextureView;
 import android.widget.TextView;
 
@@ -20,6 +21,8 @@ import java.util.Observer;
  * Created by Hector Del Campo Pando on 18/07/2016.
  */
 public class OverlayView implements Observer{
+
+    private static final String TAG = "Overlay View";
 
     /**
      * Camera used in the underlying preview.
@@ -84,6 +87,8 @@ public class OverlayView implements Observer{
     };
 
     public OverlayView(TextureView view, Activity activity, Camera camera){
+        Log.e(TAG, "Azimuth:");
+
         this.activity = activity;
         this.view = view;
         view.setOpaque(false);

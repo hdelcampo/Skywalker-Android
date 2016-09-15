@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/SkyWalker-App/SkyWalker-App.iml" filepath="$PROJECT_DIR$/SkyWalker-App/SkyWalker-App.iml" />
-      <module fileurl="file://$PROJECT_DIR$/SkyWalker-App-Android.iml" filepath="$PROJECT_DIR$/SkyWalker-App-Android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Skywalker-App.iml" filepath="$PROJECT_DIR$/Skywalker-App.iml" />
     </modules>
   </component>
 </project>
