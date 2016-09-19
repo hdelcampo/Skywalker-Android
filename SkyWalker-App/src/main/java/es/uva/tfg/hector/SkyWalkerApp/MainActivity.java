@@ -2,11 +2,18 @@ package es.uva.tfg.hector.SkyWalkerApp;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.widget.TextView;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class MainActivity extends Activity {
 
@@ -48,6 +55,26 @@ public class MainActivity extends Activity {
                     .replace(R.id.cameraContainer, ScanerFragment.newInstance())
                     .commit();
         }
+
+        setBuildStamp();
+    }
+
+    /**
+     * Sets a build time stamp to the UI.
+     */
+    private void setBuildStamp() {
+        String s = "";
+        try{
+            ApplicationInfo ai = getPackageManager().getApplicationInfo(getPackageName(), 0);
+            ZipFile zf = new ZipFile(ai.sourceDir);
+            ZipEntry ze = zf.getEntry("classes.dex");
+            long time = ze.getTime();
+            s = SimpleDateFormat.getInstance().format(new Date(time));
+
+        }catch(Exception e){
+            s = "Wrong build number";
+        }
+        ((TextView)findViewById(R.id.compilationStamp)).setText(s);
     }
 
     /**
