@@ -256,20 +256,24 @@ public class OverlayView implements Observer{
             paint.setColor(Color.RED);
 
             final Path path = new Path();
-            final float arrowSize = 1.5f;
+            final float ARROW_LENGTH = 1.5f;
+            final float ARROW_SIZE = 0.3f;
             final float a = point.getDirection()*(float)Math.PI/180;
             path.moveTo(x + (float)Math.cos(a)*radius, y + (float)Math.sin(a)*radius);
-            path.lineTo(x + (float)Math.cos(a+0.1)*radius*arrowSize, y + (float)Math.sin(a+0.1)*radius*arrowSize);
-            path.lineTo(x + (float)Math.cos(a-0.1)*radius*arrowSize, y + (float)Math.sin(a-0.1)*radius*arrowSize);
-            path.lineTo(x + (float)Math.cos(a)*radius, y + (float)Math.sin(a)*radius);
+            path.lineTo(x + (float)Math.cos(a+ARROW_SIZE)*radius, y + (float)Math.sin(a+ARROW_SIZE)*radius);
+            path.lineTo(x + (float)Math.cos(a+ARROW_SIZE)*radius, y + (float)Math.sin(a-ARROW_SIZE)*radius);
+            path.lineTo(x + (float)Math.cos(a)*radius*ARROW_LENGTH, y + (float)Math.sin(a)*radius*ARROW_LENGTH);
             canvas.drawPath(path, paint);
 
             /*
-             * Distance text code
+             * Distance, velocity and ID text code
              */
+            final float TEXT_SIZE = 40f;
             paint.setColor(Color.WHITE);
-            paint.setTextSize(40f);
+            paint.setTextSize(TEXT_SIZE);
             canvas.drawText("50 m" , x + radius, y + radius, paint);
+            canvas.drawText("0.2 m/s", x + radius, y + radius + TEXT_SIZE, paint);
+            canvas.drawText("Wally", x + radius, y + radius + TEXT_SIZE*2, paint);
         }
     }
 }

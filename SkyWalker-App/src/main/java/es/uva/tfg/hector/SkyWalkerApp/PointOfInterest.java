@@ -63,8 +63,10 @@ public class PointOfInterest {
      */
     public float getDirection(){
         //TODO stub for demo
-        float value = (float) ((System.currentTimeMillis()*0.1) % 140);
-        if (value >= 70) return 140 - value - 25 ;
-        else return value - 25;
+        final int LENGTH = 40;
+        final int INITIAL_POS = LENGTH/2;
+        float value = (float) ((System.currentTimeMillis()*0.035) % LENGTH);
+        if (value >= LENGTH/2) return LENGTH - value - INITIAL_POS ;
+        else return value - INITIAL_POS;
     }
 }
