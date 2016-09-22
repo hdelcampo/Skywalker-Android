@@ -70,10 +70,12 @@ public class MainActivity extends Activity {
             ZipEntry ze = zf.getEntry("classes.dex");
             long time = ze.getTime();
             s = SimpleDateFormat.getInstance().format(new Date(time));
-
+            s +=  " (Build: " + getPackageManager().getPackageInfo(getPackageName(), 0).versionCode +") ";
         }catch(Exception e){
             s = "Wrong build number";
         }
+
+
         ((TextView)findViewById(R.id.compilationStamp)).setText(s);
     }
 
