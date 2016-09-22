@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
+import android.graphics.RectF;
 import android.graphics.SurfaceTexture;
 import android.util.Log;
 import android.view.TextureView;
@@ -100,7 +101,7 @@ public class OverlayView implements Observer{
         this.camera = camera;
 
         points = new ArrayList();
-        points.add(new PointOfInterest(0, 0, 0));    //TODO demo
+        points.add(new PointOfInterest("Wally", 0, 0, 0));    //TODO demo
 
         view.setSurfaceTextureListener(textureListener);
 
@@ -160,6 +161,8 @@ public class OverlayView implements Observer{
                 for(PointOfInterest point : points){
                     if(inSight(point)){
                         drawPoint(point, canvas);
+                    } else {
+                        drawIndicator(point, canvas);
                     }
                 }
 
@@ -171,6 +174,62 @@ public class OverlayView implements Observer{
                     //TODO
                 }
             }
+        }
+
+        /**
+         * Shows an indicator for points out of sight.
+         * @param point to indicate.
+         * @param canvas where to draw.
+         */
+        private void drawIndicator(PointOfInterest point, Canvas canvas) {
+            final Paint paint = new Paint();
+            paint.setColor(Color.RED);
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setStrokeWidth(CIRCLE_BORDER_SIZE);
+
+            final int x_center = view.getWidth() / 2,
+                    y_center = view.getHeight() / 2;
+
+            float x = -(orientationSensor.getAzimuth() - point.getX()) / 180,
+                y = (orientationSensor.getPitch() - point.getZ()) / 90;
+
+            final int ARC_LENGTH = 50;
+            final int ARC_SIZE = 360 / 4;
+
+            RectF oval = new RectF(x_center - ARC_LENGTH,
+                    y_center - ARC_LENGTH,
+                    x_center + ARC_LENGTH,
+                    y_center + ARC_LENGTH);
+
+            float angle = getAngle(x, y) - ARC_SIZE / 2;
+
+            canvas.drawArc(oval, angle, ARC_SIZE, false, paint);
+
+            final float TEXT_SIZE = 40f;
+            paint.setColor(Color.WHITE);
+            paint.setStyle(Paint.Style.FILL);
+            paint.setTextSize(TEXT_SIZE);
+            canvas.drawText(point.getID(), (float) (x_center + ARC_LENGTH*Math.cos(Math.toRadians(angle))),
+                    (float) (y_center + ARC_LENGTH*Math.sin(Math.toRadians(angle))), paint);
+        }
+
+        /**
+         * Retrieves angle in degrees.
+         * @param x the abscissa coordinate.
+         * @param y the ordinate coordinate.
+         * @return the angle
+         */
+        private float getAngle(float x, float y){
+            //TODO To Vector class
+            float angle = 0;
+
+            if( false ){
+                angle = 0;
+            } else {
+                angle = (float) Math.toDegrees(Math.atan2(-y, x));
+            }
+
+            return angle;
         }
 
         @Override
@@ -273,7 +332,7 @@ public class OverlayView implements Observer{
             paint.setTextSize(TEXT_SIZE);
             canvas.drawText("50 m" , x + radius, y + radius, paint);
             canvas.drawText("0.2 m/s", x + radius, y + radius + TEXT_SIZE, paint);
-            canvas.drawText("Wally", x + radius, y + radius + TEXT_SIZE*2, paint);
+            canvas.drawText(point.getID(), x + radius, y + radius + TEXT_SIZE*2, paint);
         }
     }
 }

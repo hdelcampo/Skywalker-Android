@@ -13,6 +13,11 @@ public class PointOfInterest {
          z;
 
     /**
+     * Name of the point.
+     */
+    private String name;
+
+    /**
      * Stub for direction in angles.
      */
     private float direction;
@@ -24,7 +29,8 @@ public class PointOfInterest {
      * @param y
      * @param z
      */
-    public PointOfInterest(int x, int y, int z){
+    public PointOfInterest(String name, int x, int y, int z){
+        this.name = name;
         this.x = x;
         this.y = y;
         this.z = z;
@@ -68,5 +74,9 @@ public class PointOfInterest {
         float value = (float) ((System.currentTimeMillis()*0.035) % LENGTH);
         if (value >= LENGTH/2) return LENGTH - value - INITIAL_POS ;
         else return value - INITIAL_POS;
+    }
+
+    public String getID() {
+        return name;
     }
 }
