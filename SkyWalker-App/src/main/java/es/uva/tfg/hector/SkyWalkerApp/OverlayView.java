@@ -102,6 +102,7 @@ public class OverlayView implements Observer{
 
         points = new ArrayList();
         points.add(new PointOfInterest("Wally", 0, 0, 0));    //TODO demo
+        points.add(new PointOfInterest("Robin", 135, 0, 45));
 
         view.setSurfaceTextureListener(textureListener);
 
