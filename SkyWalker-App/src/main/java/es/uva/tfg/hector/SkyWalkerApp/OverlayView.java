@@ -142,6 +142,14 @@ public class OverlayView implements Observer{
          */
         private static final int CIRCLE_BORDER_SIZE = 10;
 
+        private static final float ARROW_LENGTH = 1.5f;
+        private static final float ARROW_SIZE = 0.3f;
+
+        private static final float TEXT_SIZE = 40f;
+
+        final int ARC_LENGTH = 50;
+        final int ARC_SIZE = 360 / 4;
+
         /**
          * {@inheritDoc}
          */
@@ -183,10 +191,13 @@ public class OverlayView implements Observer{
          * @param canvas where to draw.
          */
         private void drawIndicator(PointOfInterest point, Canvas canvas) {
+            final int borderSize = view.getHeight() < view.getWidth() ?
+                            CIRCLE_BORDER_SIZE*view.getHeight()/1080 : CIRCLE_BORDER_SIZE*view.getWidth()/1080;
+
             final Paint paint = new Paint();
             paint.setColor(Color.RED);
             paint.setStyle(Paint.Style.STROKE);
-            paint.setStrokeWidth(CIRCLE_BORDER_SIZE);
+            paint.setStrokeWidth(borderSize);
 
             final int x_center = view.getWidth() / 2,
                     y_center = view.getHeight() / 2;
@@ -194,24 +205,23 @@ public class OverlayView implements Observer{
             float x = -(orientationSensor.getAzimuth() - point.getX()) / 180,
                 y = (orientationSensor.getPitch() - point.getZ()) / 90;
 
-            final int ARC_LENGTH = 50;
-            final int ARC_SIZE = 360 / 4;
+            final int arcLength = view.getHeight() < view.getWidth() ? ARC_LENGTH*view.getHeight()/1080 : ARC_LENGTH*view.getWidth()/1080;
 
-            RectF oval = new RectF(x_center - ARC_LENGTH,
-                    y_center - ARC_LENGTH,
-                    x_center + ARC_LENGTH,
-                    y_center + ARC_LENGTH);
+            RectF oval = new RectF(x_center - arcLength,
+                    y_center - arcLength,
+                    x_center + arcLength,
+                    y_center + arcLength);
 
             float angle = getAngle(x, y) - ARC_SIZE / 2;
 
             canvas.drawArc(oval, angle, ARC_SIZE, false, paint);
 
-            final float TEXT_SIZE = 40f;
+            final float textSize = view.getHeight() < view.getWidth() ? TEXT_SIZE*view.getHeight()/1080 : TEXT_SIZE*view.getWidth()/1080;
             paint.setColor(Color.WHITE);
             paint.setStyle(Paint.Style.FILL);
-            paint.setTextSize(TEXT_SIZE);
-            canvas.drawText(point.getID(), (float) (x_center + ARC_LENGTH*Math.cos(Math.toRadians(angle))),
-                    (float) (y_center + ARC_LENGTH*Math.sin(Math.toRadians(angle))), paint);
+            paint.setTextSize(textSize);
+            canvas.drawText(point.getID(), (float) (x_center + arcLength *Math.cos(Math.toRadians(angle))),
+                    (float) (y_center + arcLength *Math.sin(Math.toRadians(angle))), paint);
         }
 
         /**
@@ -287,13 +297,10 @@ public class OverlayView implements Observer{
                 fovHeight = camera.getFOVHeight();
             }
 
-            final int windowHeight = view.getHeight(),
-                    windowWidth = view.getWidth();
+            final float x = view.getWidth()/2 - (orientationSensor.getAzimuth() - point.getX())*view.getWidth()/fovWidth,
+                        y = view.getHeight()/2 - (orientationSensor.getPitch() - point.getZ())*view.getHeight()/fovHeight;
 
-            final float x = windowWidth/2 - (orientationSensor.getAzimuth() - point.getX())*windowWidth/fovWidth,
-                        y = windowHeight/2 - (orientationSensor.getPitch() - point.getZ())*windowHeight/fovHeight;
-
-            final float radius = 50;
+            final float radius = view.getHeight() < view.getWidth() ? 50f*view.getHeight()/1080 : 50f*view.getWidth()/1080;
 
             /*
              * Paint circle aka indicator circle must been indicated color and style.
@@ -303,10 +310,13 @@ public class OverlayView implements Observer{
              * Also all previous draws should be cleared, this must be done before executing this method.
              * We must, as well, set view as not opaque, otherwise we'll get a black overlay.
              */
+            final int borderSize = view.getHeight() < view.getWidth() ?
+                    CIRCLE_BORDER_SIZE*view.getHeight()/1080 : CIRCLE_BORDER_SIZE*view.getWidth()/1080;
+
             final Paint paint = new Paint();
             paint.setColor(Color.RED);
             paint.setStyle(Paint.Style.STROKE);
-            paint.setStrokeWidth(CIRCLE_BORDER_SIZE);
+            paint.setStrokeWidth(borderSize);
             canvas.drawCircle( x, y, radius, paint);
 
             /*
@@ -316,8 +326,7 @@ public class OverlayView implements Observer{
             paint.setColor(Color.RED);
 
             final Path path = new Path();
-            final float ARROW_LENGTH = 1.5f;
-            final float ARROW_SIZE = 0.3f;
+
             final float a = point.getDirection()*(float)Math.PI/180;
             path.moveTo(x + (float)Math.cos(a)*radius, y + (float)Math.sin(a)*radius);
             path.lineTo(x + (float)Math.cos(a+ARROW_SIZE)*radius, y + (float)Math.sin(a+ARROW_SIZE)*radius);
@@ -328,12 +337,12 @@ public class OverlayView implements Observer{
             /*
              * Distance, velocity and ID text code
              */
-            final float TEXT_SIZE = 40f;
+            final float textSize = view.getHeight() < view.getWidth() ? TEXT_SIZE*view.getHeight()/1080 : TEXT_SIZE*view.getWidth()/1080;
             paint.setColor(Color.WHITE);
-            paint.setTextSize(TEXT_SIZE);
+            paint.setTextSize(textSize);
             canvas.drawText("50 m" , x + radius, y + radius, paint);
-            canvas.drawText("0.2 m/s", x + radius, y + radius + TEXT_SIZE, paint);
-            canvas.drawText(point.getID(), x + radius, y + radius + TEXT_SIZE*2, paint);
+            canvas.drawText("0.2 m/s", x + radius, y + radius + textSize, paint);
+            canvas.drawText(point.getID(), x + radius, y + radius + textSize*2, paint);
         }
     }
 }
