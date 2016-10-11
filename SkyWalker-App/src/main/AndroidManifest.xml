@@ -26,7 +26,7 @@
         <activity
             android:label="@string/filter_title"
             android:name=".FilterActivity"
-            android:theme="@android:style/Theme.Dialog"/>
+            android:theme="@style/FilterDialog"/>
     </application>
 
 </manifest>
