@@ -66,6 +66,15 @@
                 android:id="@+id/compilationStamp" />
         </LinearLayout>
 
+        <ImageButton
+            android:layout_height="50dp"
+            android:id="@+id/filterButton"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:background="@android:drawable/ic_menu_myplaces"
+            android:layout_width="50dp" />
+
     </RelativeLayout>
 
 </RelativeLayout>

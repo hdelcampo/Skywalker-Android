@@ -1,5 +1,8 @@
 package es.uva.tfg.hector.SkyWalkerApp;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Hector Del Campo Pando on 14/07/2016.
  */
@@ -22,6 +25,18 @@ public class PointOfInterest {
      */
     private float direction;
     private int modifier;
+
+    /**
+     * Retrieves a list of all points
+     * @return the list of points
+     */
+    public static List<PointOfInterest> getPoints() {
+        //TODO stub
+        List<PointOfInterest> points = new ArrayList<>();
+        points.add(new PointOfInterest("Wally", 0, 0, 0));    //TODO demo
+        points.add(new PointOfInterest("Robin", 135, 0, 45));
+        return points;
+    }
 
     /**
      * Creates a new point of interest in a 3 axes plane.
@@ -78,5 +93,13 @@ public class PointOfInterest {
 
     public String getID() {
         return name;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof PointOfInterest)) {
+            return false;
+        }
+        return getID().equals(((PointOfInterest)obj).getID());
     }
 }

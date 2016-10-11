@@ -12,6 +12,7 @@ import android.graphics.SurfaceTexture;
 import android.view.TextureView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -122,8 +123,16 @@ public class OverlayView implements Observer{
         return points;
     }
 
-    public void setPoints(List<PointOfInterest> points) {
-        this.points = points;
+    public void display(ArrayList<String> toShow) {
+        List<PointOfInterest> allPoints = PointOfInterest.getPoints();
+        points.clear();
+        for (String one: toShow) {
+            for (PointOfInterest point: allPoints) {
+                if (point.getID().equals(one)) {
+                    points.add(point);
+                }
+            }
+        }
     }
 
     /**
