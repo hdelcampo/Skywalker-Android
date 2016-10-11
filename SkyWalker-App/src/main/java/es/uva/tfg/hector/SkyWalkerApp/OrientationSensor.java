@@ -6,7 +6,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.util.Log;
 import android.view.Display;
 
 import java.util.Observable;
@@ -134,8 +133,6 @@ public class OrientationSensor extends Observable{
      * @param activity where the sensor will be used.
      */
     private OrientationSensor(Activity activity, Display display){
-        Log.e(TAG, "Test");
-
         this.display = display;
         manager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
         sensorRt = manager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);

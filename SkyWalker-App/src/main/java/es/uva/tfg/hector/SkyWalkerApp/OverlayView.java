@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.TextureView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -100,9 +99,7 @@ public class OverlayView implements Observer{
 
         this.camera = camera;
 
-        points = new ArrayList();
-        points.add(new PointOfInterest("Wally", 0, 0, 0));    //TODO demo
-        points.add(new PointOfInterest("Robin", 135, 0, 45));
+        points = PointOfInterest.getPoints();
 
         view.setSurfaceTextureListener(textureListener);
 
@@ -122,6 +119,14 @@ public class OverlayView implements Observer{
     @Override
     public void update(Observable observable, Object o) {
         updateDegrees();
+    }
+
+    public List<PointOfInterest> getActivePoints() {
+        return points;
+    }
+
+    public void setPoints(List<PointOfInterest> points) {
+        this.points = points;
     }
 
     /**
