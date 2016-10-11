@@ -9,7 +9,6 @@ import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.RectF;
 import android.graphics.SurfaceTexture;
-import android.util.Log;
 import android.view.TextureView;
 import android.widget.TextView;
 
@@ -87,8 +86,6 @@ public class OverlayView implements Observer{
     };
 
     public OverlayView(TextureView view, Activity activity, Camera camera){
-        Log.e(TAG, "Azimuth:");
-
         this.activity = activity;
         this.view = view;
         view.setOpaque(false);
