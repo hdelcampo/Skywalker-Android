@@ -4,7 +4,9 @@
     <string name="accept">Accept</string>
     <string name="filter_title">Select filtering</string>
     <string name="connection_title">New connection</string>
-    
+
+    <!-- Filter fragment -->
+    <string name="deselectAll">Deselect all</string>
     
     <!-- Connection fragment -->
     <string name="QR">Scan QR</string>
