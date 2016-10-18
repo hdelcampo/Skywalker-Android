@@ -75,6 +75,15 @@ public class ScanerFragment extends Fragment {
                 startActivityForResult(dialog, FILTER_POINTS);
             }
         });
+
+        ImageButton connection = (ImageButton) getActivity().findViewById(R.id.connectionButton);
+        connection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent dialog = new Intent(getActivity(), ConnectionActivity.class);
+                startActivity(dialog);
+            }
+        });
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 

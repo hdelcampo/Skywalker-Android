@@ -75,6 +75,15 @@
             android:background="@android:drawable/ic_menu_myplaces"
             android:layout_width="50dp" />
 
+        <ImageButton
+            android:layout_height="50dp"
+            android:id="@+id/connectionButton"
+            android:background="@android:drawable/btn_star"
+            android:layout_width="50dp"
+            android:layout_below="@+id/filterButton"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
     </RelativeLayout>
 
 </RelativeLayout>

@@ -27,6 +27,11 @@
             android:label="@string/filter_title"
             android:name=".FilterActivity"
             android:theme="@style/FilterDialog"/>
+
+        <activity
+            android:label="@string/connection_title"
+            android:name=".ConnectionActivity"
+            android:theme="@style/ConnectionDialog"/>
     </application>
 
 </manifest>

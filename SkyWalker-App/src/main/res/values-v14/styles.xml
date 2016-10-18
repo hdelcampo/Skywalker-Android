@@ -2,5 +2,6 @@
 <resources>
 
     <style name="FilterDialog" parent="android:Theme.Holo.Dialog.NoActionBar"/>
+    <style name="ConnectionDialog" parent="android:Theme.Holo.Dialog.NoActionBar"/>
 
 </resources>

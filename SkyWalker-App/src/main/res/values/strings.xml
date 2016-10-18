@@ -3,4 +3,15 @@
     <string name="filter">Filter</string>
     <string name="accept">Accept</string>
     <string name="filter_title">Select filtering</string>
+    <string name="connection_title">New connection</string>
+    
+    
+    <!-- Connection fragment -->
+    <string name="QR">Scan QR</string>
+    <string name="Manual">Manual input</string>
+    <string name="Address">Address</string>
+    <string name="User">User</string>
+    <string name="Password">Password</string>
+    <string name="optional">Optional</string>
+    <string name="mandatory">Mandatory</string>
 </resources>
