@@ -2,10 +2,11 @@ package es.uva.tfg.hector.SkyWalkerApp;
 
 import android.app.Activity;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.RectF;
 import android.graphics.SurfaceTexture;
@@ -141,6 +142,7 @@ public class OverlayView implements Observer{
      */
     private class PainterThread extends Thread{
 
+
         private volatile boolean run = false;
 
         /**
@@ -153,13 +155,15 @@ public class OverlayView implements Observer{
          */
         private static final int CIRCLE_BORDER_SIZE = 10;
 
-        private static final float ARROW_LENGTH = 1.5f;
-        private static final float ARROW_SIZE = 0.3f;
-
         private static final float TEXT_SIZE = 40f;
 
         final int ARC_LENGTH = 50;
         final int ARC_SIZE = 360 / 4;
+
+        /**
+         * Constants for in sight drawing.
+         */
+        private static final int INSIGHT_ICON = android.R.drawable.arrow_down_float;
 
         /**
          * {@inheritDoc}
@@ -313,47 +317,44 @@ public class OverlayView implements Observer{
 
             final float radius = view.getHeight() < view.getWidth() ? 50f*view.getHeight()/1080 : 50f*view.getWidth()/1080;
 
-            /*
-             * Paint circle aka indicator circle must been indicated color and style.
-             * Style.STROKE will cause circle to be transparent in the middle of it
-             * and preserve border color, thus we must provide border width aka StrokeWidth.
-             * Background should be transparent in order to get an overlay appearance.
-             * Also all previous draws should be cleared, this must be done before executing this method.
-             * We must, as well, set view as not opaque, otherwise we'll get a black overlay.
-             */
-            final int borderSize = view.getHeight() < view.getWidth() ?
-                    CIRCLE_BORDER_SIZE*view.getHeight()/1080 : CIRCLE_BORDER_SIZE*view.getWidth()/1080;
+            drawIcon(canvas, x, y);
+
+            drawText(canvas, new String[]{point.getID(), "50"}, x + radius, y + radius);
+        }
+
+        /**
+         * Draws a icon to show positioning.
+         * @param canvas where to draw
+         * @param x abscissa
+         * @param y ordinate
+         */
+        private void drawIcon(Canvas canvas, float x, float y) {
 
             final Paint paint = new Paint();
-            paint.setColor(Color.RED);
-            paint.setStyle(Paint.Style.STROKE);
-            paint.setStrokeWidth(borderSize);
-            canvas.drawCircle( x, y, radius, paint);
+            final Bitmap b = BitmapFactory.decodeResource(activity.getResources(), INSIGHT_ICON);
+            canvas.drawBitmap(b, x, y, paint);
 
-            /*
-             * Direction arrow code
-             */
-            paint.setStyle(Paint.Style.FILL);
-            paint.setColor(Color.RED);
+        }
 
-            final Path path = new Path();
+        /**
+         * Draws the given texts, one below others.
+         * @param canvas where to draw
+         * @param texts to draw
+         * @param x abscissa
+         * @param y ordinate
+         */
+        private void drawText(Canvas canvas, String[] texts ,float x, float y) {
 
-            final float a = point.getDirection()*(float)Math.PI/180;
-            path.moveTo(x + (float)Math.cos(a)*radius, y + (float)Math.sin(a)*radius);
-            path.lineTo(x + (float)Math.cos(a+ARROW_SIZE)*radius, y + (float)Math.sin(a+ARROW_SIZE)*radius);
-            path.lineTo(x + (float)Math.cos(a+ARROW_SIZE)*radius, y + (float)Math.sin(a-ARROW_SIZE)*radius);
-            path.lineTo(x + (float)Math.cos(a)*radius*ARROW_LENGTH, y + (float)Math.sin(a)*radius*ARROW_LENGTH);
-            canvas.drawPath(path, paint);
-
-            /*
-             * Distance, velocity and ID text code
-             */
+            final Paint paint = new Paint();
             final float textSize = view.getHeight() < view.getWidth() ? TEXT_SIZE*view.getHeight()/1080 : TEXT_SIZE*view.getWidth()/1080;
+
             paint.setColor(Color.WHITE);
             paint.setTextSize(textSize);
-            canvas.drawText("50 m" , x + radius, y + radius, paint);
-            canvas.drawText("0.2 m/s", x + radius, y + radius + textSize, paint);
-            canvas.drawText(point.getID(), x + radius, y + radius + textSize*2, paint);
+
+            for(int i = 0; i < texts.length; i++) {
+                canvas.drawText(texts[i], x , y + textSize*i, paint);
+            }
+
         }
     }
 }

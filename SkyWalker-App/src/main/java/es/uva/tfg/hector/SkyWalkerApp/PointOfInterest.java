@@ -20,11 +20,6 @@ public class PointOfInterest {
      */
     private String name;
 
-    /**
-     * Stub for direction in angles.
-     */
-    private float direction;
-    private int modifier;
 
     /**
      * Retrieves a list of all points
@@ -49,8 +44,6 @@ public class PointOfInterest {
         this.x = x;
         this.y = y;
         this.z = z;
-        direction = 0;
-        modifier = 1;
     }
 
     public int getX() {
@@ -77,19 +70,6 @@ public class PointOfInterest {
         this.z = z;
     }
 
-    /**
-     * Gets direction of the point. </br>
-     * THIS IS A STUB FOR NOW!
-     * @return direction angle.
-     */
-    public float getDirection(){
-        //TODO stub for demo
-        final int LENGTH = 40;
-        final int INITIAL_POS = LENGTH/2;
-        float value = (float) ((System.currentTimeMillis()*0.035) % LENGTH);
-        if (value >= LENGTH/2) return LENGTH - value - INITIAL_POS ;
-        else return value - INITIAL_POS;
-    }
 
     public String getID() {
         return name;
