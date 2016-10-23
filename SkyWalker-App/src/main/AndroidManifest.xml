@@ -32,6 +32,10 @@
             android:label="@string/connection_title"
             android:name=".ConnectionActivity"
             android:theme="@style/ConnectionDialog"/>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="7a424b2d0d701043f224a61ff33c07c21f3a4407" />
     </application>
 
+    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>
