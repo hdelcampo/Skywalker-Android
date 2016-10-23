@@ -6,9 +6,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
-import android.graphics.RectF;
 import android.graphics.SurfaceTexture;
 import android.view.TextureView;
 import android.widget.TextView;
@@ -140,7 +140,7 @@ public class OverlayView implements Observer{
      * Inner class extending {@link Thread}, this will handle all drawing tasks, as well as
      * deciding if a {@code PointOfInterest} must be shown or not.
      */
-    private class PainterThread extends Thread{
+    private class PainterThread extends Thread {
 
 
         private volatile boolean run = false;
@@ -151,14 +151,15 @@ public class OverlayView implements Observer{
         private static final long SLEEP_TIME = 15;
 
         /**
-         * Constants for {@code PointOfInterest} indicator.
+         * Global constants
          */
-        private static final int CIRCLE_BORDER_SIZE = 10;
-
         private static final float TEXT_SIZE = 40f;
 
-        final int ARC_LENGTH = 50;
-        final int ARC_SIZE = 360 / 4;
+        /**
+         * Constants for out of sight drawing.
+         */
+        private final static int OUT_OF_SIGHT_ICON = android.R.drawable.ic_media_play;
+        private final static float MARGIN = 0.9f;
 
         /**
          * Constants for in sight drawing.
@@ -206,56 +207,51 @@ public class OverlayView implements Observer{
          * @param canvas where to draw.
          */
         private void drawIndicator(PointOfInterest point, Canvas canvas) {
-            final int borderSize = view.getHeight() < view.getWidth() ?
-                            CIRCLE_BORDER_SIZE*view.getHeight()/1080 : CIRCLE_BORDER_SIZE*view.getWidth()/1080;
 
-            final Paint paint = new Paint();
-            paint.setColor(Color.RED);
-            paint.setStyle(Paint.Style.STROKE);
-            paint.setStrokeWidth(borderSize);
-
-            final int x_center = view.getWidth() / 2,
-                    y_center = view.getHeight() / 2;
-
-            float x = -(orientationSensor.getAzimuth() - point.getX()) / 180,
+            float x = (orientationSensor.getAzimuth() - point.getX()) / 180,
                 y = (orientationSensor.getPitch() - point.getZ()) / 90;
 
-            final int arcLength = view.getHeight() < view.getWidth() ? ARC_LENGTH*view.getHeight()/1080 : ARC_LENGTH*view.getWidth()/1080;
+            final float angle = Vector3D.getAngle(-x, -y);
 
-            RectF oval = new RectF(x_center - arcLength,
-                    y_center - arcLength,
-                    x_center + arcLength,
-                    y_center + arcLength);
+            /**
+             * So once we get angle, we must remap it to coordinates. There are 2 kinds:
+             *  -Left screen and down screen, they go in reverse coordinates system
+             *  -Up and right screen are "normal" cases. However, right screen is special due to [0,360) angles
+             *
+             * Once we get corrected angle, we start coordinates from size*margin, and we multiply current angle to
+             * size of the "rect", size of rect is size of height or weight subtracting twice the margin.
+             */
+            if (0 <= angle && angle <= 45 ||
+                    315 <= angle && angle <= 360) {
+                x = view.getWidth()*MARGIN;
+                float correctedAngle;
 
-            float angle = getAngle(x, y) - ARC_SIZE / 2;
+                // As angle can be > 315, correct it
+                if (315 <= angle && angle <= 360) {
+                    correctedAngle = Math.abs(360-angle-45);
+                } else {
+                    correctedAngle = angle + 45;
+                }
 
-            canvas.drawArc(oval, angle, ARC_SIZE, false, paint);
+                y = view.getHeight()*(1 - MARGIN) + ((correctedAngle/(45*2))) * view.getHeight()*(1- (1 - MARGIN) * 2);   //Decimal part from div by 45 angles
 
-            final float textSize = view.getHeight() < view.getWidth() ? TEXT_SIZE*view.getHeight()/1080 : TEXT_SIZE*view.getWidth()/1080;
-            paint.setColor(Color.WHITE);
-            paint.setStyle(Paint.Style.FILL);
-            paint.setTextSize(textSize);
-            canvas.drawText(point.getID(), (float) (x_center + arcLength *Math.cos(Math.toRadians(angle))),
-                    (float) (y_center + arcLength *Math.sin(Math.toRadians(angle))), paint);
-        }
-
-        /**
-         * Retrieves angle in degrees.
-         * @param x the abscissa coordinate.
-         * @param y the ordinate coordinate.
-         * @return the angle
-         */
-        private float getAngle(float x, float y){
-            //TODO To Vector class
-            float angle = 0;
-
-            if( false ){
-                angle = 0;
+            } else if (45 < angle && angle <= 135) {
+                final float correctedAngle =  135 - angle;
+                x = view.getWidth()*(1 - MARGIN) + (correctedAngle/(45*2)) * view.getWidth()*(1- (1 - MARGIN) * 2);
+                y = view.getHeight()*MARGIN;
+            } else if (135 < angle && angle <= 225) {
+                final float correctedAngle = 225 - angle;
+                x = view.getWidth()*(1-MARGIN);
+                y = view.getHeight()*(1 - MARGIN) + (correctedAngle/(45*2)) * view.getHeight()*(1- (1 - MARGIN) * 2);
             } else {
-                angle = (float) Math.toDegrees(Math.atan2(-y, x));
+                final float correctedAngle = angle - 225;
+                x = view.getWidth()*(1 - MARGIN) + (correctedAngle/(45*2)) * view.getWidth()*(1- (1 - MARGIN) * 2);
+                y = view.getHeight()*(1-MARGIN);
             }
 
-            return angle;
+            drawIcon(canvas, x, y, OUT_OF_SIGHT_ICON, angle);
+            drawText(canvas, new String[]{point.getID()}, x, y);
+
         }
 
         @Override
@@ -317,7 +313,7 @@ public class OverlayView implements Observer{
 
             final float radius = view.getHeight() < view.getWidth() ? 50f*view.getHeight()/1080 : 50f*view.getWidth()/1080;
 
-            drawIcon(canvas, x, y);
+            drawIcon(canvas, x, y, INSIGHT_ICON, 0);
 
             drawText(canvas, new String[]{point.getID(), "50"}, x + radius, y + radius);
         }
@@ -327,12 +323,16 @@ public class OverlayView implements Observer{
          * @param canvas where to draw
          * @param x abscissa
          * @param y ordinate
+         * @param angle angle to rotate icon
          */
-        private void drawIcon(Canvas canvas, float x, float y) {
+        private void drawIcon(Canvas canvas, final float x, final float y, final int icon, final float angle) {
 
             final Paint paint = new Paint();
-            final Bitmap b = BitmapFactory.decodeResource(activity.getResources(), INSIGHT_ICON);
-            canvas.drawBitmap(b, x, y, paint);
+            final Bitmap original = BitmapFactory.decodeResource(activity.getResources(), icon);
+            Matrix matrix = new Matrix();
+            matrix.postRotate(angle);
+            final Bitmap iconBitmap = Bitmap.createBitmap(original, 0, 0, original.getWidth(), original.getHeight(), matrix, true);
+            canvas.drawBitmap(iconBitmap, x, y, paint);
 
         }
 
@@ -356,5 +356,6 @@ public class OverlayView implements Observer{
             }
 
         }
+
     }
 }
