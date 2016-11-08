@@ -69,13 +69,13 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:background="@android:drawable/ic_menu_myplaces"
+        android:background="@drawable/filter_button"
         android:layout_width="50dp" />
 
     <ImageButton
         android:layout_height="50dp"
         android:id="@+id/connectionButton"
-        android:background="@android:drawable/btn_star"
+        android:background="@drawable/connect_button"
         android:layout_width="50dp"
         android:layout_below="@+id/filterButton"
         android:layout_alignParentRight="true"

@@ -158,13 +158,15 @@ public class OverlayView implements Observer{
         /**
          * Constants for out of sight drawing.
          */
-        private final static int OUT_OF_SIGHT_ICON = android.R.drawable.ic_media_play;
+        private final static int OUT_OF_SIGHT_ICON = R.drawable.out_of_sight_icon;
+        private final static float OUT_OF_SIGHT_ICON_SCALE = 1.5f;
         private final static float MARGIN = 0.9f;
 
         /**
          * Constants for in sight drawing.
          */
-        private static final int INSIGHT_ICON = android.R.drawable.arrow_down_float;
+        private static final int INSIGHT_ICON = R.drawable.in_sight_icon;
+        private static final float IN_SIGHT_ICON_SCALE = 1.5f;
 
         /**
          * {@inheritDoc}
@@ -249,7 +251,7 @@ public class OverlayView implements Observer{
                 y = view.getHeight()*(1-MARGIN);
             }
 
-            drawIcon(canvas, x, y, OUT_OF_SIGHT_ICON, angle);
+            drawIcon(canvas, x, y, OUT_OF_SIGHT_ICON, angle, OUT_OF_SIGHT_ICON_SCALE);
             drawText(canvas, new String[]{point.getID()}, x, y);
 
         }
@@ -311,11 +313,9 @@ public class OverlayView implements Observer{
             final float x = view.getWidth()/2 - (orientationSensor.getAzimuth() - point.getX())*view.getWidth()/fovWidth,
                         y = view.getHeight()/2 - (orientationSensor.getPitch() - point.getZ())*view.getHeight()/fovHeight;
 
-            final float radius = view.getHeight() < view.getWidth() ? 50f*view.getHeight()/1080 : 50f*view.getWidth()/1080;
+            drawIcon(canvas, x, y, INSIGHT_ICON, 0, IN_SIGHT_ICON_SCALE);
 
-            drawIcon(canvas, x, y, INSIGHT_ICON, 0);
-
-            drawText(canvas, new String[]{point.getID(), "50"}, x + radius, y + radius);
+            drawText(canvas, new String[]{point.getID(), "50"}, x + IN_SIGHT_ICON_SCALE*75, y + IN_SIGHT_ICON_SCALE*75);
         }
 
         /**
@@ -325,12 +325,13 @@ public class OverlayView implements Observer{
          * @param y ordinate
          * @param angle angle to rotate icon
          */
-        private void drawIcon(Canvas canvas, final float x, final float y, final int icon, final float angle) {
+        private void drawIcon(Canvas canvas, final float x, final float y, final int icon, final float angle, final float scale) {
 
             final Paint paint = new Paint();
             final Bitmap original = BitmapFactory.decodeResource(activity.getResources(), icon);
             Matrix matrix = new Matrix();
             matrix.postRotate(angle);
+            matrix.postScale(scale, scale);
             final Bitmap iconBitmap = Bitmap.createBitmap(original, 0, 0, original.getWidth(), original.getHeight(), matrix, true);
             canvas.drawBitmap(iconBitmap, x, y, paint);
 
