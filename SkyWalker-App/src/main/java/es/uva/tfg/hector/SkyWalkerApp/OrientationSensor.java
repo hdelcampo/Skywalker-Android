@@ -18,6 +18,11 @@ public class OrientationSensor extends Observable{
     private static final String TAG = "Orientation sensor";
 
     /**
+     * Sensor data sampling refresh delay in microseconds
+     */
+    public static final int SENSOR_DELAY = SensorManager.SENSOR_DELAY_GAME;
+
+    /**
      * Sensor's manager.
      */
     private SensorManager manager;
@@ -151,7 +156,7 @@ public class OrientationSensor extends Observable{
      * Starts registering sensors changes.
      */
     public void registerEvents(){
-        manager.registerListener(sEvent, sensorRt, SensorManager.SENSOR_DELAY_NORMAL);
+        manager.registerListener(sEvent, sensorRt, SENSOR_DELAY);
     }
 
     /**

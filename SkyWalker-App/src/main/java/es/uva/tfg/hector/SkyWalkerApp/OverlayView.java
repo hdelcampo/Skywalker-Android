@@ -147,7 +147,7 @@ public class OverlayView implements Observer{
         /**
          * Waiting time  in milliseconds to start rewriting points.
          */
-        private static final long SLEEP_TIME = 15;
+        private static final long SLEEP_TIME = (long)(OrientationSensor.SENSOR_DELAY*0.001);
 
         /**
          * Global constants
