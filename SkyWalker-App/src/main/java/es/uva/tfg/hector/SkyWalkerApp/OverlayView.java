@@ -142,7 +142,6 @@ public class OverlayView implements Observer{
      */
     private class PainterThread extends Thread {
 
-
         private volatile boolean run = false;
 
         /**
@@ -153,7 +152,11 @@ public class OverlayView implements Observer{
         /**
          * Global constants
          */
-        private static final float TEXT_SIZE = 40f;
+        private static final float TEXT_SIZE = 45f;
+        private static final float STROKE_WIDTH = 0.75f;
+        private static final boolean ANTI_ALIAS_ENABLED = true;
+        private static final int TEXT_COLOR = Color.WHITE;
+        private static final int TEXT_BORDER_COLOR = Color.RED;
 
         /**
          * Constants for out of sight drawing.
@@ -347,13 +350,23 @@ public class OverlayView implements Observer{
         private void drawText(Canvas canvas, String[] texts ,float x, float y) {
 
             final Paint paint = new Paint();
+            final Paint border = new Paint();
             final float textSize = view.getHeight() < view.getWidth() ? TEXT_SIZE*view.getHeight()/1080 : TEXT_SIZE*view.getWidth()/1080;
 
-            paint.setColor(Color.WHITE);
+            paint.setAntiAlias(ANTI_ALIAS_ENABLED);
             paint.setTextSize(textSize);
+            paint.setStyle(Paint.Style.FILL);
+            paint.setColor(TEXT_COLOR);
+
+            border.setAntiAlias(ANTI_ALIAS_ENABLED);
+            border.setTextSize(textSize);
+            border.setStyle(Paint.Style.STROKE);
+            border.setStrokeWidth(STROKE_WIDTH);
+            border.setColor(TEXT_BORDER_COLOR);
 
             for(int i = 0; i < texts.length; i++) {
-                canvas.drawText(texts[i], x , y + textSize*i, paint);
+                canvas.drawText(texts[i], x, y + textSize*i, paint);
+                canvas.drawText(texts[i], x, y + textSize*i, border);
             }
 
         }
