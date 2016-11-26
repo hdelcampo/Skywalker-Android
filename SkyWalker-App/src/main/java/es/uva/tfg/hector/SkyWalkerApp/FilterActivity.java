@@ -3,7 +3,6 @@ package es.uva.tfg.hector.SkyWalkerApp;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.AbsListView;
@@ -24,9 +23,10 @@ import java.util.List;
 public class FilterActivity extends Activity implements View.OnClickListener {
 
     /**
-     * Activity's identifier tag
+     * Intent's extra data IDs
      */
-    private static String TAG = "Filter dialog";
+    public static final String USED_POINTS_EXTRA = "usedPoints";
+    public static final String ALL_POINTS_EXTRA = "allPoints";
 
     /**
      * List of items that were being already used, and list of all items to represent.
@@ -38,8 +38,8 @@ public class FilterActivity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.filter_points);
         super.onCreate(savedInstanceState);
-        usedPoints = getIntent().getParcelableArrayListExtra("usedPoints");
-        allPoints = getIntent().getParcelableArrayListExtra("allPoints");
+        usedPoints = getIntent().getParcelableArrayListExtra(USED_POINTS_EXTRA);
+        allPoints = getIntent().getParcelableArrayListExtra(ALL_POINTS_EXTRA);
         addPoints();
 
         Button acceptBtn = (Button) findViewById(R.id.acceptButton);
@@ -117,7 +117,6 @@ public class FilterActivity extends Activity implements View.OnClickListener {
                 deselectAll();
                 break;
             default:
-                Log.e(TAG, "Unregistered event");
                 break;
         }
     }
@@ -146,7 +145,6 @@ public class FilterActivity extends Activity implements View.OnClickListener {
         final ListView itemsList = (ListView) findViewById(R.id.itemsList);
 
         for(int i = 0; i < itemsList.getAdapter().getCount(); i++) {
-            Log.e(TAG, "Item: " + i);
             itemsList.setItemChecked(i, true);
         }
 

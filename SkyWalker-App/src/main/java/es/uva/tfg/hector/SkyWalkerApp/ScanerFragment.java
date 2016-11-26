@@ -21,7 +21,7 @@ import static android.app.Activity.RESULT_OK;
 public class ScanerFragment extends Fragment {
 
     /**
-     * Constants for activitys
+     * Constants for new intents
      */
     private static final int FILTER_POINTS = 1;
 
@@ -58,10 +58,10 @@ public class ScanerFragment extends Fragment {
                 Intent dialog = new Intent(getActivity(), FilterActivity.class);
 
                 ArrayList<PointOfInterest> allPoints = (ArrayList) PointOfInterest.getPoints();
-                dialog.putParcelableArrayListExtra("allPoints", allPoints);
+                dialog.putParcelableArrayListExtra(FilterActivity.ALL_POINTS_EXTRA, allPoints);
 
                 ArrayList<PointOfInterest> usedPoints = (ArrayList) overlayView.getActivePoints();
-                dialog.putParcelableArrayListExtra("usedPoints", usedPoints);
+                dialog.putParcelableArrayListExtra(FilterActivity.USED_POINTS_EXTRA, usedPoints);
 
                 startActivityForResult(dialog, FILTER_POINTS);
             }
