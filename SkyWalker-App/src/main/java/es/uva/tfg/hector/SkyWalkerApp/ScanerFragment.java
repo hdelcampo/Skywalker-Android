@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -58,19 +57,11 @@ public class ScanerFragment extends Fragment {
             public void onClick(View v) {
                 Intent dialog = new Intent(getActivity(), FilterActivity.class);
 
-                List<PointOfInterest> allPoints = PointOfInterest.getPoints();
-                ArrayList<String> pointsNames = new ArrayList<String>();
-                for(PointOfInterest point: allPoints) {
-                    pointsNames.add(point.getID());
-                }
-                dialog.putStringArrayListExtra("allPoints", pointsNames);
+                ArrayList<PointOfInterest> allPoints = (ArrayList) PointOfInterest.getPoints();
+                dialog.putParcelableArrayListExtra("allPoints", allPoints);
 
-                List<PointOfInterest> usedPoints = overlayView.getActivePoints();
-                ArrayList<String> usedPointsNames = new ArrayList<String>();
-                for(PointOfInterest point: usedPoints) {
-                    usedPointsNames.add(point.getID());
-                }
-                dialog.putStringArrayListExtra("usedPoints", usedPointsNames);
+                ArrayList<PointOfInterest> usedPoints = (ArrayList) overlayView.getActivePoints();
+                dialog.putParcelableArrayListExtra("usedPoints", usedPoints);
 
                 startActivityForResult(dialog, FILTER_POINTS);
             }
@@ -91,7 +82,7 @@ public class ScanerFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (RESULT_OK == resultCode) {
             if (FILTER_POINTS == requestCode) {
-                ArrayList<String> selected = data.getStringArrayListExtra("selected");
+                ArrayList<PointOfInterest> selected = data.getParcelableArrayListExtra("selected");
                 overlayView.display(selected);
             }
         }

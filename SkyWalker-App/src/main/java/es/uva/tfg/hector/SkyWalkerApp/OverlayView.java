@@ -124,16 +124,10 @@ public class OverlayView implements Observer{
         return points;
     }
 
-    public void display(ArrayList<String> toShow) {
+    public void display(ArrayList<PointOfInterest> toShow) {
         List<PointOfInterest> allPoints = PointOfInterest.getPoints();
         points.clear();
-        for (String one: toShow) {
-            for (PointOfInterest point: allPoints) {
-                if (point.getID().equals(one)) {
-                    points.add(point);
-                }
-            }
-        }
+        points.addAll(toShow);
     }
 
     /**

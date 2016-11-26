@@ -1,12 +1,15 @@
 package es.uva.tfg.hector.SkyWalkerApp;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Hector Del Campo Pando on 14/07/2016.
  */
-public class PointOfInterest {
+public class PointOfInterest implements Parcelable {
 
     /**
      * Coordinates
@@ -76,10 +79,50 @@ public class PointOfInterest {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if(!(obj instanceof PointOfInterest)) {
-            return false;
-        }
-        return getID().equals(((PointOfInterest)obj).getID());
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PointOfInterest that = (PointOfInterest) o;
+
+        return name.equals(that.name);
+
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
+
+    public static final Parcelable.Creator<PointOfInterest> CREATOR
+            = new Parcelable.Creator<PointOfInterest>() {
+        public PointOfInterest createFromParcel(Parcel in) {
+            return new PointOfInterest(in);
+        }
+
+        public PointOfInterest[] newArray(int size) {
+            return new PointOfInterest[size];
+        }
+    };
+
+    private PointOfInterest(Parcel in) {
+        name = in.readString();
+        x = in.readInt();
+        y = in.readInt();
+        z = in.readInt();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeInt(x);
+        dest.writeInt(y);
+        dest.writeInt(z);
+    }
+
 }

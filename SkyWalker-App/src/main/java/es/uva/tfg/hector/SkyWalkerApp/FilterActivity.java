@@ -31,16 +31,17 @@ public class FilterActivity extends Activity implements View.OnClickListener {
     /**
      * List of items that were being already used, and list of all items to represent.
      */
-    private List<String> usedPoints,
+    private List<PointOfInterest> usedPoints,
                         allPoints;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.filter_points);
         super.onCreate(savedInstanceState);
-        usedPoints = getIntent().getStringArrayListExtra("usedPoints");
-        allPoints = getIntent().getStringArrayListExtra("allPoints");
+        usedPoints = getIntent().getParcelableArrayListExtra("usedPoints");
+        allPoints = getIntent().getParcelableArrayListExtra("allPoints");
         addPoints();
+
         Button acceptBtn = (Button) findViewById(R.id.acceptButton);
         acceptBtn.setOnClickListener(this);
 
@@ -63,11 +64,11 @@ public class FilterActivity extends Activity implements View.OnClickListener {
         ListView itemsList = (ListView) findViewById(R.id.itemsList);
         itemsList.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
 
-        String[] from = new String[allPoints.size()];
+        PointOfInterest[] from = new PointOfInterest[allPoints.size()];
         from = allPoints.toArray(from);
         final int[] to = {android.R.id.text1};
 
-        ArrayAdapter<String> adapter = new ArrayAdapter(this,
+        ArrayAdapter<PointOfInterest> adapter = new ArrayAdapter(this,
                 android.R.layout.simple_list_item_multiple_choice,
                 from);
 
@@ -85,8 +86,8 @@ public class FilterActivity extends Activity implements View.OnClickListener {
      * Retrieves a list of user's selected {@Code PointsOfInterest} to show.
      * @return the list of IDs.
      */
-    private List<String> getSelectedPoints() {
-        List<String> selecteds = new ArrayList<>();
+    private List<PointOfInterest> getSelectedPoints() {
+        List<PointOfInterest> selecteds = new ArrayList<>();
         final ListView itemsList = (ListView) findViewById(R.id.itemsList);
 
         final SparseBooleanArray checked = itemsList.getCheckedItemPositions();
@@ -126,7 +127,7 @@ public class FilterActivity extends Activity implements View.OnClickListener {
      */
     private void accept() {
         Intent returnIntent = new Intent();
-        returnIntent.putStringArrayListExtra("selected", (ArrayList<String>) getSelectedPoints());
+        returnIntent.putParcelableArrayListExtra("selected", (ArrayList<PointOfInterest>) getSelectedPoints());
         setResult(RESULT_OK, returnIntent);
         finish();
     }
