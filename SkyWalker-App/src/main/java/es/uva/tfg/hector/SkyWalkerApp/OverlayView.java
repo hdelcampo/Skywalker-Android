@@ -46,7 +46,7 @@ public class OverlayView implements Observer{
     private PointOfInterest myPosition;
 
     /**
-     * Thread that will manage drawing points.
+     * Thread that will manage listInUse points.
      */
     private PainterThread thread;
 
@@ -121,17 +121,18 @@ public class OverlayView implements Observer{
     }
 
     public List<PointOfInterest> getActivePoints() {
-        return points;
+        return new ArrayList<>(points);
     }
 
     public void display(ArrayList<PointOfInterest> toShow) {
-        List<PointOfInterest> allPoints = PointOfInterest.getPoints();
-        points.clear();
-        points.addAll(toShow);
+        synchronized (points) {
+            points.clear();
+            points.addAll(toShow);
+        }
     }
 
     /**
-     * Inner class extending {@link Thread}, this will handle all drawing tasks, as well as
+     * Inner class extending {@link Thread}, this will handle all listInUse tasks, as well as
      * deciding if a {@code PointOfInterest} must be shown or not.
      */
     private class PainterThread extends Thread {
@@ -153,14 +154,14 @@ public class OverlayView implements Observer{
         private static final int TEXT_BORDER_COLOR = Color.RED;
 
         /**
-         * Constants for out of sight drawing.
+         * Constants for out of sight listInUse.
          */
         private final static int OUT_OF_SIGHT_ICON = R.drawable.out_of_sight_icon;
         private final static float OUT_OF_SIGHT_ICON_SCALE = 1.5f;
         private final static float MARGIN = 0.9f;
 
         /**
-         * Constants for in sight drawing.
+         * Constants for in sight listInUse.
          */
         private static final int INSIGHT_ICON = R.drawable.in_sight_icon;
         private static final float IN_SIGHT_ICON_SCALE = 1.5f;
@@ -182,12 +183,16 @@ public class OverlayView implements Observer{
                  */
                 canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
 
-                for(PointOfInterest point : points){
-                    if(inSight(point)){
-                        drawPoint(point, canvas);
-                    } else {
-                        drawIndicator(point, canvas);
+                synchronized (points) {
+
+                    for(PointOfInterest point : points){
+                        if(inSight(point)){
+                            drawPoint(point, canvas);
+                        } else {
+                            drawIndicator(point, canvas);
+                        }
                     }
+
                 }
 
                 view.unlockCanvasAndPost(canvas);
