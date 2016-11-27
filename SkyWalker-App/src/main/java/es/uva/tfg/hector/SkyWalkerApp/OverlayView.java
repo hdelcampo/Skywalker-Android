@@ -76,9 +76,14 @@ public class OverlayView implements Observer{
         @Override
         public boolean onSurfaceTextureDestroyed(SurfaceTexture surfaceTexture) {
             thread.interrupt();
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             //When preview is paused the camera device must be freed
             orientationSensor.unregisterEvents();
-            return false;
+            return true;
         }
 
         @Override
@@ -137,7 +142,7 @@ public class OverlayView implements Observer{
      */
     private class PainterThread extends Thread {
 
-        private volatile boolean run = false;
+        private volatile boolean running = false;
 
         /**
          * Waiting time  in milliseconds to start rewriting points.
@@ -173,7 +178,7 @@ public class OverlayView implements Observer{
         public void run() {
             Canvas canvas;
 
-            while(run){
+            while(running){
 
                 canvas = view.lockCanvas();
 
@@ -260,13 +265,13 @@ public class OverlayView implements Observer{
 
         @Override
         public synchronized void start() {
-            run = true;
+            running = true;
             super.start();
         }
 
         @Override
         public void interrupt() {
-            run = false;
+            running = false;
             super.interrupt();
         }
 
