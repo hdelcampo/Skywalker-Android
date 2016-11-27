@@ -67,8 +67,7 @@ public class CameraPreview implements Observer{
         public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
             //When preview is paused the camera device must be freed
             camera.stopPreview();
-            camera.closeCamera();
-            return false;
+            return true;
         }
 
         @Override

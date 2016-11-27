@@ -54,16 +54,24 @@ public class Camera21 extends Camera {
      */
     private CameraCaptureSession previewSession;
 
+    private HandlerThread cameraThread;
+
+    /**
+     * Camera's state
+     */
+    private volatile boolean opened = false;
+
     private CameraDevice.StateCallback mStateCallback = new CameraDevice.StateCallback() {
 
         @Override
         public void onOpened(CameraDevice camera) {
             cameraDevice = camera;
+            opened = true;
         }
 
         @Override
         public void onDisconnected(CameraDevice camera) {
-
+            closeCamera();
         }
 
         @Override
@@ -124,9 +132,7 @@ public class Camera21 extends Camera {
     private void updatePreview() {
         previewBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
 
-        HandlerThread thread = new HandlerThread("CameraPreview");
-        thread.start();
-        Handler backgroundHandler = new Handler(thread.getLooper());
+        final Handler backgroundHandler = new Handler(cameraThread.getLooper());
 
         try {
             previewSession.setRepeatingRequest(previewBuilder.build(), null, backgroundHandler);
@@ -138,7 +144,19 @@ public class Camera21 extends Camera {
 
     @Override
     public void stopPreview() {
-
+        try {
+            previewSession.stopRepeating();
+            previewSession.abortCaptures();
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
+        cameraThread.quitSafely();
+        try {
+            cameraThread.join();
+            cameraThread = null;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @SuppressWarnings("MissingPermission")
@@ -146,13 +164,16 @@ public class Camera21 extends Camera {
     public void openCamera(Activity activity) {
         CameraManager manager = (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
 
-        final HandlerThread thread = new HandlerThread("Camera opening handler");
-        thread.start();
-        final Handler handler = new Handler(thread.getLooper());
+        cameraThread = new HandlerThread("Camera thread");
+        cameraThread.start();
+        final Handler cameraHandler = new Handler(cameraThread.getLooper());
 
         try {
             String cameraId = getRearCamera(manager);
-            manager.openCamera(cameraId, mStateCallback, handler);
+            manager.openCamera(cameraId, mStateCallback, cameraHandler);
+            while (!opened){
+
+            }
             evaluateFOV();
         } catch (CameraAccessException e) {
             Log.e(TAG, "Error opening camera");
@@ -180,6 +201,7 @@ public class Camera21 extends Camera {
 
     @Override
     public void closeCamera() {
+        Log.e("Camera", "desconectado");
         if (null != cameraDevice){
             cameraDevice.close();
             cameraDevice = null;
