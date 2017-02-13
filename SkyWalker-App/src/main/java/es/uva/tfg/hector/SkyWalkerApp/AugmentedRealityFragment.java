@@ -28,7 +28,7 @@ public class AugmentedRealityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.augmented_reality_fragment, container, false);
+        View rootView = inflater.inflate(R.layout.augmented_reality_layout, container, false);
 
         cameraPreview = new CameraPreview((TextureView)rootView.findViewById(R.id.camera_texture), getActivity());
         overlayView = new OverlayView((TextureView)rootView.findViewById(R.id.overlay_texture), getActivity(), cameraPreview.getCamera());

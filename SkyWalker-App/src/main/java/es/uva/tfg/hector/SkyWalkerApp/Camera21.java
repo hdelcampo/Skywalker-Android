@@ -105,7 +105,7 @@ public class Camera21 extends Camera {
         }
 
         SurfaceTexture surfaceTexture = texture.getSurfaceTexture();
-        surfaceTexture.setDefaultBufferSize(1080, 1920);
+        surfaceTexture.setDefaultBufferSize(1920, 1080);
         Surface surface = new Surface(surfaceTexture);
         previewBuilder.addTarget(surface);
 

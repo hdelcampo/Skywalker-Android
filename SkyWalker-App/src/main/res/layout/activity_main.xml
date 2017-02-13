@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:keepScreenOn="true"
     android:layout_width="fill_parent"
@@ -7,83 +8,18 @@
     tools:context="es.uva.tfg.hector.SkyWalkerApp.MainActivity"
     android:id="@+id/container">
 
-    <FrameLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:id="@+id/cameraContainer">
-
-        <TextureView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/cameraView"
-            android:layout_alignParentTop="true" />
-
-        <TextureView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/overlayView"
-            android:background="@android:color/transparent" />
-    </FrameLayout>
-
-    <RelativeLayout
+    <fragment
+        class="es.uva.tfg.hector.SkyWalkerApp.AugmentedRealityFragment"
+        android:id="@+id/augmented_reality_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true">
+        tools:layout="@layout/augmented_reality_layout" />
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:id="@+id/linearLayout"
-            android:layout_gravity="left|center_vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="x = 300"
-                android:id="@+id/xRotation" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="y = 200"
-                android:id="@+id/yRotation"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="z = 100"
-                android:id="@+id/zRotation"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Timestamp"
-                android:id="@+id/compilationStamp" />
-        </LinearLayout>
-
-        <ImageButton
-            android:layout_height="50dp"
-            android:id="@+id/filterButton"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:background="@drawable/filter_button"
-            android:layout_width="50dp" />
-
-        <ImageButton
-            android:layout_height="50dp"
-            android:id="@+id/connectionButton"
-            android:background="@drawable/connect_button"
-            android:layout_width="50dp"
-            android:layout_below="@+id/filterButton"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
-
-    </RelativeLayout>
+    <fragment
+        class="es.uva.tfg.hector.SkyWalkerApp.AugmentedRealityControlsFragment"
+        android:id="@+id/augmented_reality_controls_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout="@layout/augmented_reality_controls_layout" />
 
 </RelativeLayout>

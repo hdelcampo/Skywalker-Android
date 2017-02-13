@@ -129,7 +129,7 @@ public class OverlayView implements Observer{
         return new ArrayList<>(points);
     }
 
-    public void display(ArrayList<PointOfInterest> toShow) {
+    public void display(List<PointOfInterest> toShow) {
         synchronized (points) {
             points.clear();
             points.addAll(toShow);
