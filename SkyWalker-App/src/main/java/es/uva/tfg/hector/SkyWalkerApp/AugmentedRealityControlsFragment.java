@@ -94,7 +94,7 @@ public class AugmentedRealityControlsFragment extends Fragment implements View.O
      * Shows an UI to start a new server connection.
      */
     private void newConnection () {
-        Intent dialog = new Intent(getContext(), ConnectionActivity.class);
+        Intent dialog = new Intent(getContext(), NewConnectionActivity.class);
         startActivity(dialog);
     }
 

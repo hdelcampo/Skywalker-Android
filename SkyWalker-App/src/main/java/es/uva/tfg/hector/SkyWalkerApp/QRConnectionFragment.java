@@ -8,14 +8,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Fragment to handle QR UI connections
+ * @author Hector Del Campo Pando
  */
 public class QRConnectionFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.connection_qr, container, false);
+        return inflater.inflate(R.layout.qr_connection_layout, container, false);
     }
 
 }

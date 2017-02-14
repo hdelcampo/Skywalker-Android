@@ -5,15 +5,16 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
 
 /**
- * Created by Hector Del Campo Pando on 18/10/2016.
+ * Activity to handle new connections requests
+ * @author RDNest
  */
-public class ConnectionActivity extends FragmentActivity {
+public class NewConnectionActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.connection_activity);
+        setContentView(R.layout.tabs_connection_layout);
         FragmentTabHost tabHost = (FragmentTabHost)findViewById(R.id.tabHost);
 
         tabHost.setup(this, getSupportFragmentManager(), android.R.id.tabcontent);
@@ -24,4 +25,5 @@ public class ConnectionActivity extends FragmentActivity {
         tabHost.addTab(tabHost.newTabSpec("Manual").setIndicator(getString(R.string.Manual)),
                 ManualConnectionFragment.class, null);
     }
+
 }

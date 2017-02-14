@@ -30,7 +30,7 @@
 
         <activity
             android:label="@string/connection_title"
-            android:name=".ConnectionActivity"
+            android:name=".NewConnectionActivity"
             android:theme="@style/ConnectionDialog"/>
         <meta-data
             android:name="io.fabric.ApiKey"
