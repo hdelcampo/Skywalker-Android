@@ -7,7 +7,8 @@ import java.io.IOException;
 import java.util.Observable;
 
 /**
- * Created by Hector on 12/9/16.
+ * API for camera, Android API Level independent
+ * @author Hector Del Campo Pando
  */
 public abstract class Camera extends Observable {
 
@@ -20,26 +21,16 @@ public abstract class Camera extends Observable {
             fovHeight;
 
     /**
-     * Singleton instance.
-     */
-    private static Camera instance;
-
-    /**
-     * Gets an instance of the {@link Camera} following singleton pattern.
+     * Creates a new instance of the {@link Camera} following singleton pattern.
      * @return the {@link Camera}'s instance.
      */
-    public static Camera getInstance(){
-        //TODO complete
+    public static Camera createInstance(){
 
-        if(null == instance){
-            if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
-                instance = new Camera21();
-            } else {
-                instance = new Camera1();
-            }
+        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
+            return new Camera21();
+        } else {
+            return new Camera1();
         }
-
-        return instance;
 
     }
 
@@ -59,10 +50,14 @@ public abstract class Camera extends Observable {
      */
     public abstract void stopPreview();
 
+    /**
+     * Opens the camera to start using it.
+     * @param activity which will use the camera.
+     */
     public abstract void openCamera(Activity activity);
 
     /**
-     * Closes the {@link Camera} and clears its reference.
+     * Closes the {@link Camera}.
      */
     public abstract void closeCamera();
 
@@ -74,8 +69,7 @@ public abstract class Camera extends Observable {
     /**
      * Changes camera's orientation to the actual device's one.
      */
-    protected abstract void setOrientation(int rotation, int width, int height);
-
+    protected abstract void transform(int rotation, int width, int height);
 
     /**
      * Retrieves camera current fov width.
@@ -93,10 +87,18 @@ public abstract class Camera extends Observable {
         return fovHeight;
     }
 
+    /**
+     * Setter for field of view width.
+     * @param width on degrees.
+     */
     public void setFOVWidth(float width){
         fovWidth = width;
     }
 
+    /**
+     * Setter for field of view height.
+     * @param height on degrees.
+     */
     public void setFOVHeight(float height){
         fovHeight = height;
     }

@@ -24,7 +24,8 @@ import android.view.TextureView;
 import java.util.Arrays;
 
 /**
- * Created by Hector Del Campo Pando on 13/07/2016.
+ * Camera API for Android API 21 or greater
+ * @author Hector Del Campo Pando
  */
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class Camera21 extends Camera {
@@ -61,6 +62,9 @@ public class Camera21 extends Camera {
      */
     private volatile boolean opened = false;
 
+    /**
+     * Camera's callback
+     */
     private CameraDevice.StateCallback mStateCallback = new CameraDevice.StateCallback() {
 
         @Override
@@ -72,6 +76,7 @@ public class Camera21 extends Camera {
         @Override
         public void onDisconnected(CameraDevice camera) {
             closeCamera();
+            opened = false;
         }
 
         @Override
@@ -159,7 +164,6 @@ public class Camera21 extends Camera {
         }
     }
 
-    @SuppressWarnings("MissingPermission")
     @Override
     public void openCamera(Activity activity) {
         CameraManager manager = (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
@@ -178,6 +182,7 @@ public class Camera21 extends Camera {
         } catch (CameraAccessException e) {
             Log.e(TAG, "Error opening camera");
         }
+
     }
 
     /**
@@ -201,7 +206,6 @@ public class Camera21 extends Camera {
 
     @Override
     public void closeCamera() {
-        Log.e("Camera", "desconectado");
         if (null != cameraDevice){
             cameraDevice.close();
             cameraDevice = null;
@@ -219,12 +223,13 @@ public class Camera21 extends Camera {
     }
 
     @Override
-    protected void setOrientation(int rotation, int width, int height) {
+    protected void transform(int rotation, int width, int height) {
         Matrix matrix = new Matrix();
         RectF textureRectF = new RectF(0, 0, width, height);
         RectF previewRectF = new RectF(0, 0, texture.getHeight(), texture.getWidth());
         float centerX = textureRectF.centerX();
         float centerY = textureRectF.centerY();
+
         if(rotation == Surface.ROTATION_90 || rotation == Surface.ROTATION_270) {
             previewRectF.offset(centerX - previewRectF.centerX(),
                     centerY - previewRectF.centerY());
@@ -233,7 +238,10 @@ public class Camera21 extends Camera {
                     (float)height / texture.getHeight());
             matrix.postScale(scale, scale, centerX, centerY);
             matrix.postRotate(90 * (rotation - 2), centerX, centerY);
+        } else if (Surface.ROTATION_180 == rotation) {
+            matrix.postRotate(180, centerX, centerY);
         }
+
         texture.setTransform(matrix);
 
     }

@@ -6,13 +6,12 @@ import android.util.Log;
 import android.view.TextureView;
 
 import java.io.IOException;
-import java.util.Observable;
-import java.util.Observer;
 
 /**
- * Created by Hector Del Campo Pando on 13/07/2016.
+ * Controls the camera preview
+ * @author Hector Del Campo Pando
  */
-public class CameraPreview implements Observer{
+public class CameraPreview {
 
     private final static String TAG = "Preview";
 
@@ -49,17 +48,22 @@ public class CameraPreview implements Observer{
                 Log.e(TAG, "Setting camera's preview surface failed");
             }
 
-            camera.startPreview();
 
-            camera.setOrientation(activity.getWindowManager().getDefaultDisplay().getRotation(),
+            camera.transform(activity.getWindowManager().getDefaultDisplay().getRotation(),
                     width,
                     height);
+
+            camera.startPreview();
 
         }
 
         @Override
         public void onSurfaceTextureSizeChanged(SurfaceTexture surface,
                                                 int width, int height) {
+
+            camera.transform(activity.getWindowManager().getDefaultDisplay().getRotation(),
+                    width,
+                    height);
 
         }
 
@@ -83,23 +87,9 @@ public class CameraPreview implements Observer{
     public CameraPreview(TextureView view, Activity activity){
         this.activity = activity;
         previewView = view;
-        camera = Camera.getInstance();
-        camera.addObserver(this);
+        camera = Camera.createInstance();
         previewView.setSurfaceTextureListener(surfaceTextureListener);
     }
-
-    @Override
-    public void update(Observable observable, Object o) {
-        switch (observable.getClass().getSimpleName()){
-            case "Camera21":
-                //startPreview();
-                break;
-            default:
-                Log.e(TAG, "unexpected update");
-                break;
-        }
-    }
-
 
     /**
      * Retrieves the used {@code Camera}.
