@@ -30,6 +30,7 @@ import java.util.Arrays;
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class Camera21 extends Camera {
 
+    public static final String BACKGROUND_THREAD = "CameraThread";
     /**
      * Selected camera
      */
@@ -55,7 +56,15 @@ public class Camera21 extends Camera {
      */
     private CameraCaptureSession previewSession;
 
-    private HandlerThread cameraThread;
+    /**
+     * Additional thread to run tasks without blocking UI.
+     */
+    private HandlerThread backgroundThread;
+
+    /**
+     * A {@code Handler} for running tasks in the background.
+     */
+    private Handler backgroundHandler;
 
     /**
      * Camera's state
@@ -70,6 +79,7 @@ public class Camera21 extends Camera {
         @Override
         public void onOpened(CameraDevice camera) {
             cameraDevice = camera;
+            evaluateFOV();
             opened = true;
         }
 
@@ -93,24 +103,23 @@ public class Camera21 extends Camera {
 
     @Override
     public void startPreview() {
-        if(null == texture){
-            Log.e(TAG, "surface not set");
-            return;
-        }
 
-        if(null == cameraDevice) {
+        if(null == texture || null == cameraDevice) {
             return;
         }
 
         try {
             previewBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
         } catch (CameraAccessException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
+
+
         SurfaceTexture surfaceTexture = texture.getSurfaceTexture();
-        surfaceTexture.setDefaultBufferSize(1920, 1080);
+        final int width = Math.max(texture.getWidth(), texture.getHeight());
+        final int height = Math.min(texture.getWidth(), texture.getHeight());
+        surfaceTexture.setDefaultBufferSize(width, height);
         Surface surface = new Surface(surfaceTexture);
         previewBuilder.addTarget(surface);
 
@@ -120,7 +129,7 @@ public class Camera21 extends Camera {
                 @Override
                 public void onConfigured(CameraCaptureSession session) {
                     previewSession = session;
-                    updatePreview();
+                    startUpdatingPreview();
                 }
 
                 @Override
@@ -129,58 +138,56 @@ public class Camera21 extends Camera {
                 }
             }, null);
         } catch (CameraAccessException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
     }
 
-    private void updatePreview() {
-        previewBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
+    /**
+     * Starts updating the preview.
+     */
+    private void startUpdatingPreview() {
 
-        final Handler backgroundHandler = new Handler(cameraThread.getLooper());
+        previewBuilder.set(CaptureRequest.CONTROL_AF_MODE, CameraMetadata.CONTROL_AF_MODE_CONTINUOUS_VIDEO);
 
         try {
             previewSession.setRepeatingRequest(previewBuilder.build(), null, backgroundHandler);
         } catch (CameraAccessException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
     }
 
     @Override
     public void stopPreview() {
+
+        if (previewSession == null) {
+            return;
+        }
+
         try {
             previewSession.stopRepeating();
             previewSession.abortCaptures();
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
-        cameraThread.quitSafely();
-        try {
-            cameraThread.join();
-            cameraThread = null;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
     }
 
     @Override
     public void openCamera(Activity activity) {
+
         CameraManager manager = (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
 
-        cameraThread = new HandlerThread("Camera thread");
-        cameraThread.start();
-        final Handler cameraHandler = new Handler(cameraThread.getLooper());
+        backgroundThread = new HandlerThread(BACKGROUND_THREAD);
+        backgroundThread.start();
+        backgroundHandler = new Handler(backgroundThread.getLooper());
 
         try {
             String cameraId = getRearCamera(manager);
-            manager.openCamera(cameraId, mStateCallback, cameraHandler);
-            while (!opened){
-
-            }
-            evaluateFOV();
+            manager.openCamera(cameraId, mStateCallback, backgroundHandler);
         } catch (CameraAccessException e) {
-            Log.e(TAG, "Error opening camera");
+            e.printStackTrace();
         }
 
     }
@@ -192,24 +199,42 @@ public class Camera21 extends Camera {
      * @throws CameraAccessException if there is an error within the camera.
      */
     private String getRearCamera(CameraManager manager) throws CameraAccessException {
+
         int orientation;
         for(final String id: manager.getCameraIdList()){
             cameraCharacteristics = manager.getCameraCharacteristics(id);
             orientation = cameraCharacteristics.get(CameraCharacteristics.LENS_FACING);
+
             if(CameraCharacteristics.LENS_FACING_BACK == orientation){
                 return id;
             }
         }
 
         return null;
+
     }
 
     @Override
     public void closeCamera() {
+
         if (null != cameraDevice){
             cameraDevice.close();
             cameraDevice = null;
         }
+
+        /**
+         * Stop threads
+         */
+        backgroundThread.quitSafely();
+
+        try {
+            backgroundThread.join();
+            backgroundThread = null;
+            backgroundHandler = null;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -224,6 +249,7 @@ public class Camera21 extends Camera {
 
     @Override
     protected void transform(int rotation, int width, int height) {
+
         Matrix matrix = new Matrix();
         RectF textureRectF = new RectF(0, 0, width, height);
         RectF previewRectF = new RectF(0, 0, texture.getHeight(), texture.getWidth());

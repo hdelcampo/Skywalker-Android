@@ -42,6 +42,7 @@ public class CameraPreview {
 
             camera.openCamera(activity);
 
+
             try {
                 camera.setView(previewView);
             } catch (IOException e) {
@@ -71,6 +72,7 @@ public class CameraPreview {
         public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
             //When preview is paused the camera device must be freed
             camera.stopPreview();
+            camera.closeCamera();
             return true;
         }
 
