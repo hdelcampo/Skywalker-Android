@@ -60,7 +60,7 @@ public class ManualConnectionFragment extends Fragment implements View.OnClickLi
      */
     private void startAR() {
 
-        if (getActivity() instanceof MainActivity) {
+        if (getActivity() instanceof EntryActivity) {
             Intent intent = new Intent(getContext(), AugmentedRealityActivity.class);
             startActivity(intent);
         }
