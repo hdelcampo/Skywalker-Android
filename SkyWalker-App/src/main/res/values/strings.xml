@@ -20,6 +20,8 @@
     <string name="optional">Optional</string>
     <string name="mandatory">Mandatory</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Connection handling -->
+    <string name="invalid_login_data">Username or password are invalid or empty.</string>
+    <string name="connection_in_progress">Connecting…</string>
+    <string name="invalid_url">Address is invalid.</string>
 </resources>

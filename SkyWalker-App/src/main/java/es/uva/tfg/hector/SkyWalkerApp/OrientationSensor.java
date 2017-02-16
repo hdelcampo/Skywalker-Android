@@ -11,9 +11,10 @@ import android.view.Display;
 import java.util.Observable;
 
 /**
- * Created by Hector Del Campo Pando on 06/07/2016.
- */
-public class OrientationSensor extends Observable{
+ * Orientation sensors handler
+ * @author Hector Del Campo Pando
+ **/
+public class OrientationSensor extends Observable {
 
     private static final String TAG = "Orientation sensor";
 
@@ -43,9 +44,6 @@ public class OrientationSensor extends Observable{
     private float azimuth;
             float pitch;
             float roll;
-
-    //TODO observer pattern
-    private MainActivity activity;
 
     /**
      * Listener for the sensors
@@ -141,7 +139,6 @@ public class OrientationSensor extends Observable{
         this.display = display;
         manager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
         sensorRt = manager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
-        this.activity = (MainActivity) activity;
     }
 
     /**
