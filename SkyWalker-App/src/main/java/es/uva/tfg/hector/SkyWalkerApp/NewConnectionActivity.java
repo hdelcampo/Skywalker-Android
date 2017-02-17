@@ -5,8 +5,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
 
 /**
- * Activity to handle new connections requests
- * @author RDNest
+ * Activity to handle new connections requests.
+ * @author Hector Del Campo Pando
  */
 public class NewConnectionActivity extends FragmentActivity {
 

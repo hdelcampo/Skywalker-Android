@@ -6,11 +6,15 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,16 +27,62 @@ import java.io.UnsupportedEncodingException;
 
 public class ServerHandler {
 
+    /**
+     * Enum for server errors.
+     */
     public enum Errors {
-        INVALID_USERNAME_OR_PASSWORD, UNKNOWN
+        INVALID_USERNAME_OR_PASSWORD, TIME_OUT, UNKNOWN
     }
 
-    public static void getToken (final Context context, final OnServerResponse onResponseListener,
-                                        String url, final String username, final String password) {
+    /**
+     * Singleton instance.
+     */
+    private static ServerHandler instance;
 
-        url = url.concat("/api/authentication");
+    /**
+     * Requests queue.
+     */
+    private final RequestQueue requestQueue;
 
-        RequestQueue queue = Volley.newRequestQueue(context);
+    /**
+     * Connection token.
+     */
+    private Token token;
+
+    /**
+     * Retrieves the singleton instance.
+     * @param context of the App to make petitions.
+     * @return the singleton instance.
+     */
+    public static ServerHandler getInstance (Context context) {
+
+        if (instance == null) {
+            instance = new ServerHandler(context);
+        }
+
+        return instance;
+
+    }
+
+    /**
+     * Creates a new instance of the requests queue.
+     * @param context of the App.
+     */
+    private ServerHandler (Context context) {
+        requestQueue = Volley.newRequestQueue(context);
+    }
+
+    /**
+     * Retrieves a new connection, generating a new {@code Token}.
+     * @param responseListener that will handle responses.
+     * @param url of the server.
+     * @param username of the user.
+     * @param password of the user.
+     */
+    public void getToken (final OnServerResponse <String> responseListener,
+                                        final String url, final String username, final String password) {
+
+        final String apiURL = url.concat("/api/authentication");
 
         JSONObject params = new JSONObject();
         try {
@@ -42,16 +92,17 @@ public class ServerHandler {
             e.printStackTrace();
         }
 
-        JsonRequest<String> request = new JsonRequest<String>(Request.Method.POST, url, params.toString(), new Response.Listener<String>() {
+        JsonRequest<String> request = new JsonRequest<String>(Request.Method.POST, apiURL, params.toString(), new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                onResponseListener.onSuccess(response.toString());
+                token = new Token(url, response);
+                responseListener.onSuccess(response);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Errors errorEnum = getServerError(error);
-                onResponseListener.onError(errorEnum);
+                responseListener.onError(errorEnum);
             }
         }) {
             @Override
@@ -66,7 +117,57 @@ public class ServerHandler {
             }
         };
 
-        queue.add(request);
+        requestQueue.add(request);
+
+    }
+
+    /**
+     * Retrieves all avaliable tags for a given token.
+     * @param responseListener that will handle responses.
+     */
+    public void getAvaliableTags (final OnServerResponse <String> responseListener) {
+
+        String url = token.getURL().concat("/api/yoqstioxd");
+
+        JsonRequest<JSONArray> request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                //TODO
+                responseListener.onSuccess(null);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+        requestQueue.add(request);
+
+    }
+
+    /**
+     * Retrieves the last known position for a given tag.
+     * @param responseListener that will handle responses.
+     * @param tag to ask for.
+     */
+    public void getLastPosition (OnServerResponse <String> responseListener, String tag) {
+
+        String url = token.getURL().concat("/api/yoqstioxd");
+
+        JsonRequest<JSONObject> request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+        requestQueue.add(request);
 
     }
 
@@ -79,7 +180,9 @@ public class ServerHandler {
 
         Errors errorEnum;
 
-        if (error == null || error.networkResponse == null) {
+        if (error.getClass().equals(TimeoutError.class)) {
+            errorEnum = Errors.TIME_OUT;
+        } else if (error == null || error.networkResponse == null) {
             errorEnum = Errors.UNKNOWN;
         } else {
             switch (error.networkResponse.statusCode) {
@@ -91,6 +194,7 @@ public class ServerHandler {
                     break;
             }
         }
+
         return errorEnum;
 
     }
@@ -100,13 +204,13 @@ public class ServerHandler {
      * Interface that must be implemented by caller in order to recieve responses
      * @author Hector Del Campo Pando
      */
-    public interface OnServerResponse {
+    public interface OnServerResponse <T> {
 
         /**
          * Callback for success petition
          * @param response of the server
          */
-        void onSuccess (String response);
+        void onSuccess (T response);
 
         /**
          * Callback for error

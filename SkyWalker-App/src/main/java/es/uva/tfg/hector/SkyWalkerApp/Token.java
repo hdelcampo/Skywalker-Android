@@ -1,42 +1,40 @@
 package es.uva.tfg.hector.SkyWalkerApp;
 
 /**
- * Connection token as singleton
+ * Connection token.
  * @author Hector Del Campo Pando
  */
 public class Token {
 
     /**
-     * Token given by server
+     * Server URL.
      */
-    private String token;
+    private final String URL;
 
     /**
-     * Singleton instance
+     * Token given by server.
      */
-    private static Token ourInstance = new Token();
+    private final String token;
 
-    public static Token getInstance() {
-        return ourInstance;
-    }
-
-    private Token() {
+    public Token(String URL, String token) {
+        this.URL = URL;
+        this.token = token;
     }
 
     /**
-     * Returns the token
-     * @return the token
+     * Returns the token.
+     * @return the token.
      */
     public String getToken () {
         return token;
     }
 
     /**
-     * Sets the connection token
-     * @param token the new token
+     * Returns the server's URL.
+     * @return the URL.
      */
-    public void setToken (String token) {
-        this.token = token;
+    public String getURL() {
+        return URL;
     }
 
 }

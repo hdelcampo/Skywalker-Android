@@ -36,14 +36,14 @@ public class ManualConnectionFragment extends Fragment implements View.OnClickLi
         switch (view.getId()) {
             case R.id.accept_button:
 
-                final String uri = ((EditText) getView().findViewById(R.id.addr_field)).getText().toString();
+                final String url = ((EditText) getView().findViewById(R.id.addr_field)).getText().toString();
                 final String username = ((EditText) getView().findViewById(R.id.username_field)).getText().toString();
                 final String password = ((EditText) getView().findViewById(R.id.password_field)).getText().toString();
 
-                if (uri.equals("demo")) {
+                if (url.equals("demo")) {
                     startAR();
                 } else {
-                    newConnection (uri, username, password);
+                    newConnection (url, username, password);
                 }
 
                 break;
@@ -71,14 +71,14 @@ public class ManualConnectionFragment extends Fragment implements View.OnClickLi
 
     /**
      * Establishes a new connection to the given server.
-     * @param uri of the server, must be a valid URI,
+     * @param url of the server, must be a valid URL,
      *            otherwise function will return and a message will be shown to the user.
      * @param login of the client
      * @param password of the client
      */
-    private void newConnection(final String uri, final String login, final String password) {
+    private void newConnection(final String url, final String login, final String password) {
 
-        if (!URLUtil.isValidUrl(uri)) {
+        if (!URLUtil.isValidUrl(url)) {
             Toast.makeText(getContext(), getString(R.string.invalid_url), Toast.LENGTH_LONG).show();
             return;
         }
@@ -86,12 +86,12 @@ public class ManualConnectionFragment extends Fragment implements View.OnClickLi
         final ProgressDialog dialog =
                 ProgressDialog.show(getContext(), null, getString(R.string.connection_in_progress), true, false);
 
-        ServerHandler.getToken(getContext(), new ServerHandler.OnServerResponse() {
+        ServerHandler.getInstance(getActivity().getApplicationContext())
+                .getToken(new ServerHandler.OnServerResponse<String>() {
 
             @Override
             public void onSuccess(String response) {
                 dialog.dismiss();
-                Token.getInstance().setToken(response);
                 startAR();
             }
 
@@ -100,7 +100,7 @@ public class ManualConnectionFragment extends Fragment implements View.OnClickLi
                 dialog.dismiss();
                 Toast.makeText(getContext(), getString(R.string.invalid_login_data), Toast.LENGTH_LONG).show();
             }
-        }, uri, login, password);
+        }, url, login, password);
 
     }
 }
