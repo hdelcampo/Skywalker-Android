@@ -24,4 +24,5 @@
     <string name="invalid_login_data">Username or password are invalid or empty.</string>
     <string name="connection_in_progress">Connecting…</string>
     <string name="invalid_url">Address is invalid.</string>
+    <string name="server_bad_connection">Couldn"'"t retrieve server info.</string>
 </resources>

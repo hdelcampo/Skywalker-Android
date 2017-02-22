@@ -3,13 +3,19 @@ package es.uva.tfg.hector.SkyWalkerApp;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Hector Del Campo Pando on 14/07/2016.
+ * Points to be shown on the augmented reality overlay.
+ * This class also handles the served retrieved points.
+ * @author Héctor Del Campo Pando
  */
 public class PointOfInterest implements Parcelable {
+
+    /**
+     * The list of server retrieved points.
+     */
+    private static List<PointOfInterest> points;
 
     /**
      * Coordinates
@@ -19,34 +25,40 @@ public class PointOfInterest implements Parcelable {
          z;
 
     /**
+     * Id of the point
+     */
+    private final int id;
+
+    /**
      * Name of the point.
      */
     private String name;
 
+    /**
+     * Sets the points the App has access to.
+     * @param newPoints to set as accessible.
+     */
+    public static void setPoints(List<PointOfInterest> newPoints) {
+        points = newPoints;
+    }
 
     /**
      * Retrieves a list of all points
      * @return the list of points
      */
     public static List<PointOfInterest> getPoints() {
-        //TODO stub
-        List<PointOfInterest> points = new ArrayList<>();
-        points.add(new PointOfInterest("Wally", 0, 0, 0));    //TODO demo
-        points.add(new PointOfInterest("Robin", 135, 0, 45));
         return points;
     }
 
     /**
-     * Creates a new point of interest in a 3 axes plane.
-     * @param x
-     * @param y
-     * @param z
+     * Creates a new point of interest with standard coordinates (0, 0, 0).
+     * @param id of the point of interest, server side.
+     * @param name of the point of interest.
      */
-    public PointOfInterest(String name, int x, int y, int z){
+    public PointOfInterest (int id, String name) {
+        this.id = id;
         this.name = name;
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        x = y = z = 0;
     }
 
     public int getX() {
@@ -106,6 +118,7 @@ public class PointOfInterest implements Parcelable {
     };
 
     private PointOfInterest(Parcel in) {
+        id = in.readInt();
         name = in.readString();
         x = in.readInt();
         y = in.readInt();
@@ -119,6 +132,7 @@ public class PointOfInterest implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
         dest.writeString(name);
         dest.writeInt(x);
         dest.writeInt(y);

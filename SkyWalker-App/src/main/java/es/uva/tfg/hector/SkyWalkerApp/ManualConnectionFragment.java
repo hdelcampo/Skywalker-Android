@@ -12,6 +12,8 @@ import android.webkit.URLUtil;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.List;
+
 /**
  * Fragment to handle Manual UI connections.
  * @author Hector Del Campo Pando
@@ -87,12 +89,11 @@ public class ManualConnectionFragment extends Fragment implements View.OnClickLi
                 ProgressDialog.show(getContext(), null, getString(R.string.connection_in_progress), true, false);
 
         ServerHandler.getInstance(getActivity().getApplicationContext())
-                .getToken(new ServerHandler.OnServerResponse<String>() {
+                .getToken(new ServerHandler.OnServerResponse<Token>() {
 
             @Override
-            public void onSuccess(String response) {
-                dialog.dismiss();
-                startAR();
+            public void onSuccess(Token response) {
+                retrieveTags(dialog);
             }
 
             @Override
@@ -100,7 +101,32 @@ public class ManualConnectionFragment extends Fragment implements View.OnClickLi
                 dialog.dismiss();
                 Toast.makeText(getContext(), getString(R.string.invalid_login_data), Toast.LENGTH_LONG).show();
             }
+
         }, url, login, password);
+
+    }
+
+    /**
+     * Retrieves the tags avaliable for the connection token.
+     * @param dialog to handle.
+     */
+    private void retrieveTags (final ProgressDialog dialog) {
+
+        ServerHandler.getInstance(getActivity().getApplicationContext()).
+                getAvaliableTags(new ServerHandler.OnServerResponse<List<PointOfInterest>>() {
+            @Override
+            public void onSuccess(List<PointOfInterest> response) {
+                PointOfInterest.setPoints(response);
+                dialog.dismiss();
+                startAR();
+            }
+
+            @Override
+            public void onError(ServerHandler.Errors error) {
+                dialog.dismiss();
+                Toast.makeText(getContext(), getString(R.string.server_bad_connection), Toast.LENGTH_LONG).show();
+            }
+        });
 
     }
 }

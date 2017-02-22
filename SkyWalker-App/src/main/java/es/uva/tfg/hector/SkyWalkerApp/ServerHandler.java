@@ -2,6 +2,7 @@ package es.uva.tfg.hector.SkyWalkerApp;
 
 import android.content.Context;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -19,9 +20,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
- * Handler for server petitions
+ * Handler for server petitions, as there can only be one connection per time,
+ * this singleton also manages the connection token.
  * @author Hector Del Campo Pando
  */
 
@@ -31,7 +37,7 @@ public class ServerHandler {
      * Enum for server errors.
      */
     public enum Errors {
-        INVALID_USERNAME_OR_PASSWORD, TIME_OUT, UNKNOWN
+        INVALID_USERNAME_OR_PASSWORD, INVALID_JSON, TIME_OUT, UNKNOWN
     }
 
     /**
@@ -79,7 +85,7 @@ public class ServerHandler {
      * @param username of the user.
      * @param password of the user.
      */
-    public void getToken (final OnServerResponse <String> responseListener,
+    public void getToken (final OnServerResponse <Token> responseListener,
                                         final String url, final String username, final String password) {
 
         final String apiURL = url.concat("/api/authentication");
@@ -96,7 +102,7 @@ public class ServerHandler {
             @Override
             public void onResponse(String response) {
                 token = new Token(url, response);
-                responseListener.onSuccess(response);
+                responseListener.onSuccess(token);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -125,22 +131,49 @@ public class ServerHandler {
      * Retrieves all avaliable tags for a given token.
      * @param responseListener that will handle responses.
      */
-    public void getAvaliableTags (final OnServerResponse <String> responseListener) {
+    public void getAvaliableTags (final OnServerResponse <List<PointOfInterest>> responseListener) {
 
-        String url = token.getURL().concat("/api/yoqstioxd");
+        if (null == token) {
+            throw new IllegalStateException("Cannot retrieve tags without a established connection");
+        }
+
+        //TODO center real
+        String url = token.getURL().concat("/api/centers/0/tags");
 
         JsonRequest<JSONArray> request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
-                //TODO
-                responseListener.onSuccess(null);
+                List<PointOfInterest> points = new ArrayList<>(response.length());
+                try {
+
+                    for (int i = 0; i < response.length(); i++) {
+                        JSONObject json = response.getJSONObject(i);
+                        PointOfInterest point =
+                                new PointOfInterest(json.getInt("id"),
+                                                json.getString("name"));
+                        points.add(point);
+                    }
+                    responseListener.onSuccess(points);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    responseListener.onError(Errors.INVALID_JSON);
+                }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                Errors errorNum = getServerError(error);
+                responseListener.onError(errorNum);
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token.getToken());
+                return headers;
+            }
+        };
 
         requestQueue.add(request);
 
