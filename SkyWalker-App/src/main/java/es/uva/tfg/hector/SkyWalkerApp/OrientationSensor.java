@@ -160,9 +160,7 @@ public class OrientationSensor extends Observable {
      * Stops registering sensors changes.
      */
     public void unregisterEvents(){
-        if (null != manager){
-            manager.unregisterListener(sEvent);
-        }
+        manager.unregisterListener(sEvent);
     }
 
     /**

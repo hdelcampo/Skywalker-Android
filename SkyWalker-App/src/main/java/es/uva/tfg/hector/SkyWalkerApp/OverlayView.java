@@ -81,7 +81,6 @@ public class OverlayView implements Observer{
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            //When preview is paused the camera device must be freed
             orientationSensor.unregisterEvents();
             return true;
         }
@@ -95,18 +94,36 @@ public class OverlayView implements Observer{
     public OverlayView(TextureView view, Activity activity, Camera camera){
         this.activity = activity;
         this.view = view;
+        this.camera = camera;
+
         view.setOpaque(false);
 
         orientationSensor = OrientationSensor.createSensor(activity,
                                                     activity.getWindowManager().getDefaultDisplay());
         orientationSensor.addObserver(this);
 
-        this.camera = camera;
-
         points = PointOfInterest.getPoints();
 
         view.setSurfaceTextureListener(textureListener);
 
+    }
+
+    /**
+     * Forces a texture available call.
+     */
+    public void start () {
+        if (view.isAvailable()) {
+            textureListener.onSurfaceTextureAvailable(view.getSurfaceTexture(), view.getWidth(), view.getHeight());
+        }
+    }
+
+    /**
+     * Forces a texture destroyed call.
+     */
+    public void stop () {
+        if (view.isAvailable()) {
+            textureListener.onSurfaceTextureDestroyed(view.getSurfaceTexture());
+        }
     }
 
     public void updateDegrees(){
@@ -208,6 +225,7 @@ public class OverlayView implements Observer{
                     //TODO
                 }
             }
+
         }
 
         /**

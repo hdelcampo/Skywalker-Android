@@ -83,19 +83,21 @@ public class AugmentedRealityFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
 
         if (connectionThread.isInterrupted()) {
             connectionThread.start();
         }
 
+        overlayView.start();
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onStop() {
+        super.onStop();
         connectionThread.interrupt();
+        overlayView.stop();
     }
 
     /**
