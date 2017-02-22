@@ -43,6 +43,7 @@ public class ManualConnectionFragment extends Fragment implements View.OnClickLi
                 final String password = ((EditText) getView().findViewById(R.id.password_field)).getText().toString();
 
                 if (url.equals("demo")) {
+                    PointOfInterest.setPoints(PointOfInterest.getDemoPoints());
                     startAR();
                 } else {
                     newConnection (url, username, password);

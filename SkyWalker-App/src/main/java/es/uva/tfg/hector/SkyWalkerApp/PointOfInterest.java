@@ -36,6 +36,19 @@ public class PointOfInterest implements Parcelable {
     private String name;
 
     /**
+     * Retrieves a list of points for demo purposes.
+     * @return the list of demo points.
+     */
+    public static List<PointOfInterest> getDemoPoints () {
+        List<PointOfInterest> points = new ArrayList<>();
+        points.add(new PointOfInterest(0, "Wally"));
+        points.add(new PointOfInterest(1, "Robin"));
+        points.get(1).setX(135);
+        points.get(1).setZ(45);
+        return points;
+    }
+
+    /**
      * Sets the points the App has access to,
      * creating a new ArrayList and cloning all of its contents.
      * @param newPoints to set as accessible.
@@ -45,7 +58,7 @@ public class PointOfInterest implements Parcelable {
         points = new ArrayList<>();
 
         for (PointOfInterest point : newPoints) {
-            points.add(new PointOfInterest(point.getId(), point.getName()));
+            points.add(point.copy());
         }
 
     }
@@ -60,7 +73,7 @@ public class PointOfInterest implements Parcelable {
         List<PointOfInterest> returnPoints = new ArrayList<>();
 
         for (PointOfInterest point : points) {
-            returnPoints.add(new PointOfInterest(point.getId(), point.getName()));
+            returnPoints.add(point.copy());
         }
 
         return returnPoints;
@@ -168,4 +181,11 @@ public class PointOfInterest implements Parcelable {
         dest.writeInt(z);
     }
 
+    protected PointOfInterest copy() {
+        PointOfInterest newPoint = new PointOfInterest(this.getId(), this.getName());
+        newPoint.setX(this.getX());
+        newPoint.setY(this.getY());
+        newPoint.setZ(this.getZ());
+        return newPoint;
+    }
 }
