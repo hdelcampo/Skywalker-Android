@@ -23,6 +23,7 @@ public class FilterActivity extends Activity {
      */
     public static final String USED_POINTS_EXTRA = "usedPoints";
     public static final String ALL_POINTS_EXTRA = "allPoints";
+    public static final String POINTS_TO_SHOW = "pointsToShow";
 
     /**
      * List of items that were being already used, and list of all items to represent.
@@ -92,7 +93,7 @@ public class FilterActivity extends Activity {
      */
     public void accept(View view) {
         Intent returnIntent = new Intent();
-        returnIntent.putParcelableArrayListExtra("selected", (ArrayList<PointOfInterest>) getSelectedPoints());
+        returnIntent.putParcelableArrayListExtra(POINTS_TO_SHOW, (ArrayList<PointOfInterest>) getSelectedPoints());
         setResult(RESULT_OK, returnIntent);
         finish();
     }

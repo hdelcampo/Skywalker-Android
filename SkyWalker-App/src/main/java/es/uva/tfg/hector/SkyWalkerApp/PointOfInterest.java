@@ -3,6 +3,7 @@ package es.uva.tfg.hector.SkyWalkerApp;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,19 +36,35 @@ public class PointOfInterest implements Parcelable {
     private String name;
 
     /**
-     * Sets the points the App has access to.
+     * Sets the points the App has access to,
+     * creating a new ArrayList and cloning all of its contents.
      * @param newPoints to set as accessible.
      */
     public static void setPoints(List<PointOfInterest> newPoints) {
-        points = newPoints;
+
+        points = new ArrayList<>();
+
+        for (PointOfInterest point : newPoints) {
+            points.add(new PointOfInterest(point.getId(), point.getName()));
+        }
+
     }
 
     /**
-     * Retrieves a list of all points
+     * Retrieves a new list of all points,
+     * the retrieved list is modification safe.
      * @return the list of points
      */
     public static List<PointOfInterest> getPoints() {
-        return points;
+
+        List<PointOfInterest> returnPoints = new ArrayList<>();
+
+        for (PointOfInterest point : points) {
+            returnPoints.add(new PointOfInterest(point.getId(), point.getName()));
+        }
+
+        return returnPoints;
+
     }
 
     /**
@@ -85,19 +102,31 @@ public class PointOfInterest implements Parcelable {
         this.z = z;
     }
 
+    /**
+     * Retrieves the ID for the point.
+     * @return the ID.
+     */
+    public int getId() {
+        return id;
+    }
 
-    public String getID() {
+    /**
+     * Retrieves the name for the point.
+     * @return the name.
+     */
+    public String getName() {
         return name;
     }
 
     @Override
     public boolean equals(Object o) {
+
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
         PointOfInterest that = (PointOfInterest) o;
 
-        return name.equals(that.name);
+        return id == that.getId();
 
     }
 

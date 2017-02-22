@@ -259,7 +259,7 @@ public class OverlayView implements Observer{
             }
 
             drawIcon(canvas, x, y, OUT_OF_SIGHT_ICON, angle, OUT_OF_SIGHT_ICON_SCALE);
-            drawText(canvas, new String[]{point.getID()}, x, y);
+            drawText(canvas, new String[]{point.getName()}, x, y);
 
         }
 
@@ -322,7 +322,7 @@ public class OverlayView implements Observer{
 
             drawIcon(canvas, x, y, INSIGHT_ICON, 0, IN_SIGHT_ICON_SCALE);
 
-            drawText(canvas, new String[]{point.getID(), "50"}, x + IN_SIGHT_ICON_SCALE*75, y + IN_SIGHT_ICON_SCALE*75);
+            drawText(canvas, new String[]{point.getName(), "50"}, x + IN_SIGHT_ICON_SCALE*75, y + IN_SIGHT_ICON_SCALE*75);
         }
 
         /**

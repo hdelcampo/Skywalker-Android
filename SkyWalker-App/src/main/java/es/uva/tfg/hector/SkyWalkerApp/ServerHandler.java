@@ -184,21 +184,41 @@ public class ServerHandler {
      * @param responseListener that will handle responses.
      * @param tag to ask for.
      */
-    public void getLastPosition (OnServerResponse <String> responseListener, String tag) {
+    public void getLastPosition (final OnServerResponse <PointOfInterest> responseListener, final PointOfInterest tag) {
 
-        String url = token.getURL().concat("/api/yoqstioxd");
+        if (null == token) {
+            throw new IllegalStateException("Cannot retrieve tags without a established connection");
+        }
+
+        String url = token.getURL().concat("/api/centers/0/tags/" + tag.getId() + "/position");
 
         JsonRequest<JSONObject> request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-
+                try {
+                    tag.setX(response.getInt("x"));
+                    tag.setY(response.getInt("y"));
+                    tag.setZ(response.getInt("z"));
+                    responseListener.onSuccess(tag);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    responseListener.onError(Errors.INVALID_JSON);
+                }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                Errors errorNum = getServerError(error);
+                responseListener.onError(errorNum);
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token.getToken());
+                return headers;
+            }
+        };
 
         requestQueue.add(request);
 

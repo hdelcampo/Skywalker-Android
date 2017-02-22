@@ -26,7 +26,7 @@ public class AugmentedRealityControlsFragment extends Fragment implements View.O
     /**
      * Fragment to control interface
      */
-    private AugmentedRealityControls controls;
+    private AugmentedRealityActivity controls;
 
     public AugmentedRealityControlsFragment() {
         // Required empty public constructor
@@ -45,13 +45,15 @@ public class AugmentedRealityControlsFragment extends Fragment implements View.O
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         if (getActivity().RESULT_OK == resultCode) {
             if (FILTER_POINTS == requestCode) {
-                List<PointOfInterest> selecteds = data.getParcelableArrayListExtra("selected");
+                List<PointOfInterest> selecteds =
+                        data.getParcelableArrayListExtra(FilterActivity.POINTS_TO_SHOW);
                 controls.setActivePoints(selecteds);
             }
         }
-        super.onActivityResult(requestCode, resultCode, data);
+
     }
 
     @Override
@@ -71,7 +73,7 @@ public class AugmentedRealityControlsFragment extends Fragment implements View.O
         super.onAttach(context);
 
         if (context instanceof AugmentedRealityControls) {
-            controls = (AugmentedRealityControls) context;
+            controls = (AugmentedRealityActivity) context;
         }
     }
 
