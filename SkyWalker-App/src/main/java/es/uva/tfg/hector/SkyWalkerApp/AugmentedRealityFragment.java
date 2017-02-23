@@ -90,6 +90,7 @@ public class AugmentedRealityFragment extends Fragment {
             connectionThread.start();
         }
 
+        cameraPreview.start();
         overlayView.start();
     }
 
@@ -97,6 +98,7 @@ public class AugmentedRealityFragment extends Fragment {
     public void onStop() {
         super.onStop();
         connectionThread.interrupt();
+        cameraPreview.stop();
         overlayView.stop();
     }
 

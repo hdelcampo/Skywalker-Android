@@ -61,8 +61,21 @@ public class OverlayView implements Observer{
      * Listener for the given {@link TextureView}.
      */
     private TextureView.SurfaceTextureListener textureListener = new TextureView.SurfaceTextureListener() {
+
+        /**
+         * Indicates whether surface was already destroyed or not.
+         */
+        private volatile boolean destroyed = true;
+
         @Override
         public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int i, int i1) {
+
+            if (!destroyed) {
+                return;
+            }
+
+            destroyed = false;
+
             orientationSensor.registerEvents();
             thread = new PainterThread();
             thread.start();
@@ -75,6 +88,13 @@ public class OverlayView implements Observer{
 
         @Override
         public boolean onSurfaceTextureDestroyed(SurfaceTexture surfaceTexture) {
+
+            if (destroyed) {
+                return true;
+            }
+
+            destroyed = true;
+
             thread.interrupt();
             try {
                 thread.join();
@@ -89,6 +109,7 @@ public class OverlayView implements Observer{
         public void onSurfaceTextureUpdated(SurfaceTexture surfaceTexture) {
 
         }
+
     };
 
     public OverlayView(TextureView view, Activity activity, Camera camera){

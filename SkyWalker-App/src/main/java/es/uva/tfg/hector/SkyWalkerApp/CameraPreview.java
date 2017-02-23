@@ -35,13 +35,23 @@ public class CameraPreview {
      */
     private TextureView.SurfaceTextureListener surfaceTextureListener = new TextureView.SurfaceTextureListener(){
 
+        /**
+         * Indicates whether the surface was already destroyed or not.
+         */
+        private volatile boolean destroyed = true;
+
         @Override
         public void onSurfaceTextureAvailable(SurfaceTexture surface,
                                               int width,
                                               int height) {
 
-            camera.openCamera(activity);
+            if (!destroyed) {
+                return;
+            }
 
+            destroyed = false;
+
+            camera.openCamera(activity);
 
             try {
                 camera.setView(previewView);
@@ -70,7 +80,11 @@ public class CameraPreview {
 
         @Override
         public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+            if (destroyed) {
+                return true;
+            }
             //When preview is paused the camera device must be freed
+            destroyed = true;
             camera.stopPreview();
             camera.closeCamera();
             return true;
@@ -91,6 +105,18 @@ public class CameraPreview {
         previewView = view;
         camera = Camera.createInstance();
         previewView.setSurfaceTextureListener(surfaceTextureListener);
+    }
+
+    public void stop () {
+        if (previewView.isAvailable()) {
+            surfaceTextureListener.onSurfaceTextureDestroyed(previewView.getSurfaceTexture());
+        }
+    }
+
+    public void start () {
+        if (previewView.isAvailable()) {
+            surfaceTextureListener.onSurfaceTextureAvailable(previewView.getSurfaceTexture(), previewView.getWidth(), previewView.getHeight());
+        }
     }
 
     /**
