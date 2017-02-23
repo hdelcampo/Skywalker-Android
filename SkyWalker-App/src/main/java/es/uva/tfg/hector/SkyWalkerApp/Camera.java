@@ -26,7 +26,7 @@ public abstract class Camera extends Observable {
      */
     public static Camera createInstance(){
 
-        if (false) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             return new Camera21();
         } else {
             return new Camera1();
