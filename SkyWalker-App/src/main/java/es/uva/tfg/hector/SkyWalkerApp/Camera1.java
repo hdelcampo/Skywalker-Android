@@ -68,7 +68,10 @@ public class Camera1 extends es.uva.tfg.hector.SkyWalkerApp.Camera {
 
         // Sets preview size
         Camera.Parameters parameters = camera.getParameters();
-        Camera.Size size = getOptimalPreviewSize(parameters.getSupportedPreviewSizes(), width, height);
+        final int vheight = Math.max(width, height);
+        final int vwidth = Math.min(width, height);
+        Camera.Size size = getOptimalPreviewSize(parameters.getSupportedPreviewSizes(), vwidth, vheight);
+
         parameters.setPreviewSize(size.width, size.height);
         camera.setParameters(parameters);
 
