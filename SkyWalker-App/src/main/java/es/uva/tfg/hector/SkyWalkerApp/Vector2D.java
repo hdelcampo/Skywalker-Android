@@ -50,11 +50,19 @@ public class Vector2D implements Vector<Vector2D> {
         return (x*v.getX()) + (y*v.getY());
     }
 
+    /**
+     * {@inheritDoc}
+     * @param v other vector.
+     * @return the clockwise angle.
+     */
     @Override
     public double angle(Vector2D v) {
         final double product = dotProduct(v);
-        final double angle = Math.acos(product/(module()*v.module()));
-        return Math.toDegrees(angle);
+        final double cos = product/(module()*v.module());
+        final double det = x*v.getY() - y*v.getX();
+        final double sin =  det/(module()*v.module());
+        final double angle = getAngle(cos, sin);
+        return 0 == angle ? angle : 360 - getAngle(cos, sin);
     }
 
     @Override

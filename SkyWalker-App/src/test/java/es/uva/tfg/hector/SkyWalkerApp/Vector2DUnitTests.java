@@ -68,6 +68,13 @@ public class Vector2DUnitTests {
         assertEquals(180, vector.angle(vector2), 0);
     }
 
+    @Test
+    public void angle270() {
+        final Vector2D vector = new Vector2D(1, 0);
+        final Vector2D vector2 = new Vector2D(0, 1);
+        assertEquals(270, vector.angle(vector2), 0);
+    }
+
     /*
      * Module method
      */
