@@ -1,22 +1,18 @@
 package es.uva.tfg.hector.SkyWalkerApp;
 
-import android.app.Activity;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.view.Display;
 
 import java.util.Observable;
 
 /**
- * Orientation sensors handler
+ * Orientation sensors manager
  * @author Hector Del Campo Pando
  **/
 public class OrientationSensor extends Observable {
-
-    private static final String TAG = "Orientation sensor";
 
     /**
      * Sensor data sampling refresh delay in microseconds
@@ -29,21 +25,14 @@ public class OrientationSensor extends Observable {
     private SensorManager manager;
 
     /**
-     *
-     */
-    private Display display;
-
-    /**
      * Orientation's sensors.
      */
-    private Sensor sensorRt;    //Rotation vector
+    private Sensor sensorRt;
 
     /**
-     * Orientation's degrees.
+     * Device's 3D orientation vector.
      */
-    private float azimuth;
-            float pitch;
-            float roll;
+    private Vector3D orientationVector = new Vector3D(0, 0, 0);
 
     /**
      * Listener for the sensors
@@ -60,11 +49,9 @@ public class OrientationSensor extends Observable {
          */
         private float[] rotateVector;
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void onSensorChanged(SensorEvent sensorEvent) {
+
             if(sensorEvent.sensor.getType() != Sensor.TYPE_ROTATION_VECTOR) {
                 return;
             }
@@ -74,17 +61,32 @@ public class OrientationSensor extends Observable {
             float[] rotationMatrix = new float[16];
             SensorManager.getRotationMatrixFromVector(rotationMatrix, rotateVector);
 
-            /* Compensate device orientation */
-            float[] remappedRotationMatrix = new float[16];
-            remapCoordinates(rotationMatrix, remappedRotationMatrix);
+            // Compensate device's rotation
+            remapCoordinates(rotationMatrix, rotationMatrix);
 
-            float[] orientationValues = new float[3];
-            SensorManager.getOrientation(remappedRotationMatrix, orientationValues);
-            azimuth = (float)Math.toDegrees(orientationValues[0]);
-            pitch = (float)Math.toDegrees(orientationValues[1]);
-            roll = (float)Math.toDegrees(orientationValues[2]);
+            Matrix rMatrix = new Matrix(4, 4);
 
-            //Once degrees have been updated notify
+            for (int i = 0; i < rotationMatrix.length; i++) {
+                rMatrix.set(i / 4, i % 4 , rotationMatrix[i]);
+            }
+
+            Vector2D mapNorth = Center.getInstance().getMapNorth();
+
+            Matrix rotationVector = rMatrix.multiply(
+                    new Matrix(
+                    new double[][]{
+                            {mapNorth.getX()},
+                            {mapNorth.getY()},
+                            {0},
+                            {0}
+                    }));
+
+            orientationVector = new Vector3D(
+                    rotationVector.get(0, 0),
+                    rotationVector.get(1, 0),
+                    rotationVector.get(2, 0));
+            orientationVector.normalize();
+
             setChanged();
             notifyObservers();
         }
@@ -132,21 +134,12 @@ public class OrientationSensor extends Observable {
     };
 
     /**
-     * Creates a new {@link OrientationSensor} instating acceleration and magnetic field sensors.
-     * @param activity where the sensor will be used.
+     * Creates a new {@link OrientationSensor}, beware events won't be registered until {@link #registerEvents()} is called.
+     * @param context where the sensor will be used.
      */
-    private OrientationSensor(Activity activity, Display display){
-        this.display = display;
-        manager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
+    public OrientationSensor(Context context) {
+        manager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         sensorRt = manager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
-    }
-
-    /**
-     * Retrieves a new {@link OrientationSensor}, beware events won't be registered until {@link #registerEvents()} is called.
-     * @param activity where the sensor will be used.
-     */
-    public static OrientationSensor createSensor(Activity activity, Display display){
-        return new OrientationSensor(activity, display);
     }
 
     /**
@@ -164,26 +157,11 @@ public class OrientationSensor extends Observable {
     }
 
     /**
-     * Retrieves the azimuth in degrees.
-     * @return the azimuth.
+     * Retrieves the device's orientation as a Vector.
+     * @return the orientation's vector.
      */
-    public float getAzimuth() {
-        return azimuth;
+    public Vector3D getOrientationVector() {
+        return orientationVector;
     }
 
-    /**
-     * Retrieves the pitch in degrees.
-     * @return the pitch.
-     */
-    public float getPitch() {
-        return pitch;
-    }
-
-    /**
-     * Retrieves the roll in degrees.
-     * @return the roll.
-     */
-    public float getRoll() {
-        return roll;
-    }
 }
