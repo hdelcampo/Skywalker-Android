@@ -119,8 +119,7 @@ public class OverlayView implements Observer{
 
         view.setOpaque(false);
 
-        orientationSensor = OrientationSensor.createSensor(activity,
-                                                    activity.getWindowManager().getDefaultDisplay());
+        orientationSensor = new OrientationSensor(activity.getBaseContext());
         orientationSensor.addObserver(this);
 
         points = PointOfInterest.getPoints();
@@ -148,14 +147,15 @@ public class OverlayView implements Observer{
     }
 
     public void updateDegrees(){
+        Vector3D orientationVector = orientationSensor.getOrientationVector();
         TextView degreeText = (TextView)activity.findViewById(R.id.zRotation);
-        degreeText.setText("Azimuth " + String.valueOf(orientationSensor.getAzimuth()));
+        degreeText.setText("X: " + String.valueOf(orientationVector.getX()));
 
         degreeText = (TextView)activity.findViewById(R.id.yRotation);
-        degreeText.setText("Roll " + String.valueOf(orientationSensor.getRoll()));
+        degreeText.setText("Y: " + String.valueOf(orientationVector.getY()));
 
         degreeText = (TextView)activity.findViewById(R.id.xRotation);
-        degreeText.setText("Pitch " + String.valueOf(orientationSensor.getPitch()));
+        degreeText.setText("Z: " + String.valueOf(orientationVector.getZ()));
     }
 
     @Override
@@ -209,9 +209,6 @@ public class OverlayView implements Observer{
         private static final int INSIGHT_ICON = R.drawable.in_sight_icon;
         private static final float IN_SIGHT_ICON_SCALE = 1.5f;
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void run() {
             Canvas canvas;
@@ -249,59 +246,6 @@ public class OverlayView implements Observer{
 
         }
 
-        /**
-         * Shows an indicator for points out of sight.
-         * @param point to indicate.
-         * @param canvas where to draw.
-         */
-        private void drawIndicator(PointOfInterest point, Canvas canvas) {
-
-            float x = (orientationSensor.getAzimuth() - point.getX()) / 180,
-                y = (orientationSensor.getPitch() - point.getZ()) / 90;
-
-            final float angle = Vector3D.getAngle(-x, -y);
-
-            /**
-             * So once we get angle, we must remap it to coordinates. There are 2 kinds:
-             *  -Left screen and down screen, they go in reverse coordinates system
-             *  -Up and right screen are "normal" cases. However, right screen is special due to [0,360) angles
-             *
-             * Once we get corrected angle, we start coordinates from size*margin, and we multiply current angle to
-             * size of the "rect", size of rect is size of height or weight subtracting twice the margin.
-             */
-            if (0 <= angle && angle <= 45 ||
-                    315 <= angle && angle <= 360) {
-                x = view.getWidth()*MARGIN;
-                float correctedAngle;
-
-                // As angle can be > 315, correct it
-                if (315 <= angle && angle <= 360) {
-                    correctedAngle = Math.abs(360-angle-45);
-                } else {
-                    correctedAngle = angle + 45;
-                }
-
-                y = view.getHeight()*(1 - MARGIN) + ((correctedAngle/(45*2))) * view.getHeight()*(1- (1 - MARGIN) * 2);   //Decimal part from div by 45 angles
-
-            } else if (45 < angle && angle <= 135) {
-                final float correctedAngle =  135 - angle;
-                x = view.getWidth()*(1 - MARGIN) + (correctedAngle/(45*2)) * view.getWidth()*(1- (1 - MARGIN) * 2);
-                y = view.getHeight()*MARGIN;
-            } else if (135 < angle && angle <= 225) {
-                final float correctedAngle = 225 - angle;
-                x = view.getWidth()*(1-MARGIN);
-                y = view.getHeight()*(1 - MARGIN) + (correctedAngle/(45*2)) * view.getHeight()*(1- (1 - MARGIN) * 2);
-            } else {
-                final float correctedAngle = angle - 225;
-                x = view.getWidth()*(1 - MARGIN) + (correctedAngle/(45*2)) * view.getWidth()*(1- (1 - MARGIN) * 2);
-                y = view.getHeight()*(1-MARGIN);
-            }
-
-            drawIcon(canvas, x, y, OUT_OF_SIGHT_ICON, angle, OUT_OF_SIGHT_ICON_SCALE);
-            drawText(canvas, new String[]{point.getName()}, x, y);
-
-        }
-
         @Override
         public synchronized void start() {
             running = true;
@@ -319,7 +263,8 @@ public class OverlayView implements Observer{
          * @param point to decide on.
          * @return True if the {@code PointOfInterest} is in sight, false otherwise.
          */
-        private boolean inSight(PointOfInterest point){
+        private boolean inSight(PointOfInterest point) {
+
             float fovWidth, fovHeight;
 
             if(activity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
@@ -330,8 +275,75 @@ public class OverlayView implements Observer{
                 fovHeight = camera.getFOVHeight();
             }
 
-            return (Math.abs(orientationSensor.getAzimuth() - point.getX()) <= fovWidth/2 &&
-                    Math.abs(orientationSensor.getPitch() - point.getZ()) <= fovHeight/2); //TODO stub
+            Vector3D orientationVector = orientationSensor.getOrientationVector();
+
+            // Horizontal
+            final Vector2D pointHorizontalVector = new Vector2D(point.getX(), point.getY());
+            pointHorizontalVector.normalize();
+
+            final Vector2D orientationOnMap = new Vector2D(orientationVector.getX(), orientationVector.getY());
+
+            //Vertical
+            final double verticalTheta = -90.0*orientationVector.getZ();
+
+            return ( orientationOnMap.angle(pointHorizontalVector) <= fovWidth/2 &
+                     Math.abs(verticalTheta) <= fovHeight/2 );
+
+        }
+
+        /**
+         * Shows an indicator for points out of sight.
+         * @param point to indicate.
+         * @param canvas where to draw.
+         */
+        private void drawIndicator(PointOfInterest point, Canvas canvas) {
+
+            Vector3D orientationVector = orientationSensor.getOrientationVector();
+
+            float x = (float) ((orientationVector.getX() - point.getX()) / 180);
+            float y = (float) ((orientationVector.getZ()) / 90);
+
+            final double angle = Vector2D.getAngle(-x, -y);
+
+            /**
+             * So once we get angle, we must remap it to coordinates. There are 2 kinds:
+             *  -Left screen and down screen, they go in reverse coordinates system
+             *  -Up and right screen are "normal" cases. However, right screen is special due to [0,360) angles
+             *
+             * Once we get corrected angle, we start coordinates from size*margin, and we multiply current angle to
+             * size of the "rect", size of rect is size of height or weight subtracting twice the margin.
+             */
+            if (0 <= angle && angle <= 45 ||
+                    315 <= angle && angle <= 360) {
+                x = view.getWidth()*MARGIN;
+                double correctedAngle;
+
+                // As angle can be > 315, correct it
+                if (315 <= angle && angle <= 360) {
+                    correctedAngle = Math.abs(360-angle-45);
+                } else {
+                    correctedAngle = angle + 45;
+                }
+
+                y = (float) (view.getHeight()*(1 - MARGIN) + ((correctedAngle/(45*2))) * view.getHeight()*(1- (1 - MARGIN) * 2));   //Decimal part from div by 45 angles
+
+            } else if (45 < angle && angle <= 135) {
+                final double correctedAngle =  135 - angle;
+                x = (float) (view.getWidth()*(1 - MARGIN) + (correctedAngle/(45*2)) * view.getWidth()*(1- (1 - MARGIN) * 2));
+                y = view.getHeight()*MARGIN;
+            } else if (135 < angle && angle <= 225) {
+                final double correctedAngle = 225 - angle;
+                x = view.getWidth()*(1-MARGIN);
+                y = (float) (view.getHeight()*(1 - MARGIN) + (correctedAngle/(45*2)) * view.getHeight()*(1- (1 - MARGIN) * 2));
+            } else {
+                final double correctedAngle = angle - 225;
+                x = (float) (view.getWidth()*(1 - MARGIN) + (correctedAngle/(45*2)) * view.getWidth()*(1- (1 - MARGIN) * 2));
+                y = view.getHeight()*(1-MARGIN);
+            }
+
+            drawIcon(canvas, x, y, OUT_OF_SIGHT_ICON, (float)angle, OUT_OF_SIGHT_ICON_SCALE);
+            drawText(canvas, new String[]{point.getName()}, x, y);
+
         }
 
         /**
@@ -342,7 +354,6 @@ public class OverlayView implements Observer{
          * @param canvas to draw on.
          */
         private void drawPoint(PointOfInterest point, Canvas canvas){
-            //TODO stub for demo
             /*
              * First get the actual position on screen.
              */
@@ -356,8 +367,25 @@ public class OverlayView implements Observer{
                 fovHeight = camera.getFOVHeight();
             }
 
-            final float x = view.getWidth()/2 - (orientationSensor.getAzimuth() - point.getX())*view.getWidth()/fovWidth,
-                        y = view.getHeight()/2 - (orientationSensor.getPitch() - point.getZ())*view.getHeight()/fovHeight;
+            Vector3D orientationVector = orientationSensor.getOrientationVector();
+
+            final double
+                    deviceX = orientationVector.getX(),
+                    deviceY = orientationVector.getY(),
+                    deviceZ = orientationVector.getZ();
+
+            // Horizontal
+            final Vector2D pointHorizontalVector = new Vector2D(point.getX(), point.getY());
+            pointHorizontalVector.normalize();
+
+            final Vector2D orientationOnMap = new Vector2D(deviceX, deviceY);
+            final double horizontalTheta = orientationOnMap.angleWithSign(pointHorizontalVector);
+
+            //Vertical
+            final double verticalTheta = -90.0*deviceZ;
+
+            final float x = (float) (view.getWidth()/2 + horizontalTheta*view.getWidth()/fovWidth),
+                        y = (float) (view.getHeight()/2 - verticalTheta*view.getHeight()/fovHeight);
 
             drawIcon(canvas, x, y, INSIGHT_ICON, 0, IN_SIGHT_ICON_SCALE);
 

@@ -21,7 +21,7 @@ public class PointOfInterest implements Parcelable {
     /**
      * Coordinates
      */
-    private int x,
+    private double x,
          y,
          z;
 
@@ -41,10 +41,14 @@ public class PointOfInterest implements Parcelable {
      */
     public static List<PointOfInterest> getDemoPoints () {
         List<PointOfInterest> points = new ArrayList<>();
-        points.add(new PointOfInterest(0, "Wally"));
-        points.add(new PointOfInterest(1, "Robin"));
-        points.get(1).setX(135);
-        points.get(1).setZ(45);
+        points.add(new PointOfInterest(0, "Dani"));
+        points.get(0).setX(1);
+        points.get(0).setY(1);
+
+        //points.add(new PointOfInterest(1, "Diego"));
+        //points.get(1).setX(-0.25);
+        //points.get(1).setY(1);
+
         return points;
     }
 
@@ -91,27 +95,27 @@ public class PointOfInterest implements Parcelable {
         x = y = z = 0;
     }
 
-    public int getX() {
+    public double getX() {
         return x;
     }
 
-    public void setX(int x) {
+    public void setX(double x) {
         this.x = x;
     }
 
-    public int getY() {
+    public double getY() {
         return y;
     }
 
-    public void setY(int y) {
+    public void setY(double y) {
         this.y = y;
     }
 
-    public int getZ() {
+    public double getZ() {
         return z;
     }
 
-    public void setZ(int z) {
+    public void setZ(double z) {
         this.z = z;
     }
 
@@ -162,9 +166,9 @@ public class PointOfInterest implements Parcelable {
     private PointOfInterest(Parcel in) {
         id = in.readInt();
         name = in.readString();
-        x = in.readInt();
-        y = in.readInt();
-        z = in.readInt();
+        x = in.readDouble();
+        y = in.readDouble();
+        z = in.readDouble();
     }
 
     @Override
@@ -176,9 +180,9 @@ public class PointOfInterest implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
         dest.writeString(name);
-        dest.writeInt(x);
-        dest.writeInt(y);
-        dest.writeInt(z);
+        dest.writeDouble(x);
+        dest.writeDouble(y);
+        dest.writeDouble(z);
     }
 
     protected PointOfInterest copy() {

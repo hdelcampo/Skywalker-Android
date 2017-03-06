@@ -6,7 +6,7 @@ package es.uva.tfg.hector.SkyWalkerApp;
  */
 public class Center {
 
-    private Vector2D mapNorth = new Vector2D(1, -1);
+    private Vector2D mapNorth = new Vector2D(0, 1);
 
     private static Center instance = new Center();
 
