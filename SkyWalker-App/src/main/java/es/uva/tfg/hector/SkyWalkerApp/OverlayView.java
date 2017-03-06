@@ -300,10 +300,17 @@ public class OverlayView implements Observer{
 
             Vector3D orientationVector = orientationSensor.getOrientationVector();
 
-            float x = (float) ((orientationVector.getX() - point.getX()) / 180);
-            float y = (float) ((orientationVector.getZ()) / 90);
+            // Horizontal
+            final Vector2D pointHorizontalVector = new Vector2D(point.getX(), point.getY());
+            pointHorizontalVector.normalize();
 
-            final double angle = Vector2D.getAngle(-x, -y);
+            final Vector2D orientationOnMap = new Vector2D(orientationVector.getX(), orientationVector.getY());
+            float x = (float) orientationOnMap.angleWithSign(pointHorizontalVector)/180;
+
+            //Vertical
+            float y = (float) orientationVector.getZ();
+
+            final double angle = Vector2D.getAngle(x, y);
 
             /**
              * So once we get angle, we must remap it to coordinates. There are 2 kinds:

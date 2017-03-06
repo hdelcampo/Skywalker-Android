@@ -23,8 +23,8 @@ android {
         applicationId "es.uva.SkyWalkerApp.hector.SkyWalkerApp"
         minSdkVersion 14
         targetSdkVersion 21
-        versionCode 16
-        versionName "0.5 Prototype"
+        versionCode 17
+        versionName "0.6 Prototype"
     }
     buildTypes {
         release {
