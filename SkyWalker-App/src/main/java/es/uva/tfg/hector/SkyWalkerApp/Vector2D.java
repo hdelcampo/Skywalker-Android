@@ -50,19 +50,24 @@ public class Vector2D implements Vector<Vector2D> {
         return (x*v.getX()) + (y*v.getY());
     }
 
-    /**
-     * {@inheritDoc}
-     * @param v other vector.
-     * @return the clockwise angle.
-     */
     @Override
     public double angle(Vector2D v) {
         final double product = dotProduct(v);
         final double cos = product/(module()*v.module());
-        final double det = x*v.getY() - y*v.getX();
-        final double sin =  det/(module()*v.module());
-        final double angle = getAngle(cos, sin);
-        return 0 == angle ? angle : 360 - getAngle(cos, sin);
+        return Math.toDegrees(Math.acos(cos));
+    }
+
+    /**
+     * Retrieves vector's inner angle with sign.
+     * @param v other vector.
+     * @return the inner angle in degrees,
+     * negative values means parameter is counter clockwise,
+     * positive values means clockwise.
+     */
+    public double angleWithSign(Vector2D v) {
+        final double cos = dotProduct(v);
+        final double det = x*v.getY() - v.getX()*y;
+        return -Math.toDegrees(Math.atan2(det, cos));
     }
 
     @Override

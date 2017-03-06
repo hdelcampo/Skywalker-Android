@@ -72,7 +72,38 @@ public class Vector2DUnitTests {
     public void angle270() {
         final Vector2D vector = new Vector2D(1, 0);
         final Vector2D vector2 = new Vector2D(0, 1);
-        assertEquals(270, vector.angle(vector2), 0);
+        assertEquals(90, vector.angle(vector2), 0);
+    }
+
+    /*
+    * Angle with sign method
+    */
+    @Test
+    public void angleSign0() {
+        final Vector2D vector = new Vector2D(1, 0);
+        final Vector2D vector2 = new Vector2D(1, 0);
+        assertEquals(0, vector.angleWithSign(vector2), 0);
+    }
+
+    @Test
+    public void angleSign90() {
+        final Vector2D vector = new Vector2D(1, 0);
+        final Vector2D vector2 = new Vector2D(0, -1);
+        assertEquals(90, vector.angleWithSign(vector2), 0);
+    }
+
+    @Test
+    public void angleSign180() {
+        final Vector2D vector = new Vector2D(0, -1);
+        final Vector2D vector2 = new Vector2D(0, 1);
+        assertEquals(-180, vector.angleWithSign(vector2), 0);
+    }
+
+    @Test
+    public void angleSign270() {
+        final Vector2D vector = new Vector2D(1, 0);
+        final Vector2D vector2 = new Vector2D(0, 1);
+        assertEquals(-90, vector.angleWithSign(vector2), 0);
     }
 
     /*

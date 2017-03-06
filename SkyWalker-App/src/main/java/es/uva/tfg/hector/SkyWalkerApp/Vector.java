@@ -18,7 +18,7 @@ public interface Vector <T extends Vector> {
     double dotProduct (T v);
 
     /**
-     * Finds the angle between vectors.
+     * Finds the inner angle between vectors.
      * @param v other vector.
      * @return the angle in degrees.
      */
