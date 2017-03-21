@@ -21,7 +21,7 @@ import android.util.SizeF;
 import android.view.Surface;
 import android.view.TextureView;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * Camera API for Android API 21 or greater
@@ -69,7 +69,7 @@ public class Camera21 extends Camera {
     /**
      * Camera's state
      */
-    private volatile boolean opened = false;
+    private volatile boolean openning = false;
 
     /**
      * Camera's callback
@@ -80,13 +80,12 @@ public class Camera21 extends Camera {
         public void onOpened(CameraDevice camera) {
             cameraDevice = camera;
             evaluateFOV();
-            opened = true;
+            openning = false;
         }
 
         @Override
         public void onDisconnected(CameraDevice camera) {
             closeCamera();
-            opened = false;
         }
 
         @Override
@@ -108,13 +107,37 @@ public class Camera21 extends Camera {
             return;
         }
 
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                createCaptureRequest();
+            }
+        };
+
+        Thread thread = new Thread(runnable);
+        thread.run();
+
+    }
+
+    /**
+     * Creates a capture request, with preview template,
+     * if camera is not opened yet, this call will make thread sleep until its opened.
+     */
+    private void createCaptureRequest() {
+
+        while (openning) {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
         try {
             previewBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
-
-
 
         SurfaceTexture surfaceTexture = texture.getSurfaceTexture();
         final int width = Math.max(texture.getWidth(), texture.getHeight());
@@ -124,7 +147,7 @@ public class Camera21 extends Camera {
         previewBuilder.addTarget(surface);
 
         try {
-            cameraDevice.createCaptureSession(Arrays.asList(surface), new CameraCaptureSession.StateCallback() {
+            cameraDevice.createCaptureSession(Collections.singletonList(surface), new CameraCaptureSession.StateCallback() {
 
                 @Override
                 public void onConfigured(CameraCaptureSession session) {
@@ -140,7 +163,6 @@ public class Camera21 extends Camera {
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
-
     }
 
     /**
@@ -185,6 +207,7 @@ public class Camera21 extends Camera {
 
         try {
             String cameraId = getRearCamera(manager);
+            openning = true;
             manager.openCamera(cameraId, mStateCallback, backgroundHandler);
         } catch (CameraAccessException e) {
             e.printStackTrace();
