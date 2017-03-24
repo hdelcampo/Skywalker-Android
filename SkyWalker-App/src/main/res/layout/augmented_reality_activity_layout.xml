@@ -8,14 +8,14 @@
     android:id="@+id/container">
 
     <fragment
-        class="es.uva.tfg.hector.SkyWalkerApp.AugmentedRealityFragment"
+        class="es.uva.tfg.hector.SkyWalkerApp.presentation.AugmentedRealityFragment"
         android:id="@+id/augmented_reality_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout="@layout/augmented_reality_layout" />
 
     <fragment
-        class="es.uva.tfg.hector.SkyWalkerApp.AugmentedRealityControlsFragment"
+        class="es.uva.tfg.hector.SkyWalkerApp.presentation.AugmentedRealityControlsFragment"
         android:id="@+id/augmented_reality_controls_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

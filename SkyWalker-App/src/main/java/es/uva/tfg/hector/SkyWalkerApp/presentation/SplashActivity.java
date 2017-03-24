@@ -1,4 +1,4 @@
-package es.uva.tfg.hector.SkyWalkerApp;
+package es.uva.tfg.hector.SkyWalkerApp.presentation;
 
 import android.content.Intent;
 import android.os.Bundle;

@@ -1,4 +1,6 @@
-package es.uva.tfg.hector.SkyWalkerApp;
+package es.uva.tfg.hector.SkyWalkerApp.business;
+
+import es.uva.tfg.hector.SkyWalkerApp.services.Vector2D;
 
 /**
  * A real world center, equiped with indoor location.

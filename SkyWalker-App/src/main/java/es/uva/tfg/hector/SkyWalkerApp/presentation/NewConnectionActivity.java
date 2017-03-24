@@ -1,8 +1,10 @@
-package es.uva.tfg.hector.SkyWalkerApp;
+package es.uva.tfg.hector.SkyWalkerApp.presentation;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
+
+import es.uva.tfg.hector.SkyWalkerApp.R;
 
 /**
  * Activity to handle new connections requests.

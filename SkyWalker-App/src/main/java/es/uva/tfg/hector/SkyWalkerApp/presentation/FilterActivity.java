@@ -1,4 +1,4 @@
-package es.uva.tfg.hector.SkyWalkerApp;
+package es.uva.tfg.hector.SkyWalkerApp.presentation;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,6 +11,9 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import es.uva.tfg.hector.SkyWalkerApp.R;
+import es.uva.tfg.hector.SkyWalkerApp.business.PointOfInterest;
 
 /**
  * Dialog to filter {@Code PointsOfInterest}.

@@ -1,4 +1,4 @@
-package es.uva.tfg.hector.SkyWalkerApp;
+package es.uva.tfg.hector.SkyWalkerApp.presentation;
 
 
 import android.app.ProgressDialog;
@@ -13,6 +13,11 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.util.List;
+
+import es.uva.tfg.hector.SkyWalkerApp.R;
+import es.uva.tfg.hector.SkyWalkerApp.business.PointOfInterest;
+import es.uva.tfg.hector.SkyWalkerApp.business.Token;
+import es.uva.tfg.hector.SkyWalkerApp.persistence.ServerFacade;
 
 /**
  * Fragment to handle Manual UI connections.
@@ -89,8 +94,8 @@ public class ManualConnectionFragment extends Fragment implements View.OnClickLi
         final ProgressDialog dialog =
                 ProgressDialog.show(getContext(), null, getString(R.string.connection_in_progress), true, false);
 
-        ServerHandler.getInstance(getActivity().getApplicationContext())
-                .getToken(new ServerHandler.OnServerResponse<Token>() {
+        ServerFacade.getInstance(getActivity().getApplicationContext())
+                .getToken(new ServerFacade.OnServerResponse<Token>() {
 
             @Override
             public void onSuccess(Token response) {
@@ -98,7 +103,7 @@ public class ManualConnectionFragment extends Fragment implements View.OnClickLi
             }
 
             @Override
-            public void onError(ServerHandler.Errors error) {
+            public void onError(ServerFacade.Errors error) {
                 dialog.dismiss();
                 Toast.makeText(getContext(), getString(R.string.invalid_login_data), Toast.LENGTH_LONG).show();
             }
@@ -113,8 +118,8 @@ public class ManualConnectionFragment extends Fragment implements View.OnClickLi
      */
     private void retrieveTags (final ProgressDialog dialog) {
 
-        ServerHandler.getInstance(getActivity().getApplicationContext()).
-                getAvaliableTags(new ServerHandler.OnServerResponse<List<PointOfInterest>>() {
+        ServerFacade.getInstance(getActivity().getApplicationContext()).
+                getAvaliableTags(new ServerFacade.OnServerResponse<List<PointOfInterest>>() {
             @Override
             public void onSuccess(List<PointOfInterest> response) {
                 PointOfInterest.setPoints(response);
@@ -123,7 +128,7 @@ public class ManualConnectionFragment extends Fragment implements View.OnClickLi
             }
 
             @Override
-            public void onError(ServerHandler.Errors error) {
+            public void onError(ServerFacade.Errors error) {
                 dialog.dismiss();
                 Toast.makeText(getContext(), getString(R.string.server_bad_connection), Toast.LENGTH_LONG).show();
             }

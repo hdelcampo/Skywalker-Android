@@ -1,7 +1,9 @@
-package es.uva.tfg.hector.SkyWalkerApp;
+package es.uva.tfg.hector.SkyWalkerApp.presentation;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+
+import es.uva.tfg.hector.SkyWalkerApp.R;
 
 /**
  * Enter point for the App, after the splash one.

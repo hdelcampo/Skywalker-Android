@@ -1,4 +1,4 @@
-package es.uva.tfg.hector.SkyWalkerApp;
+package es.uva.tfg.hector.SkyWalkerApp.business;
 
 import android.app.Activity;
 import android.hardware.Camera;
@@ -13,7 +13,7 @@ import java.util.List;
  * Camera API for Android API 1 or greater
  * @author Hector Del Campo Pando
  */
-public class Camera1 extends es.uva.tfg.hector.SkyWalkerApp.Camera {
+public class Camera1 extends es.uva.tfg.hector.SkyWalkerApp.business.Camera {
 
     /**
      * {@link android.hardware.Camera} to control.
@@ -50,7 +50,7 @@ public class Camera1 extends es.uva.tfg.hector.SkyWalkerApp.Camera {
     }
 
     @Override
-    protected void evaluateFOV() {
+    public void evaluateFOV() {
         Camera.Parameters p = camera.getParameters();
 
         setFOVWidth(p.getHorizontalViewAngle());
@@ -58,7 +58,7 @@ public class Camera1 extends es.uva.tfg.hector.SkyWalkerApp.Camera {
     }
 
     @Override
-    protected void transform(int rotation, int width, int height) {
+    public void transform(int rotation, int width, int height) {
 
         android.hardware.Camera.CameraInfo info =
                 new android.hardware.Camera.CameraInfo();

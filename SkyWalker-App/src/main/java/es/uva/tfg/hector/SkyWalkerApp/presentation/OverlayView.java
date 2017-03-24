@@ -1,4 +1,4 @@
-package es.uva.tfg.hector.SkyWalkerApp;
+package es.uva.tfg.hector.SkyWalkerApp.presentation;
 
 import android.app.Activity;
 import android.content.res.Configuration;
@@ -17,6 +17,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+
+import es.uva.tfg.hector.SkyWalkerApp.R;
+import es.uva.tfg.hector.SkyWalkerApp.business.Camera;
+import es.uva.tfg.hector.SkyWalkerApp.business.OrientationSensor;
+import es.uva.tfg.hector.SkyWalkerApp.business.PointOfInterest;
+import es.uva.tfg.hector.SkyWalkerApp.services.Vector2D;
+import es.uva.tfg.hector.SkyWalkerApp.services.Vector3D;
 
 /**
  * Created by Hector Del Campo Pando on 18/07/2016.

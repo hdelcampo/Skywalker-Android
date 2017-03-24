@@ -7,7 +7,7 @@
     android:layout_height="match_parent" >
     
     <fragment
-        class = "es.uva.tfg.hector.SkyWalkerApp.ManualConnectionFragment"
+        class = "es.uva.tfg.hector.SkyWalkerApp.presentation.ManualConnectionFragment"
         tools:layout="@layout/manual_connection_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -1,4 +1,4 @@
-package es.uva.tfg.hector.SkyWalkerApp;
+package es.uva.tfg.hector.SkyWalkerApp.business;
 
 import android.app.Activity;
 import android.view.TextureView;
@@ -64,12 +64,12 @@ public abstract class Camera extends Observable {
     /**
      * Retrieves actual field of view and saves it onto fov variable.
      */
-    protected abstract void evaluateFOV();
+    public abstract void evaluateFOV();
 
     /**
      * Changes camera's orientation to the actual device's one.
      */
-    protected abstract void transform(int rotation, int width, int height);
+    public abstract void transform(int rotation, int width, int height);
 
     /**
      * Retrieves camera current fov width.
@@ -91,7 +91,7 @@ public abstract class Camera extends Observable {
      * Setter for field of view width.
      * @param width on degrees.
      */
-    public void setFOVWidth(float width){
+    protected void setFOVWidth(float width){
         fovWidth = width;
     }
 
@@ -99,7 +99,7 @@ public abstract class Camera extends Observable {
      * Setter for field of view height.
      * @param height on degrees.
      */
-    public void setFOVHeight(float height){
+    protected void setFOVHeight(float height){
         fovHeight = height;
     }
 

@@ -1,4 +1,4 @@
-package es.uva.tfg.hector.SkyWalkerApp;
+package es.uva.tfg.hector.SkyWalkerApp.business;
 
 import android.os.Parcel;
 import android.os.Parcelable;

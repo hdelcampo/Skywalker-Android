@@ -1,4 +1,4 @@
-package es.uva.tfg.hector.SkyWalkerApp;
+package es.uva.tfg.hector.SkyWalkerApp.business;
 
 import android.content.Context;
 import android.hardware.Sensor;
@@ -7,6 +7,10 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
 import java.util.Observable;
+
+import es.uva.tfg.hector.SkyWalkerApp.services.Matrix;
+import es.uva.tfg.hector.SkyWalkerApp.services.Vector2D;
+import es.uva.tfg.hector.SkyWalkerApp.services.Vector3D;
 
 /**
  * Orientation sensors manager

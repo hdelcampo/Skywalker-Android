@@ -1,4 +1,4 @@
-package es.uva.tfg.hector.SkyWalkerApp;
+package es.uva.tfg.hector.SkyWalkerApp.presentation;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -9,6 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.List;
+
+import es.uva.tfg.hector.SkyWalkerApp.R;
+import es.uva.tfg.hector.SkyWalkerApp.business.PointOfInterest;
+import es.uva.tfg.hector.SkyWalkerApp.persistence.ServerFacade;
 
 /**
  * Augmented reality fragment
@@ -39,15 +43,15 @@ public class AugmentedRealityFragment extends Fragment {
             while (!stopped) {
                 List<PointOfInterest> points = getActivePoints();
                 for (PointOfInterest point : points) {
-                    ServerHandler.getInstance(getActivity().getApplicationContext()).
-                            getLastPosition(new ServerHandler.OnServerResponse<PointOfInterest>() {
+                    ServerFacade.getInstance(getActivity().getApplicationContext()).
+                            getLastPosition(new ServerFacade.OnServerResponse<PointOfInterest>() {
                                 @Override
                                 public void onSuccess(PointOfInterest response) {
 
                                 }
 
                                 @Override
-                                public void onError(ServerHandler.Errors error) {
+                                public void onError(ServerFacade.Errors error) {
                                     Log.e("Updating error", "Couldnt update " + error.toString());
                                 }
                             }, point);

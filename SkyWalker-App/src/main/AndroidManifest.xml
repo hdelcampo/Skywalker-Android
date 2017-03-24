@@ -20,7 +20,7 @@
         android:theme="@style/SplashTheme">
 
         <activity
-            android:name=".SplashActivity">
+            android:name=".presentation.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -28,20 +28,20 @@
         </activity>
 
         <activity
-            android:name=".EntryActivity"
+            android:name=".presentation.EntryActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
         <activity
-            android:name=".AugmentedRealityActivity"
+            android:name=".presentation.AugmentedRealityActivity"
             android:theme="@android:style/Theme.NoTitleBar" />
 
         <activity
-            android:name=".FilterActivity"
+            android:name=".presentation.FilterActivity"
             android:label="@string/filter_title"
             android:theme="@style/FilterDialog" />
 
         <activity
-            android:name=".NewConnectionActivity"
+            android:name=".presentation.NewConnectionActivity"
             android:label="@string/connection_title"
             android:theme="@style/ConnectionDialog" />
 

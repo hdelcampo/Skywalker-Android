@@ -1,4 +1,4 @@
-package es.uva.tfg.hector.SkyWalkerApp;
+package es.uva.tfg.hector.SkyWalkerApp.presentation;
 
 import android.app.Activity;
 import android.graphics.SurfaceTexture;
@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.TextureView;
 
 import java.io.IOException;
+
+import es.uva.tfg.hector.SkyWalkerApp.business.Camera;
 
 /**
  * Controls the camera preview

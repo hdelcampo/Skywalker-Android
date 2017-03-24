@@ -2,6 +2,8 @@ package es.uva.tfg.hector.SkyWalkerApp;
 
 import org.junit.Test;
 
+import es.uva.tfg.hector.SkyWalkerApp.services.Vector3D;
+
 import static org.junit.Assert.assertEquals;
 
 /**

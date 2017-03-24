@@ -1,4 +1,4 @@
-package es.uva.tfg.hector.SkyWalkerApp;
+package es.uva.tfg.hector.SkyWalkerApp.persistence;
 
 import android.content.Context;
 
@@ -25,13 +25,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import es.uva.tfg.hector.SkyWalkerApp.business.PointOfInterest;
+import es.uva.tfg.hector.SkyWalkerApp.business.Token;
+
 /**
  * Handler for server petitions, as there can only be one connection per time,
  * this singleton also manages the connection token.
  * @author Hector Del Campo Pando
  */
 
-public class ServerHandler {
+public class ServerFacade {
 
     /**
      * Enum for server errors.
@@ -43,7 +46,7 @@ public class ServerHandler {
     /**
      * Singleton instance.
      */
-    private static ServerHandler instance;
+    private static ServerFacade instance;
 
     /**
      * Requests queue.
@@ -60,10 +63,10 @@ public class ServerHandler {
      * @param context of the App to make petitions.
      * @return the singleton instance.
      */
-    public static ServerHandler getInstance (Context context) {
+    public static ServerFacade getInstance (Context context) {
 
         if (instance == null) {
-            instance = new ServerHandler(context);
+            instance = new ServerFacade(context);
         }
 
         return instance;
@@ -74,7 +77,7 @@ public class ServerHandler {
      * Creates a new instance of the requests queue.
      * @param context of the App.
      */
-    private ServerHandler (Context context) {
+    private ServerFacade(Context context) {
         requestQueue = Volley.newRequestQueue(context);
     }
 

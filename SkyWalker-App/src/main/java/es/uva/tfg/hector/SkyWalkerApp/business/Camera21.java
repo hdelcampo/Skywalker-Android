@@ -1,4 +1,4 @@
-package es.uva.tfg.hector.SkyWalkerApp;
+package es.uva.tfg.hector.SkyWalkerApp.business;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -261,7 +261,7 @@ public class Camera21 extends Camera {
     }
 
     @Override
-    protected void evaluateFOV() {
+    public void evaluateFOV() {
         SizeF sSize = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE);
         //TODO ARRAY?
         float fLength = cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS)[0];
@@ -271,7 +271,7 @@ public class Camera21 extends Camera {
     }
 
     @Override
-    protected void transform(int rotation, int width, int height) {
+    public void transform(int rotation, int width, int height) {
 
         Matrix matrix = new Matrix();
         RectF textureRectF = new RectF(0, 0, width, height);
