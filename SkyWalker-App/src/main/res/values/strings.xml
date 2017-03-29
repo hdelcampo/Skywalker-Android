@@ -19,6 +19,7 @@
     <string name="Password">Password</string>
     <string name="optional">Optional</string>
     <string name="mandatory">Mandatory</string>
+    <string name="demo">Demo mode</string>
 
     <!-- Connection handling -->
     <string name="invalid_login_data">Username or password are invalid or empty.</string>

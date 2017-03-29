@@ -33,6 +33,7 @@ public class ManualConnectionFragment extends Fragment implements View.OnClickLi
 
         rootView.findViewById(R.id.accept_button).setOnClickListener(this);
         rootView.findViewById(R.id.cancel_button).setOnClickListener(this);
+        rootView.findViewById(R.id.demo_button).setOnClickListener(this);
 
         return rootView;
 
@@ -47,17 +48,15 @@ public class ManualConnectionFragment extends Fragment implements View.OnClickLi
                 final String username = ((EditText) getView().findViewById(R.id.username_field)).getText().toString();
                 final String password = ((EditText) getView().findViewById(R.id.password_field)).getText().toString();
 
-                if (url.equals("demo")) {
-                    PointOfInterest.setPoints(PointOfInterest.getDemoPoints());
-                    startAR();
-                } else {
-                    newConnection (url, username, password);
-                }
-
+                newConnection(url, username, password);
                 break;
 
             case R.id.cancel_button:
                 getActivity().finish();
+                break;
+            case R.id.demo_button:
+                PointOfInterest.setPoints(PointOfInterest.getDemoPoints());
+                startAR();
                 break;
         }
     }

@@ -72,26 +72,45 @@
         </TableRow>
     </TableLayout>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <TableLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="right">
+        android:stretchColumns="*">
 
-        <Button
-            android:text="@android:string/cancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/cancel_button"
-            style="@style/Widget.AppCompat.Button.Borderless.Colored" />
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <Button
-            android:text="@android:string/ok"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/accept_button"
-            style="@style/Widget.AppCompat.Button.Borderless" />
+            <Button
+                android:id="@+id/demo_button"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:text="@string/demo" />
 
-    </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="right">
+
+                <Button
+                    android:text="@android:string/cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/cancel_button"
+                    style="@style/Widget.AppCompat.Button.Borderless.Colored" />
+
+                <Button
+                    android:text="@android:string/ok"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/accept_button"
+                    style="@style/Widget.AppCompat.Button.Borderless" />
+
+            </LinearLayout>
+        </TableRow>
+    </TableLayout>
 
 </LinearLayout>
