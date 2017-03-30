@@ -1,9 +1,11 @@
 <resources>
+    <!-- General -->
     <string name="app_name">SkyWalker-App</string>
     <string name="filter">Filter</string>
     <string name="accept">Accept</string>
     <string name="filter_title">Select filtering</string>
     <string name="connection_title">New connection</string>
+    <string name="retry">Retry</string>
 
     <!-- Permissions -->
     <string name="needs_camera_permissions">This App needs camera permissions in order to work</string>
@@ -21,8 +23,12 @@
     <string name="demo">Demo mode</string>
 
     <!-- Connection handling -->
+    <string name="no_internet">There was an error with your internet connection.</string>
     <string name="invalid_login_data">Username or password are invalid or empty.</string>
     <string name="connection_in_progress">Connecting…</string>
-    <string name="invalid_url">Address is invalid.</string>
+    <string name="invalid_url">http(s)://www.example.com</string>
     <string name="server_bad_connection">Couldn"'"t retrieve server info.</string>
+
+    <!-- Tags -->
+    <string name="not_assigned">Not assigned</string>
 </resources>

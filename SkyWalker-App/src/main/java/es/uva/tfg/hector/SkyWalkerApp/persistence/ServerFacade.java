@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
+import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -25,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import es.uva.tfg.hector.SkyWalkerApp.R;
 import es.uva.tfg.hector.SkyWalkerApp.business.PointOfInterest;
 import es.uva.tfg.hector.SkyWalkerApp.business.Token;
 
@@ -40,7 +42,7 @@ public class ServerFacade {
      * Enum for server errors.
      */
     public enum Errors {
-        INVALID_USERNAME_OR_PASSWORD, INVALID_JSON, TIME_OUT, UNKNOWN
+        INVALID_URL, NO_CONNECTION, INVALID_USERNAME_OR_PASSWORD, INVALID_JSON, TIME_OUT, UNKNOWN
     }
 
     /**
@@ -57,6 +59,11 @@ public class ServerFacade {
      * Connection token.
      */
     private Token token;
+
+    /**
+     * Requests context.
+     */
+    private Context context;
 
     /**
      * Retrieves the singleton instance.
@@ -78,6 +85,7 @@ public class ServerFacade {
      * @param context of the App.
      */
     private ServerFacade(Context context) {
+        this.context = context;
         requestQueue = Volley.newRequestQueue(context);
     }
 
@@ -131,10 +139,10 @@ public class ServerFacade {
     }
 
     /**
-     * Retrieves all avaliable tags for a given token.
+     * Retrieves all available tags for a given token.
      * @param responseListener that will handle responses.
      */
-    public void getAvaliableTags (final OnServerResponse <List<PointOfInterest>> responseListener) {
+    public void getAvailableTags(final OnServerResponse <List<PointOfInterest>> responseListener) {
 
         if (null == token) {
             throw new IllegalStateException("Cannot retrieve tags without a established connection");
@@ -151,9 +159,15 @@ public class ServerFacade {
 
                     for (int i = 0; i < response.length(); i++) {
                         JSONObject json = response.getJSONObject(i);
-                        PointOfInterest point =
-                                new PointOfInterest(json.getInt("id"),
-                                                json.getString("name"));
+
+                        final int id = json.getInt("id");
+                        final String name;
+                        if (json.has("name")) {
+                            name = json.getString("name");
+                        } else {
+                            name = context.getString(R.string.not_assigned);
+                        }
+                        PointOfInterest point = new PointOfInterest(id, name);
                         points.add(point);
                     }
                     responseListener.onSuccess(points);
@@ -236,15 +250,16 @@ public class ServerFacade {
 
         Errors errorEnum;
 
-        if (error.getClass().equals(TimeoutError.class)) {
+        if (error instanceof TimeoutError) {
             errorEnum = Errors.TIME_OUT;
+        } else if (error instanceof NoConnectionError) {
+            errorEnum = Errors.NO_CONNECTION;
+        } else if (error instanceof AuthFailureError) {
+          errorEnum = Errors.INVALID_USERNAME_OR_PASSWORD;
         } else if (error == null || error.networkResponse == null) {
             errorEnum = Errors.UNKNOWN;
         } else {
             switch (error.networkResponse.statusCode) {
-                case 401:
-                    errorEnum = Errors.INVALID_USERNAME_OR_PASSWORD;
-                    break;
                 default:
                     errorEnum = Errors.UNKNOWN;
                     break;
