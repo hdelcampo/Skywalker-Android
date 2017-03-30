@@ -14,11 +14,10 @@
     <!-- Connection fragment -->
     <string name="QR">Scan QR</string>
     <string name="Manual">Manual input</string>
-    <string name="Address">Address</string>
-    <string name="User">User</string>
-    <string name="Password">Password</string>
-    <string name="optional">Optional</string>
-    <string name="mandatory">Mandatory</string>
+    <string name="addr_field">Server URL*</string>
+    <string name="user_field">Username</string>
+    <string name="password_field">Password</string>
+    <string name="mandatory">* indicates required field</string>
     <string name="demo">Demo mode</string>
 
     <!-- Connection handling -->
