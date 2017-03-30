@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.URLUtil;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -156,6 +155,7 @@ public class ManualConnectionFragment extends Fragment implements View.OnClickLi
 
         ServerFacade.getInstance(getActivity().getApplicationContext()).
                 getAvailableTags(new ServerFacade.OnServerResponse<List<PointOfInterest>>() {
+
             @Override
             public void onSuccess(List<PointOfInterest> response) {
                 PointOfInterest.setPoints(response);
@@ -166,8 +166,9 @@ public class ManualConnectionFragment extends Fragment implements View.OnClickLi
             @Override
             public void onError(ServerFacade.Errors error) {
                 dialog.dismiss();
-                Toast.makeText(getContext(), getString(R.string.server_bad_connection), Toast.LENGTH_LONG).show();
+                showError(error);
             }
+
         });
 
     }
