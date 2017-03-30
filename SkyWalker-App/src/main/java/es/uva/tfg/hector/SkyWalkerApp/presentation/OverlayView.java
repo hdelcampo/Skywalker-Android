@@ -233,11 +233,17 @@ public class OverlayView implements Observer{
                 synchronized (points) {
 
                     for(PointOfInterest point : points){
+
+                        if (point.isUndefined()) {
+                            continue;
+                        }
+
                         if(inSight(point)){
                             drawPoint(point, canvas);
                         } else {
                             drawIndicator(point, canvas);
                         }
+
                     }
 
                 }
@@ -319,7 +325,7 @@ public class OverlayView implements Observer{
 
             final double angle = Vector2D.getAngle(x, y);
 
-            /**
+            /*
              * So once we get angle, we must remap it to coordinates. There are 2 kinds:
              *  -Left screen and down screen, they go in reverse coordinates system
              *  -Up and right screen are "normal" cases. However, right screen is special due to [0,360) angles

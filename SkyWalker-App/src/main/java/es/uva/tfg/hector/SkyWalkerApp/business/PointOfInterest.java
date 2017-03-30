@@ -44,6 +44,7 @@ public class PointOfInterest implements Parcelable {
         points.add(new PointOfInterest(0, "Dani"));
         points.get(0).setX(1);
         points.get(0).setY(1);
+        points.get(0).setZ(0);
 
         //points.add(new PointOfInterest(1, "Diego"));
         //points.get(1).setX(-0.25);
@@ -85,14 +86,14 @@ public class PointOfInterest implements Parcelable {
     }
 
     /**
-     * Creates a new point of interest with standard coordinates (0, 0, 0).
+     * Creates a new point of interest with standard coordinates (-1, -1, -1).
      * @param id of the point of interest, server side.
      * @param name of the point of interest.
      */
     public PointOfInterest (int id, String name) {
         this.id = id;
         this.name = name;
-        x = y = z = 0;
+        x = y = z = -1;
     }
 
     public double getX() {
@@ -117,6 +118,14 @@ public class PointOfInterest implements Parcelable {
 
     public void setZ(double z) {
         this.z = z;
+    }
+
+    /**
+     * Decides whether a point has a defined position or not.
+     * @return true if point has no position, false otherwise.
+     */
+    public boolean isUndefined() {
+        return (x == -1 && y == -1);
     }
 
     /**
