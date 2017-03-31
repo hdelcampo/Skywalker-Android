@@ -33,46 +33,7 @@ public class AugmentedRealityFragment extends Fragment {
     /**
      * Connection thread.
      */
-    private final Thread connectionThread = new Thread() {
-
-        private boolean stopped = false;
-
-        @Override
-        public void run() {
-
-            while (!stopped) {
-                List<PointOfInterest> points = getActivePoints();
-                for (PointOfInterest point : points) {
-                    ServerFacade.getInstance(getActivity().getApplicationContext()).
-                            getLastPosition(new ServerFacade.OnServerResponse<PointOfInterest>() {
-                                @Override
-                                public void onSuccess(PointOfInterest response) {
-
-                                }
-
-                                @Override
-                                public void onError(ServerFacade.Errors error) {
-                                    Log.e("Updating error", "Couldnt update " + error.toString());
-                                }
-                            }, point);
-                }
-
-                try {
-                    sleep(1000);
-                    Log.e("Updating", "Updating tags");
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
-
-        @Override
-        public void interrupt() {
-            super.interrupt();
-            stopped = true;
-        }
-    };
+    private Thread connectionThread;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -90,7 +51,8 @@ public class AugmentedRealityFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        if (connectionThread.isInterrupted()) {
+        if (!ServerFacade.getInstance(getActivity().getApplicationContext()).isDemo()) {
+            connectionThread = new ConnectionThread();
             connectionThread.start();
         }
 
@@ -101,7 +63,9 @@ public class AugmentedRealityFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        connectionThread.interrupt();
+        if (connectionThread != null) {
+            connectionThread.interrupt();
+        }
         cameraPreview.stop();
         overlayView.stop();
     }
@@ -121,5 +85,50 @@ public class AugmentedRealityFragment extends Fragment {
     public void setActivePoints (List<PointOfInterest> points) {
         overlayView.display(points);
     }
+
+    private class ConnectionThread extends Thread {
+
+        private static final long SLEEP_TIME = 250; //miliseconds
+
+        private volatile boolean running = true;
+
+        @Override
+        public void run() {
+
+            while (running) {
+                List<PointOfInterest> points = AugmentedRealityFragment.this.getActivePoints();
+                for (PointOfInterest point : points) {
+                    ServerFacade.getInstance(getActivity().getApplicationContext()).
+                            getLastPosition(new ServerFacade.OnServerResponse<PointOfInterest>() {
+                                @Override
+                                public void onSuccess(PointOfInterest response) {
+                                    Log.e("Updating success", "Could update " + response.toString());
+                                }
+
+                                @Override
+                                public void onError(ServerFacade.Errors error) {
+                                    Log.e("Updating error", "Couldnt update " + error.toString());
+                                }
+                            }, point);
+                }
+
+                try {
+                    sleep(SLEEP_TIME);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+
+        }
+
+        @Override
+        public void interrupt() {
+            super.interrupt();
+            running = false;
+        }
+
+
+        }
 
 }
