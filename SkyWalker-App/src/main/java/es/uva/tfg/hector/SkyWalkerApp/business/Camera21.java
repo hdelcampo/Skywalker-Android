@@ -199,6 +199,7 @@ public class Camera21 extends Camera {
     @Override
     public void openCamera(Activity activity) {
 
+        openning = true;
         CameraManager manager = (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
 
         backgroundThread = new HandlerThread(BACKGROUND_THREAD);
@@ -207,9 +208,9 @@ public class Camera21 extends Camera {
 
         try {
             String cameraId = getRearCamera(manager);
-            openning = true;
             manager.openCamera(cameraId, mStateCallback, backgroundHandler);
         } catch (CameraAccessException e) {
+            openning = false;
             e.printStackTrace();
         }
 

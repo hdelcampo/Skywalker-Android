@@ -21,6 +21,8 @@ import android.widget.EditText;
 import java.util.List;
 
 import es.uva.tfg.hector.SkyWalkerApp.R;
+import es.uva.tfg.hector.SkyWalkerApp.business.Center;
+import es.uva.tfg.hector.SkyWalkerApp.business.MapPoint;
 import es.uva.tfg.hector.SkyWalkerApp.business.PointOfInterest;
 import es.uva.tfg.hector.SkyWalkerApp.business.Token;
 import es.uva.tfg.hector.SkyWalkerApp.persistence.ServerFacade;
@@ -95,6 +97,7 @@ public class ManualConnectionFragment extends Fragment implements View.OnClickLi
                 break;
             case R.id.demo_button:
                 PointOfInterest.setPoints(PointOfInterest.getDemoPoints());
+                ServerFacade.getInstance(getActivity().getApplicationContext()).setDemo();
                 startAR();
                 break;
         }
@@ -127,14 +130,14 @@ public class ManualConnectionFragment extends Fragment implements View.OnClickLi
         toggleCredentialsError(false);
 
         final ProgressDialog dialog =
-                ProgressDialog.show(getContext(), null, getString(R.string.connection_in_progress), true, false);
+                ProgressDialog.show(getContext(), null, getString(R.string.connection_started), true, false);
 
         ServerFacade.getInstance(getActivity().getApplicationContext())
                 .getToken(new ServerFacade.OnServerResponse<Token>() {
 
             @Override
             public void onSuccess(Token response) {
-                retrieveTags(dialog);
+                retrieveReceivers(dialog);
             }
 
             @Override
@@ -148,17 +151,49 @@ public class ManualConnectionFragment extends Fragment implements View.OnClickLi
     }
 
     /**
+     * Retrieves the receivers for the center.
+     * @param dialog to control.
+     */
+    private void retrieveReceivers(final ProgressDialog dialog) {
+
+        dialog.setMessage(getString(R.string.connection_recievers));
+
+        Center.centers.add(new Center(0));
+
+        ServerFacade.getInstance(getActivity().getApplicationContext())
+                .getCenterReceivers(new ServerFacade.OnServerResponse<List<MapPoint>>() {
+
+                    @Override
+                    public void onSuccess(List<MapPoint> receivers) {
+                        Center.centers.get(0).addReceivers(receivers);
+                        retrieveTags(dialog);
+                    }
+
+                    @Override
+                    public void onError(ServerFacade.Errors error) {
+                        dialog.dismiss();
+                        showError(error);
+                    }
+
+                }, Center.centers.get(0)); //TODO center real
+
+    }
+
+
+    /**
      * Retrieves the tags available for the connection token.
      * @param dialog to handle.
      */
     private void retrieveTags (final ProgressDialog dialog) {
 
+        dialog.setMessage(getString(R.string.connection_tags));
+
         ServerFacade.getInstance(getActivity().getApplicationContext()).
                 getAvailableTags(new ServerFacade.OnServerResponse<List<PointOfInterest>>() {
 
             @Override
-            public void onSuccess(List<PointOfInterest> response) {
-                PointOfInterest.setPoints(response);
+            public void onSuccess(List<PointOfInterest> points) {
+                PointOfInterest.setPoints(points);
                 dialog.dismiss();
                 startAR();
             }

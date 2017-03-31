@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 
 import es.uva.tfg.hector.SkyWalkerApp.R;
+import es.uva.tfg.hector.SkyWalkerApp.business.Center;
+import es.uva.tfg.hector.SkyWalkerApp.business.MapPoint;
 import es.uva.tfg.hector.SkyWalkerApp.business.PointOfInterest;
 import es.uva.tfg.hector.SkyWalkerApp.business.Token;
 
@@ -139,6 +141,65 @@ public class ServerFacade {
     }
 
     /**
+     * Retrieves a center's receivers.
+     * @param responseListener that will handle responses.
+     * @param center whose receivers must be retreived.
+     */
+    public void getCenterReceivers (final OnServerResponse <List<MapPoint>> responseListener, final Center center) {
+
+        if (null == token) {
+            throw new IllegalStateException("Cannot retrieve tags without a established connection");
+        }
+
+        String url = token.getURL().concat("/api/centers/" + center.getId() + "/rdhubs");
+
+        JsonRequest<JSONArray> request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+
+                final List<MapPoint> receivers = new ArrayList<>();
+
+                for(int i = 0; i < response.length(); i++) {
+
+                    try {
+                        JSONObject json = response.getJSONObject(i);
+
+                        final int id = json.getInt("id");
+                        final float x = (float) json.getDouble("x");
+                        final float y = (float) json.getDouble("y");
+                        final int z = json.getInt("z");
+
+                        final MapPoint receiver = new MapPoint(id, x, y, z);
+                        receivers.add(receiver);
+
+                    } catch (JSONException e) {
+                        responseListener.onError(Errors.INVALID_JSON);
+                    }
+                }
+
+                responseListener.onSuccess(receivers);
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Errors errorNum = getServerError(error);
+                responseListener.onError(errorNum);
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token.getToken());
+                return headers;
+            }
+        };
+
+        requestQueue.add(request);
+
+    }
+
+    /**
      * Retrieves all available tags for a given token.
      * @param responseListener that will handle responses.
      */
@@ -207,14 +268,14 @@ public class ServerFacade {
             throw new IllegalStateException("Cannot retrieve tags without a established connection");
         }
 
-        String url = token.getURL().concat("/api/centers/0/tags/" + tag.getId() + "/position");
+        String url = token.getURL().concat("/api/centers/0/tags/" + tag.getId());
 
         JsonRequest<JSONObject> request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    tag.setX(response.getInt("x"));
-                    tag.setY(response.getInt("y"));
+                    tag.setX((float) response.getDouble("x"));
+                    tag.setY((float) response.getDouble("y"));
                     tag.setZ(response.getInt("z"));
                     responseListener.onSuccess(tag);
                 } catch (JSONException e) {
@@ -268,6 +329,21 @@ public class ServerFacade {
 
         return errorEnum;
 
+    }
+
+    /**
+     * Sets demo mode.
+     */
+    public void setDemo() {
+        token = new Token("demo", null);
+    }
+
+    /**
+     * Retrieves whether connection is in demo mode or not.
+     * @return true if demo mode, false otherwise.
+     */
+    public boolean isDemo() {
+        return token.getURL().equals("demo");
     }
 
 

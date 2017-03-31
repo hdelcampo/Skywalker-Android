@@ -23,9 +23,11 @@
     <string name="demo">Demo mode</string>
 
     <!-- Connection handling -->
+    <string name="connection_started">Connecting…</string>
+    <string name="connection_recievers">Receiving antennas…</string>
+    <string name="connection_tags">Receiving tags…</string>
     <string name="no_internet">There was an error with your internet connection.</string>
     <string name="invalid_login_data">Username or password are invalid or empty.</string>
-    <string name="connection_in_progress">Connecting…</string>
     <string name="invalid_url">http(s)://www.example.com</string>
     <string name="server_bad_connection">Couldn"'"t retrieve server info.</string>
 

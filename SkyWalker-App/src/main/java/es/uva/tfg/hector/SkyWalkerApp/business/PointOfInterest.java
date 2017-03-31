@@ -11,24 +11,12 @@ import java.util.List;
  * This class also handles the served retrieved points.
  * @author Héctor Del Campo Pando
  */
-public class PointOfInterest implements Parcelable {
+public class PointOfInterest extends MapPoint implements Parcelable {
 
     /**
      * The list of server retrieved points.
      */
     private static List<PointOfInterest> points;
-
-    /**
-     * Coordinates
-     */
-    private double x,
-         y,
-         z;
-
-    /**
-     * Id of the point
-     */
-    private final int id;
 
     /**
      * Name of the point.
@@ -91,49 +79,8 @@ public class PointOfInterest implements Parcelable {
      * @param name of the point of interest.
      */
     public PointOfInterest (int id, String name) {
-        this.id = id;
+        super(id, -1, -1, -1);
         this.name = name;
-        x = y = z = -1;
-    }
-
-    public double getX() {
-        return x;
-    }
-
-    public void setX(double x) {
-        this.x = x;
-    }
-
-    public double getY() {
-        return y;
-    }
-
-    public void setY(double y) {
-        this.y = y;
-    }
-
-    public double getZ() {
-        return z;
-    }
-
-    public void setZ(double z) {
-        this.z = z;
-    }
-
-    /**
-     * Decides whether a point has a defined position or not.
-     * @return true if point has no position, false otherwise.
-     */
-    public boolean isUndefined() {
-        return (x == -1 && y == -1);
-    }
-
-    /**
-     * Retrieves the ID for the point.
-     * @return the ID.
-     */
-    public int getId() {
-        return id;
     }
 
     /**
@@ -142,18 +89,6 @@ public class PointOfInterest implements Parcelable {
      */
     public String getName() {
         return name;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        PointOfInterest that = (PointOfInterest) o;
-
-        return id == that.getId();
-
     }
 
     @Override
@@ -173,11 +108,12 @@ public class PointOfInterest implements Parcelable {
     };
 
     private PointOfInterest(Parcel in) {
-        id = in.readInt();
+        super(in.readInt(),
+                in.readFloat(),
+                in.readFloat(),
+                in.readInt());
         name = in.readString();
-        x = in.readDouble();
-        y = in.readDouble();
-        z = in.readDouble();
+
     }
 
     @Override
@@ -187,14 +123,14 @@ public class PointOfInterest implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
+        dest.writeInt(getId());
         dest.writeString(name);
-        dest.writeDouble(x);
-        dest.writeDouble(y);
-        dest.writeDouble(z);
+        dest.writeFloat(getX());
+        dest.writeFloat(getY());
+        dest.writeInt(getZ());
     }
 
-    protected PointOfInterest copy() {
+    private PointOfInterest copy() {
         PointOfInterest newPoint = new PointOfInterest(this.getId(), this.getName());
         newPoint.setX(this.getX());
         newPoint.setY(this.getY());
