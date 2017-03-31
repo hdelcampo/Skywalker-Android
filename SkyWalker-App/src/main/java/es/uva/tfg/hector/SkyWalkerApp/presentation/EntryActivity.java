@@ -14,6 +14,7 @@ public class EntryActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(android.R.style.Theme_DeviceDefault_Light_NoActionBar);
         setContentView(R.layout.entry_layout);
     }
 }

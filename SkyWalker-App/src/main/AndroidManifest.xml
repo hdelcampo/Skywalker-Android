@@ -2,8 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="es.uva.tfg.hector.SkyWalkerApp">
 
-    <uses-sdk android:minSdkVersion="14" />
-
     <uses-feature android:name="com.android.hardware.camera2.full" />
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
@@ -16,20 +14,16 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:screenOrientation="sensorLandscape"
-        android:supportsRtl="true"
-        android:theme="@style/SplashTheme">
+        android:supportsRtl="true">
 
         <activity
-            android:name=".presentation.SplashActivity">
+            android:name=".presentation.EntryActivity"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".presentation.EntryActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            </activity>
 
         <activity
             android:name=".presentation.AugmentedRealityActivity"
