@@ -37,7 +37,6 @@ import es.uva.tfg.hector.SkyWalkerApp.business.Token;
  * this singleton also manages the connection token.
  * @author Hector Del Campo Pando
  */
-
 public class ServerFacade {
 
     /**
@@ -262,7 +261,7 @@ public class ServerFacade {
      * @param responseListener that will handle responses.
      * @param tag to ask for.
      */
-    public void getLastPosition (final OnServerResponse <PointOfInterest> responseListener, final PointOfInterest tag) {
+    public void getLastPosition (final OnServerResponse <MapPoint> responseListener, final PointOfInterest tag) {
 
         if (null == token) {
             throw new IllegalStateException("Cannot retrieve tags without a established connection");
@@ -274,10 +273,16 @@ public class ServerFacade {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    tag.setX((float) response.getDouble("x"));
-                    tag.setY((float) response.getDouble("y"));
-                    tag.setZ(response.getInt("z"));
-                    responseListener.onSuccess(tag);
+                    final int receiverId = response.getInt("nearest_rdhub");
+                    final MapPoint receiver = Center.centers.get(0).getReceiver(receiverId);
+                    final MapPoint newPosition =
+                            new MapPoint(
+                                    tag.getId(),
+                                    receiver.getX(),
+                                    receiver.getY(),
+                                    receiver.getZ());
+
+                    responseListener.onSuccess(newPosition);
                 } catch (JSONException e) {
                     e.printStackTrace();
                     responseListener.onError(Errors.INVALID_JSON);

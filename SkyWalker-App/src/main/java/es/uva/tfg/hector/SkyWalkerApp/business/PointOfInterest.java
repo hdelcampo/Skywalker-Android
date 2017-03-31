@@ -124,10 +124,10 @@ public class PointOfInterest extends MapPoint implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(getId());
-        dest.writeString(name);
         dest.writeFloat(getX());
         dest.writeFloat(getY());
         dest.writeInt(getZ());
+        dest.writeString(name);
     }
 
     private PointOfInterest copy() {

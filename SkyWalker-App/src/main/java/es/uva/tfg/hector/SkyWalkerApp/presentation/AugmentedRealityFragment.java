@@ -2,7 +2,6 @@ package es.uva.tfg.hector.SkyWalkerApp.presentation;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.TextureView;
 import android.view.View;
@@ -12,7 +11,6 @@ import java.util.List;
 
 import es.uva.tfg.hector.SkyWalkerApp.R;
 import es.uva.tfg.hector.SkyWalkerApp.business.PointOfInterest;
-import es.uva.tfg.hector.SkyWalkerApp.persistence.ServerFacade;
 
 /**
  * Augmented reality fragment
@@ -30,11 +28,6 @@ public class AugmentedRealityFragment extends Fragment {
      */
     private OverlayView overlayView;
 
-    /**
-     * Connection thread.
-     */
-    private Thread connectionThread;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -50,12 +43,6 @@ public class AugmentedRealityFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
-        if (!ServerFacade.getInstance(getActivity().getApplicationContext()).isDemo()) {
-            connectionThread = new ConnectionThread();
-            connectionThread.start();
-        }
-
         cameraPreview.start();
         overlayView.start();
     }
@@ -63,9 +50,6 @@ public class AugmentedRealityFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        if (connectionThread != null) {
-            connectionThread.interrupt();
-        }
         cameraPreview.stop();
         overlayView.stop();
     }
@@ -85,50 +69,5 @@ public class AugmentedRealityFragment extends Fragment {
     public void setActivePoints (List<PointOfInterest> points) {
         overlayView.display(points);
     }
-
-    private class ConnectionThread extends Thread {
-
-        private static final long SLEEP_TIME = 250; //miliseconds
-
-        private volatile boolean running = true;
-
-        @Override
-        public void run() {
-
-            while (running) {
-                List<PointOfInterest> points = AugmentedRealityFragment.this.getActivePoints();
-                for (PointOfInterest point : points) {
-                    ServerFacade.getInstance(getActivity().getApplicationContext()).
-                            getLastPosition(new ServerFacade.OnServerResponse<PointOfInterest>() {
-                                @Override
-                                public void onSuccess(PointOfInterest response) {
-                                    Log.e("Updating success", "Could update " + response.toString());
-                                }
-
-                                @Override
-                                public void onError(ServerFacade.Errors error) {
-                                    Log.e("Updating error", "Couldnt update " + error.toString());
-                                }
-                            }, point);
-                }
-
-                try {
-                    sleep(SLEEP_TIME);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-
-        }
-
-        @Override
-        public void interrupt() {
-            super.interrupt();
-            running = false;
-        }
-
-
-        }
 
 }

@@ -1,5 +1,7 @@
 package es.uva.tfg.hector.SkyWalkerApp.business;
 
+import android.util.SparseArray;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +17,7 @@ public class Center {
 
     private final Vector2D mapNorth;
 
-    private final List<MapPoint> receivers = new ArrayList<>();
+    private final SparseArray<MapPoint> receivers = new SparseArray<>();
 
     public static List<Center> centers = new ArrayList<>();
 
@@ -26,7 +28,15 @@ public class Center {
     }
 
     public void addReceivers(List<MapPoint> receivers) {
-        this.receivers.addAll(receivers);
+
+        for (MapPoint receiver: receivers) {
+            this.receivers.put(receiver.getId(), receiver);
+        }
+
+    }
+
+    public MapPoint getReceiver(final int id) {
+        return receivers.get(id);
     }
 
     public int getId () {

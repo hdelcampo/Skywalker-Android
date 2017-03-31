@@ -20,8 +20,10 @@ import java.util.Observer;
 
 import es.uva.tfg.hector.SkyWalkerApp.R;
 import es.uva.tfg.hector.SkyWalkerApp.business.Camera;
+import es.uva.tfg.hector.SkyWalkerApp.business.MapPoint;
 import es.uva.tfg.hector.SkyWalkerApp.business.OrientationSensor;
 import es.uva.tfg.hector.SkyWalkerApp.business.PointOfInterest;
+import es.uva.tfg.hector.SkyWalkerApp.persistence.ServerFacade;
 import es.uva.tfg.hector.SkyWalkerApp.services.Vector2D;
 import es.uva.tfg.hector.SkyWalkerApp.services.Vector3D;
 
@@ -56,6 +58,11 @@ public class OverlayView implements Observer{
      * Thread that will manage listInUse points.
      */
     private PainterThread thread;
+
+    /**
+     * Connection thread.
+     */
+    private Thread connectionThread;
 
     /**
      * The orientation's sensor that will indicate where the user is aiming.
@@ -142,6 +149,11 @@ public class OverlayView implements Observer{
         if (view.isAvailable()) {
             textureListener.onSurfaceTextureAvailable(view.getSurfaceTexture(), view.getWidth(), view.getHeight());
         }
+
+        if (!ServerFacade.getInstance(activity.getApplicationContext()).isDemo()) {
+            connectionThread = new ConnectionThread();
+            connectionThread.start();
+        }
     }
 
     /**
@@ -150,6 +162,10 @@ public class OverlayView implements Observer{
     public void stop () {
         if (view.isAvailable()) {
             textureListener.onSurfaceTextureDestroyed(view.getSurfaceTexture());
+        }
+
+        if (connectionThread != null) {
+            connectionThread.interrupt();
         }
     }
 
@@ -461,6 +477,57 @@ public class OverlayView implements Observer{
             }
 
         }
+
+    }
+
+    private class ConnectionThread extends Thread {
+
+        private static final long SLEEP_TIME = 250; //miliseconds
+
+        private volatile boolean running = true;
+
+        @Override
+        public void run() {
+
+            while (running) {
+                final List<PointOfInterest> points = OverlayView.this.points;
+                for (PointOfInterest point : points) {
+                    ServerFacade.getInstance(activity.getApplicationContext()).
+                            getLastPosition(new ServerFacade.OnServerResponse<MapPoint>() {
+                                @Override
+                                public void onSuccess(MapPoint newPosition) {
+                                    for (PointOfInterest point: points) {
+                                        if (point.equals(newPosition)) {
+                                            point.setX(newPosition.getX());
+                                            point.setY(newPosition.getY());
+                                            point.setZ(newPosition.getZ());
+                                        }
+                                    }
+
+                                }
+
+                                @Override
+                                public void onError(ServerFacade.Errors error) {
+                                }
+                            }, point);
+                }
+
+                try {
+                    sleep(SLEEP_TIME);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+
+        }
+
+        @Override
+        public void interrupt() {
+            super.interrupt();
+            running = false;
+        }
+
 
     }
 }
