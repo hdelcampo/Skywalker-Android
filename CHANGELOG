@@ -1,0 +1,61 @@
+-----------------------
+ Build 16 -21/02/2017-
+-----------------------
+
++ Los números de build ahora van a la par entre Android y iOS
++ Se han rehecho muchas implementaciones del sistema, mejorando la calidad general del código
++ Se ha arreglado la cámara “estrecha” tanto en la API vieja como en la nueva
++ Se ha arreglado el drenaje de la batería al apagar la pantalla
++ La conexión con el servidor, la obtención de beacons y la auto-actualización de puntos funciona, aunque el código no recoge bien ciertos campos como el Centro
++ Se ha añadido un modo de demostración, simplemente como url indicar “demo”
++ Se ha añadido una pantalla inicial de conexión
++ Se ha añadido una splash screen
+
+-----------------------
+ Build 15 -27/11/2016-
+-----------------------
+
++Arreglado crash al perder foco
++La camara ya deberia de abrirse correctamente siempre
++Refactoring interno
+
+-----------------------
+ Build 14 -8/11/2016-
+-----------------------
+
++Cambiados iconos y su tamaño
+
+-----------------------
+ Build 13 -23/10/2016-
+-----------------------
+
++El dialogo de filtrar elementos tiene un nuevo estilo, ya completo, ¡debería ser el estilo final!
++Añadido dialogo para conexion a BB.DD, aún no hace nada, ¡pero el estilo también debería ser el ultimo!
++Nuevo estilo aplicado a la visualizacion de puntos, tanto los que se encuentren dentro del campo de visión como los que no.
++Añadido crashlytics de fabric
+-Eliminada cierta información, tales como la dirección del punto y su velocidad
+
+-----------------------
+ Build 12 -11/10/2016-
+-----------------------
+
++Añadida la posibilidad de filtrar elementos de pantalla
++El filtro tiene el estilo nativo del sistema, aún así no esta completo
+-Eliminada la timestamp de la información de la APK, dado que no funcionaba siempre
+
+-----------------------
+ Build 11 -27/09/2016-
+-----------------------
+
++Cambiado icono del launcher
++Los indicadores de la interfaz ahora son proporcionales a la resolucion del dispositivo
++Ahora hay 2 personas a encontrar, para demostrar la localización de multiples objetos
+
+-----------------------
+ Build 10 -26/09/2016-
+-----------------------
+
++Indicadores fuera de vista con nombre
++Indicadores en vista con nombre, dirección y velocidad
++Icono placeholder
++Funciona con ambas APIs de camara
