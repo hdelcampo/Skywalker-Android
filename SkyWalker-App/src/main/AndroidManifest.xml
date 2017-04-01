@@ -43,6 +43,10 @@
             android:name="io.fabric.ApiKey"
             android:value="7a424b2d0d701043f224a61ff33c07c21f3a4407" />
 
+        <meta-data
+            android:name="com.google.android.gms.vision.DEPENDENCIES"
+            android:value="barcode"/>
+
     </application>
 
 </manifest>

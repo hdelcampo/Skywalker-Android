@@ -1,14 +1,11 @@
 package es.uva.tfg.hector.SkyWalkerApp.presentation;
 
 
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -18,20 +15,15 @@ import android.view.inputmethod.InputMethodManager;
 import android.webkit.URLUtil;
 import android.widget.EditText;
 
-import java.util.List;
-
 import es.uva.tfg.hector.SkyWalkerApp.R;
-import es.uva.tfg.hector.SkyWalkerApp.business.Center;
-import es.uva.tfg.hector.SkyWalkerApp.business.MapPoint;
 import es.uva.tfg.hector.SkyWalkerApp.business.PointOfInterest;
-import es.uva.tfg.hector.SkyWalkerApp.business.Token;
 import es.uva.tfg.hector.SkyWalkerApp.persistence.ServerFacade;
 
 /**
  * Fragment to handle Manual UI connections.
  * @author Hector Del Campo Pando
  */
-public class ManualConnectionFragment extends Fragment implements View.OnClickListener {
+public class ManualConnectionFragment extends NewConnectionFragment implements View.OnClickListener {
 
     /**
      * Address form validator,
@@ -79,6 +71,7 @@ public class ManualConnectionFragment extends Fragment implements View.OnClickLi
             case R.id.accept_button:
 
                 hideKeyboard();
+                toggleCredentialsError(false);
 
                 final String url = ((EditText) getView().findViewById(R.id.addr_field)).getText().toString();
                 final String username = ((EditText) getView().findViewById(R.id.username_field)).getText().toString();
@@ -103,116 +96,8 @@ public class ManualConnectionFragment extends Fragment implements View.OnClickLi
         }
     }
 
-
-    /**
-     * Starts the Augmented Reality interface on a new activity if caller is not a dialog.
-     */
-    private void startAR() {
-
-        if (getActivity() instanceof EntryActivity) {
-            Intent intent = new Intent(getContext(), AugmentedRealityActivity.class);
-            startActivity(intent);
-        }
-
-        getActivity().finish();
-
-    }
-
-    /**
-     * Establishes a new connection to the given server.
-     * @param url of the server, must be a valid URL,
-     *            otherwise function will return and a message will be shown to the user.
-     * @param login of the client
-     * @param password of the client
-     */
-    private void newConnection(final String url, final String login, final String password) {
-
-        toggleCredentialsError(false);
-
-        final ProgressDialog dialog =
-                ProgressDialog.show(getContext(), null, getString(R.string.connection_started), true, false);
-
-        ServerFacade.getInstance(getActivity().getApplicationContext())
-                .getToken(new ServerFacade.OnServerResponse<Token>() {
-
-            @Override
-            public void onSuccess(Token response) {
-                retrieveReceivers(dialog);
-            }
-
-            @Override
-            public void onError(ServerFacade.Errors error) {
-                dialog.dismiss();
-                showError(error);
-            }
-
-        }, url, login, password);
-
-    }
-
-    /**
-     * Retrieves the receivers for the center.
-     * @param dialog to control.
-     */
-    private void retrieveReceivers(final ProgressDialog dialog) {
-
-        dialog.setMessage(getString(R.string.connection_recievers));
-
-        Center.centers.add(new Center(0));
-
-        ServerFacade.getInstance(getActivity().getApplicationContext())
-                .getCenterReceivers(new ServerFacade.OnServerResponse<List<MapPoint>>() {
-
-                    @Override
-                    public void onSuccess(List<MapPoint> receivers) {
-                        Center.centers.get(0).addReceivers(receivers);
-                        retrieveTags(dialog);
-                    }
-
-                    @Override
-                    public void onError(ServerFacade.Errors error) {
-                        dialog.dismiss();
-                        showError(error);
-                    }
-
-                }, Center.centers.get(0)); //TODO center real
-
-    }
-
-
-    /**
-     * Retrieves the tags available for the connection token.
-     * @param dialog to handle.
-     */
-    private void retrieveTags (final ProgressDialog dialog) {
-
-        dialog.setMessage(getString(R.string.connection_tags));
-
-        ServerFacade.getInstance(getActivity().getApplicationContext()).
-                getAvailableTags(new ServerFacade.OnServerResponse<List<PointOfInterest>>() {
-
-            @Override
-            public void onSuccess(List<PointOfInterest> points) {
-                PointOfInterest.setPoints(points);
-                dialog.dismiss();
-                startAR();
-            }
-
-            @Override
-            public void onError(ServerFacade.Errors error) {
-                dialog.dismiss();
-                showError(error);
-            }
-
-        });
-
-    }
-
-    /**
-     * Handles showing error to the user.
-     * @param error to be shown.
-     */
-    private void showError(ServerFacade.Errors error) {
+    @Override
+    protected void showError(ServerFacade.Errors error) {
         switch (error) {
             case INVALID_URL:
                 toggleInvalidURL(true);
