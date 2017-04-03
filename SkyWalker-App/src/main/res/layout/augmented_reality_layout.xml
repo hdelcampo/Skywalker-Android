@@ -13,7 +13,6 @@
     <TextureView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/overlay_texture"
-        android:background="@android:color/transparent" />
+        android:id="@+id/overlay_texture"/>
 
 </FrameLayout>
