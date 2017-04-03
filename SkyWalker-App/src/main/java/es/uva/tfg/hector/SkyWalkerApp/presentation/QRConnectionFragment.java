@@ -52,15 +52,21 @@ public class QRConnectionFragment extends NewConnectionFragment {
     private final SurfaceHolder.Callback surfaceListener = new SurfaceHolder.Callback() {
 
         @Override
-        public void surfaceCreated(SurfaceHolder holder) {
+        public void surfaceCreated(final SurfaceHolder holder) {
 
             QRConnectionFragment.this.holder = holder;
 
-            try {
-                camera.start(holder);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        camera.start(holder);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }.start();
+
         }
 
         @Override
@@ -171,11 +177,16 @@ public class QRConnectionFragment extends NewConnectionFragment {
     public void onResume() {
         super.onResume();
         if (holder != null) {
-            try {
-                camera.start(holder);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+                new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            camera.start(holder);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }.start();
         }
     }
 
