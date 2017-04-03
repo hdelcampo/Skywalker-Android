@@ -2,7 +2,6 @@ package es.uva.tfg.hector.SkyWalkerApp.presentation;
 
 import android.app.Activity;
 import android.graphics.SurfaceTexture;
-import android.util.Log;
 import android.view.TextureView;
 
 import java.io.IOException;
@@ -37,28 +36,15 @@ public class CameraPreview {
      */
     private TextureView.SurfaceTextureListener surfaceTextureListener = new TextureView.SurfaceTextureListener(){
 
-        /**
-         * Indicates whether the surface was already destroyed or not.
-         */
-        private volatile boolean destroyed = true;
-
         @Override
         public void onSurfaceTextureAvailable(SurfaceTexture surface,
                                               int width,
                                               int height) {
 
-            if (!destroyed) {
-                return;
-            }
-
-            destroyed = false;
-
-            camera.openCamera(activity);
-
             try {
                 camera.setView(previewView);
             } catch (IOException e) {
-                Log.e(TAG, "Setting camera's preview surface failed");
+                e.printStackTrace();
             }
 
 
@@ -74,21 +60,22 @@ public class CameraPreview {
         public void onSurfaceTextureSizeChanged(SurfaceTexture surface,
                                                 int width, int height) {
 
+            if (surface == null) {
+                return;
+            }
+
+            camera.stopPreview();
+
             camera.transform(activity.getWindowManager().getDefaultDisplay().getRotation(),
                     width,
                     height);
+
+            camera.startPreview();
 
         }
 
         @Override
         public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
-            if (destroyed) {
-                return true;
-            }
-            //When preview is paused the camera device must be freed
-            destroyed = true;
-            camera.stopPreview();
-            camera.closeCamera();
             return true;
         }
 
@@ -110,14 +97,16 @@ public class CameraPreview {
     }
 
     public void stop () {
-        if (previewView.isAvailable()) {
-            surfaceTextureListener.onSurfaceTextureDestroyed(previewView.getSurfaceTexture());
-        }
+        camera.stopPreview();
+        camera.closeCamera();
     }
 
     public void start () {
+        camera.openCamera(activity);
         if (previewView.isAvailable()) {
-            surfaceTextureListener.onSurfaceTextureAvailable(previewView.getSurfaceTexture(), previewView.getWidth(), previewView.getHeight());
+            surfaceTextureListener.onSurfaceTextureAvailable(previewView.getSurfaceTexture(),
+                    previewView.getWidth(),
+                    previewView.getHeight());
         }
     }
 
