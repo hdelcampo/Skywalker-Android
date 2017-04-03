@@ -1,14 +1,9 @@
 package es.uva.tfg.hector.SkyWalkerApp.presentation;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -21,11 +16,6 @@ import es.uva.tfg.hector.SkyWalkerApp.business.PointOfInterest;
  */
 public class AugmentedRealityActivity extends FragmentActivity
         implements AugmentedRealityControlsFragment.AugmentedRealityControls {
-
-    /**
-     * Permissions IDs.
-     */
-    private static final int CAMERA_PERMISSION = 0;
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -45,12 +35,7 @@ public class AugmentedRealityActivity extends FragmentActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.augmented_reality_activity_layout);
 
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.CAMERA},
-                    CAMERA_PERMISSION);
-        }
+
 
         setBuildStamp();
 
@@ -68,22 +53,6 @@ public class AugmentedRealityActivity extends FragmentActivity
         }
 
         ((TextView)findViewById(R.id.compilationStamp)).setText(s);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case CAMERA_PERMISSION: {
-                if (grantResults.length == 0
-                        || grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    Toast.makeText(this, getString(R.string.needs_camera_permissions), Toast.LENGTH_LONG).show();
-                    ActivityCompat.requestPermissions(this,
-                            new String[]{Manifest.permission.CAMERA},
-                            CAMERA_PERMISSION);
-                }
-            }
-        }
     }
 
     @Override
