@@ -43,7 +43,7 @@ public class ServerFacade {
      * Enum for server errors.
      */
     public enum Errors {
-        INVALID_URL, NO_CONNECTION, INVALID_USERNAME_OR_PASSWORD, INVALID_JSON, TIME_OUT, UNKNOWN
+        INVALID_QR, INVALID_URL, NO_CONNECTION, INVALID_USERNAME_OR_PASSWORD, INVALID_JSON, TIME_OUT, UNKNOWN
     }
 
     /**

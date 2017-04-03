@@ -3,6 +3,7 @@ package es.uva.tfg.hector.SkyWalkerApp.presentation;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
@@ -27,7 +28,13 @@ import es.uva.tfg.hector.SkyWalkerApp.persistence.ServerFacade;
  * Fragment to handle QR UI connections.
  * @author Hector Del Campo Pando.
  */
+@SuppressWarnings("MissingPermission")
 public class QRConnectionFragment extends NewConnectionFragment {
+
+    /**
+     * Error snackbar instance.
+     */
+    private Snackbar snackbar = null;
 
     /**
      * Camera device.
@@ -39,7 +46,6 @@ public class QRConnectionFragment extends NewConnectionFragment {
      */
     private final SurfaceHolder.Callback surfaceListener = new SurfaceHolder.Callback() {
 
-        @SuppressWarnings("MissingPermission")
         @Override
         public void surfaceCreated(SurfaceHolder holder) {
             try {
@@ -80,7 +86,7 @@ public class QRConnectionFragment extends NewConnectionFragment {
 
             final SparseArray<Barcode> barcodes = detections.getDetectedItems();
 
-            for (int i = 0; i < barcodes.size(); i++){
+            for (int i = 0; i < barcodes.size(); i++) {
                 final String content = barcodes.valueAt(i).displayValue;
                 if (isXtremeLocQR(content)) {
 
@@ -106,6 +112,7 @@ public class QRConnectionFragment extends NewConnectionFragment {
 
                                 return result;
                             } catch (Exception e) {
+                                showError(ServerFacade.Errors.INVALID_JSON);
                                 e.printStackTrace();
                             }
 
@@ -119,8 +126,11 @@ public class QRConnectionFragment extends NewConnectionFragment {
                         }
                     }.execute(content);
 
+                } else {
+                    showError(ServerFacade.Errors.INVALID_QR);
                 }
             }
+
         }
     };
 
@@ -142,7 +152,7 @@ public class QRConnectionFragment extends NewConnectionFragment {
 
         camera = new CameraSource
                 .Builder(getContext(), barcodeDetector)
-                .setRequestedPreviewSize(640, 480)
+                .setAutoFocusEnabled(true)
                 .build();
 
         return rootView;
@@ -151,8 +161,40 @@ public class QRConnectionFragment extends NewConnectionFragment {
     @Override
     void showError(ServerFacade.Errors error) {
 
+        switch (error) {
+            case INVALID_QR:
+
+                if(snackbar != null) {
+                    return;
+                }
+
+                snackbar = Snackbar.make(getView(), getString(R.string.invalid_qr), Snackbar.LENGTH_LONG);
+                snackbar.addCallback(new Snackbar.Callback() {
+                            @Override
+                            public void onDismissed(Snackbar transientBottomBar, int event) {
+                                snackbar = null;
+                            }
+                        });
+                snackbar.show();
+                break;
+            case INVALID_URL:
+                Snackbar.make(getView(), getString(R.string.invalid_qr), Snackbar.LENGTH_LONG).show();
+                break;
+            case INVALID_USERNAME_OR_PASSWORD:
+                Snackbar.make(getView(), getString(R.string.invalid_login_data), Snackbar.LENGTH_LONG).show();
+                break;
+            default:
+                Snackbar.make(getView(), getString(R.string.server_bad_connection), Snackbar.LENGTH_LONG).show();
+                break;
+        }
+
     }
 
+    /**
+     * Checks wheter a QR code is XtremeLoc schemed or not.
+     * @param qr to check.
+     * @return true if XtremeLoc scheme, false otherwise.
+     */
     private boolean isXtremeLocQR(final String qr) {
 
         if (qr == null || qr.isEmpty()) {
