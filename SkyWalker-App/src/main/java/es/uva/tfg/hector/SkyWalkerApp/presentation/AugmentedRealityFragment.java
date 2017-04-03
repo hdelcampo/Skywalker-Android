@@ -41,15 +41,15 @@ public class AugmentedRealityFragment extends Fragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         cameraPreview.start();
         overlayView.start();
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         cameraPreview.stop();
         overlayView.stop();
     }
