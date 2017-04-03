@@ -32,6 +32,11 @@ import es.uva.tfg.hector.SkyWalkerApp.persistence.ServerFacade;
 public class QRConnectionFragment extends NewConnectionFragment {
 
     /**
+     * Camera's preview holder.
+     */
+    private SurfaceHolder holder;
+
+    /**
      * Error snackbar instance.
      */
     private Snackbar snackbar = null;
@@ -48,6 +53,9 @@ public class QRConnectionFragment extends NewConnectionFragment {
 
         @Override
         public void surfaceCreated(SurfaceHolder holder) {
+
+            QRConnectionFragment.this.holder = holder;
+
             try {
                 camera.start(holder);
             } catch (IOException e) {
@@ -62,6 +70,7 @@ public class QRConnectionFragment extends NewConnectionFragment {
 
         @Override
         public void surfaceDestroyed(SurfaceHolder holder) {
+            QRConnectionFragment.this.holder = null;
             camera.stop();
         }
 
@@ -156,6 +165,24 @@ public class QRConnectionFragment extends NewConnectionFragment {
                 .build();
 
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (holder != null) {
+            try {
+                camera.start(holder);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        camera.stop();
     }
 
     @Override
