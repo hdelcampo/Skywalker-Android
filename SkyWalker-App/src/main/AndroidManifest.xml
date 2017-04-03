@@ -27,17 +27,17 @@
 
         <activity
             android:name=".presentation.AugmentedRealityActivity"
-            android:theme="@android:style/Theme.NoTitleBar" />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
             android:name=".presentation.FilterActivity"
             android:label="@string/filter_title"
-            android:theme="@style/FilterDialog" />
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog.NoActionBar" />
 
         <activity
             android:name=".presentation.NewConnectionActivity"
             android:label="@string/connection_title"
-            android:theme="@style/ConnectionDialog" />
+            android:theme="@style/Theme.AppCompat.Light.DialogWhenLarge" />
 
         <meta-data
             android:name="io.fabric.ApiKey"

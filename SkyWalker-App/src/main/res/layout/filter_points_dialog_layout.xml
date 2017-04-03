@@ -9,8 +9,8 @@
     <ListView
         android:id="@+id/itemsList"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_gravity="center"/>
+        android:layout_height="125dp"
+        android:layout_gravity="center" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -43,12 +43,12 @@
         android:layout_gravity="right">
 
         <Button
-            android:text="@android:string/cancel"
+            android:id="@+id/cancelButton"
+            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/cancelButton"
-            style="@style/Widget.AppCompat.Button.Borderless.Colored"
-            android:onClick="cancel" />
+            android:onClick="cancel"
+            android:text="@android:string/cancel" />
 
         <Button
             android:text="@android:string/ok"

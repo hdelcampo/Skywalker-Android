@@ -12,6 +12,4 @@
         <item name="android:windowBackground">@drawable/splash_screen_style</item>
     </style>
 
-    <style name="ConnectionDialog" parent="Theme.AppCompat.Light.Dialog" />
-
 </resources>
