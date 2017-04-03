@@ -1,25 +1,22 @@
 package es.uva.tfg.hector.SkyWalkerApp.presentation;
 
 
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.vision.CameraSource;
-import com.google.android.gms.vision.Detector;
+import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.IOException;
 
 import es.uva.tfg.hector.SkyWalkerApp.R;
 import es.uva.tfg.hector.SkyWalkerApp.persistence.ServerFacade;
@@ -32,9 +29,9 @@ import es.uva.tfg.hector.SkyWalkerApp.persistence.ServerFacade;
 public class QRConnectionFragment extends NewConnectionFragment {
 
     /**
-     * Camera's preview holder.
+     * Size for QR camera's preview.
      */
-    private SurfaceHolder holder;
+    private static final int WIDTH = 1024, HEIGHT = 768;
 
     /**
      * Error snackbar instance.
@@ -42,112 +39,29 @@ public class QRConnectionFragment extends NewConnectionFragment {
     private Snackbar snackbar = null;
 
     /**
-     * Camera device.
+     * Connection status.
      */
-    private CameraSource camera;
+    private boolean connecting = false;
 
     /**
-     * Surface state callback handler.
+     * Camera's preview controller.
      */
-    private final SurfaceHolder.Callback surfaceListener = new SurfaceHolder.Callback() {
-
-        @Override
-        public void surfaceCreated(final SurfaceHolder holder) {
-
-            QRConnectionFragment.this.holder = holder;
-
-            new Thread() {
-                @Override
-                public void run() {
-                    try {
-                        camera.start(holder);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }.start();
-
-        }
-
-        @Override
-        public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
-        }
-
-        @Override
-        public void surfaceDestroyed(SurfaceHolder holder) {
-            QRConnectionFragment.this.holder = null;
-            camera.stop();
-        }
-
-    };
+    private CameraPreview camera;
 
     /**
-     * QR detection handler.
+     * Camera's preview target.
      */
-    private final Detector.Processor<Barcode> qrDetector = new Detector.Processor<Barcode>() {
+    private TextureView cameraPreview;
 
-        private boolean connecting = false;
+    /**
+     * Barcode detector.
+     */
+    private BarcodeDetector barcodeDetector;
 
-        @Override
-        public void release() {}
-
-        @Override
-        public void receiveDetections(Detector.Detections<Barcode> detections) {
-
-            if (connecting) {
-                return;
-            }
-
-            final SparseArray<Barcode> barcodes = detections.getDetectedItems();
-
-            for (int i = 0; i < barcodes.size(); i++) {
-                final String content = barcodes.valueAt(i).displayValue;
-                if (isXtremeLocQR(content)) {
-
-                    connecting = true;
-
-                    new AsyncTask<String, Void, String[]>() {
-                        @Override
-                        protected String[] doInBackground(String... params) {
-                            try {
-                                String[] result = new String[3];
-
-                                final JSONObject json = new JSONObject(params[0]);
-
-                                result[0] = json.getString("url");
-
-                                if (json.has("username")) {
-                                    result[1] = json.getString("username");
-                                }
-
-                                if (json.has("password")) {
-                                    result[2] = json.getString("password");
-                                }
-
-                                return result;
-                            } catch (Exception e) {
-                                showError(ServerFacade.Errors.INVALID_JSON);
-                                e.printStackTrace();
-                            }
-
-                            return null;
-                        }
-
-                        @Override
-                        protected void onPostExecute(String[] s) {
-                            super.onPostExecute(s);
-                            newConnection(s[0], s[1], s[2]);
-                        }
-                    }.execute(content);
-
-                } else {
-                    showError(ServerFacade.Errors.INVALID_QR);
-                }
-            }
-
-        }
-    };
+    /**
+     * Thread that handles QR detection.
+     */
+    private QRDetectorThread detectorThread;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -155,20 +69,12 @@ public class QRConnectionFragment extends NewConnectionFragment {
 
         View rootView = inflater.inflate(R.layout.qr_connection_layout, container, false);
 
-        final SurfaceView cameraView = (SurfaceView) rootView.findViewById(R.id.camera_view);
-        cameraView.getHolder().addCallback(surfaceListener);
+        cameraPreview = (TextureView) rootView.findViewById(R.id.camera_view);
+        camera = new CameraPreview(cameraPreview, getActivity(), WIDTH, HEIGHT);
 
-        final BarcodeDetector barcodeDetector =
-                    new BarcodeDetector.Builder(getContext())
+        barcodeDetector = new BarcodeDetector.Builder(getContext())
                             .setBarcodeFormats(Barcode.QR_CODE)
                             .build();
-
-        barcodeDetector.setProcessor(qrDetector);
-
-        camera = new CameraSource
-                .Builder(getContext(), barcodeDetector)
-                .setAutoFocusEnabled(true)
-                .build();
 
         return rootView;
     }
@@ -176,28 +82,29 @@ public class QRConnectionFragment extends NewConnectionFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (holder != null) {
-                new Thread() {
-                    @Override
-                    public void run() {
-                        try {
-                            camera.start(holder);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }.start();
-        }
+        camera.start();
+        detectorThread = new QRDetectorThread();
+        detectorThread.start();
     }
 
     @Override
     public void onPause() {
         super.onPause();
         camera.stop();
+        try {
+            detectorThread.interrupt();
+            detectorThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            detectorThread = null;
+        }
     }
 
     @Override
     void showError(ServerFacade.Errors error) {
+
+        connecting = false;
 
         switch (error) {
             case INVALID_QR:
@@ -229,6 +136,54 @@ public class QRConnectionFragment extends NewConnectionFragment {
     }
 
     /**
+     * Treats a QR content.
+     * @param content to be treated.
+     */
+    private void treatQR(String content) {
+
+        if (connecting) {
+            return;
+        }
+
+        connecting = true;
+
+        new AsyncTask<String, Void, String[]>() {
+            @Override
+            protected String[] doInBackground(String... params) {
+                try {
+                    String[] result = new String[3];
+
+                    final JSONObject json = new JSONObject(params[0]);
+
+                    result[0] = json.getString("url");
+
+                    if (json.has("username")) {
+                        result[1] = json.getString("username");
+                    }
+
+                    if (json.has("password")) {
+                        result[2] = json.getString("password");
+                    }
+
+                    return result;
+                } catch (Exception e) {
+                    showError(ServerFacade.Errors.INVALID_JSON);
+                    e.printStackTrace();
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(String[] s) {
+                super.onPostExecute(s);
+                newConnection(s[0], s[1], s[2]);
+            }
+        }.execute(content);
+
+    }
+
+    /**
      * Checks wheter a QR code is XtremeLoc schemed or not.
      * @param qr to check.
      * @return true if XtremeLoc scheme, false otherwise.
@@ -250,4 +205,64 @@ public class QRConnectionFragment extends NewConnectionFragment {
         return false;
     }
 
+    /**
+     * Thread to handle QR detection,
+     * it gets the camera's image,
+     * checks for QR using a barcode detector and sleeps until next frame.
+     */
+    private class QRDetectorThread extends Thread {
+
+        /**
+         * Thread's sleeping time.
+         */
+        private static final long SLEEP_TIME = 1000 / 30; //1 sec / 30 fps
+
+        /**
+         * Indicator for thread state.
+         */
+        private volatile boolean running = true;
+
+        @Override
+        public void run() {
+            while (running) {
+                Bitmap bitmap = cameraPreview.getBitmap();
+                if (bitmap == null) {
+                    try {
+                        sleep(SLEEP_TIME);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    continue;
+                }
+                Frame frame = new Frame.Builder()
+                        .setBitmap(bitmap)
+                        .build();
+
+                SparseArray<Barcode> results = barcodeDetector.detect(frame);
+
+                for (int i = 0; i < results.size(); i++) {
+                    final String content = results.valueAt(i).displayValue;
+                    if (isXtremeLocQR(content)) {
+                        treatQR(content);
+                    } else {
+                        showError(ServerFacade.Errors.INVALID_QR);
+                    }
+                }
+
+                try {
+                    sleep(SLEEP_TIME);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        }
+
+        @Override
+        public void interrupt() {
+            super.interrupt();
+            running = false;
+        }
+    }
 }

@@ -14,7 +14,7 @@
         android:text="@string/qr_header"
         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
-    <SurfaceView
+    <TextureView
         android:id="@+id/camera_view"
         android:layout_width="match_parent"
         android:layout_height="400dp"

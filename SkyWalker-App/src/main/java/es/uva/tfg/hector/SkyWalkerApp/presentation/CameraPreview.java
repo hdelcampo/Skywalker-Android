@@ -31,6 +31,8 @@ public class CameraPreview {
      */
     private Activity activity;
 
+    private final int width, height;
+
     /**
      * The view listener
      */
@@ -49,8 +51,8 @@ public class CameraPreview {
 
 
             camera.transform(activity.getWindowManager().getDefaultDisplay().getRotation(),
-                    width,
-                    height);
+                    CameraPreview.this.width == -1 ? width : CameraPreview.this.width,
+                    CameraPreview.this.height == -1 ? width : CameraPreview.this.height);
 
             camera.startPreview();
 
@@ -67,8 +69,8 @@ public class CameraPreview {
             camera.stopPreview();
 
             camera.transform(activity.getWindowManager().getDefaultDisplay().getRotation(),
-                    width,
-                    height);
+                    CameraPreview.this.width == -1 ? width : CameraPreview.this.width,
+                    CameraPreview.this.height == -1 ? width : CameraPreview.this.height);
 
             camera.startPreview();
 
@@ -94,6 +96,21 @@ public class CameraPreview {
         previewView = view;
         camera = Camera.createInstance();
         previewView.setSurfaceTextureListener(surfaceTextureListener);
+        width = -1;
+        height = -1;
+    }
+
+    /**
+     * Creates a new camera preview.
+     * @param view where to show the camera preview.
+     */
+    public CameraPreview(TextureView view, Activity activity, int width, int height){
+        this.activity = activity;
+        previewView = view;
+        camera = Camera.createInstance();
+        previewView.setSurfaceTextureListener(surfaceTextureListener);
+        this.width = width;
+        this.height = height;
     }
 
     public void stop () {
