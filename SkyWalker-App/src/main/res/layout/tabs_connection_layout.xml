@@ -5,13 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="20dp"
-    android:background="#eeeeee">
+    android:background="#fafafa">
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tabHost"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:background="@android:color/background_light"
+        android:elevation="4dp"
         app:tabGravity="fill"
         app:tabMode="fixed" />
 
