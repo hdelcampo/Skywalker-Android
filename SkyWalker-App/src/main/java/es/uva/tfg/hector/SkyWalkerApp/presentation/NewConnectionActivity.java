@@ -1,12 +1,16 @@
 package es.uva.tfg.hector.SkyWalkerApp.presentation;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.view.ViewGroup;
 
 import es.uva.tfg.hector.SkyWalkerApp.R;
 
@@ -14,18 +18,27 @@ import es.uva.tfg.hector.SkyWalkerApp.R;
  * Activity to handle new connections requests.
  * @author Hector Del Campo Pando
  */
-public class NewConnectionActivity extends FragmentActivity {
+public class NewConnectionActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.tabs_connection_layout);
+
+        ActionBar bar = getSupportActionBar();
+
+        if (bar != null) {
+            bar.setElevation(0);
+            ColorDrawable colorDrawable = new ColorDrawable(Color.WHITE);
+            bar.setBackgroundDrawable(colorDrawable);
+            ((ViewGroup.MarginLayoutParams) findViewById(R.id.pager).getLayoutParams()).topMargin = 0;
+        }
+
         TabLayout tabHost = (TabLayout)findViewById(R.id.tabHost);
 
         tabHost.addTab(tabHost.newTab());
         tabHost.addTab(tabHost.newTab());
-        tabHost.setTabGravity(TabLayout.GRAVITY_FILL);
 
         final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
         final Adapter adapter = new Adapter(getSupportFragmentManager());
