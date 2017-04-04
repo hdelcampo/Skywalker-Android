@@ -21,7 +21,7 @@ android {
 
     defaultConfig {
         applicationId "es.uva.SkyWalkerApp.hector.SkyWalkerApp"
-        minSdkVersion 14
+        minSdkVersion 18
         targetSdkVersion 25
         versionCode 17
         versionName "0.6 Prototype"
