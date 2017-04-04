@@ -27,7 +27,7 @@
 
         <activity
             android:name=".presentation.AugmentedRealityActivity"
-            android:theme="@android:style/Theme.DeviceDefault.Light.NoActionBar.Fullscreen" />
+            android:theme="@android:style/Theme.DeviceDefault.Light.NoActionBar" />
 
         <activity
             android:name=".presentation.FilterActivity"
