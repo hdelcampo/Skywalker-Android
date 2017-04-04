@@ -32,7 +32,7 @@
         <activity
             android:name=".presentation.FilterActivity"
             android:label="@string/filter_title"
-            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog.NoActionBar" />
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
 
         <activity
             android:name=".presentation.NewConnectionActivity"

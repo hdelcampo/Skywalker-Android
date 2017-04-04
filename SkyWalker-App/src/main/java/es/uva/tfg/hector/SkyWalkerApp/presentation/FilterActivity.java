@@ -37,7 +37,7 @@ public class FilterActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.filter_points_dialog_layout);
+        setContentView(R.layout.filter_points_layout);
 
         usedPoints = getIntent().getParcelableArrayListExtra(USED_POINTS_EXTRA);
         allPoints = getIntent().getParcelableArrayListExtra(ALL_POINTS_EXTRA);

@@ -3,15 +3,16 @@
     <string name="app_name">SkyWalker-App</string>
     <string name="filter">Filter</string>
     <string name="accept">Accept</string>
-    <string name="filter_title">Select filtering</string>
-    <string name="connection_title">New connection</string>
+    <string name="filter_title">Select elements to show</string>
+    <string name="connection_title">Start a new connection</string>
     <string name="retry">Retry</string>
 
     <!-- Permissions -->
     <string name="needs_camera_permissions">This App needs camera permissions in order to work</string>
 
     <!-- Filter fragment -->
-    <string name="deselectAll">Deselect all</string>
+    <string name="none">None</string>
+    <string name="all">All</string>
 
     <!-- Connection fragment -->
     <string name="QR">Scan QR</string>
