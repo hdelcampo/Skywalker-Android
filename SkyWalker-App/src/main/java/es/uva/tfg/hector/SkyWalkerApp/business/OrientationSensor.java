@@ -9,6 +9,7 @@ import android.hardware.SensorManager;
 import java.util.Observable;
 
 import es.uva.tfg.hector.SkyWalkerApp.services.Matrix;
+import es.uva.tfg.hector.SkyWalkerApp.services.Vector2D;
 import es.uva.tfg.hector.SkyWalkerApp.services.Vector3D;
 
 /**
@@ -35,7 +36,12 @@ public class OrientationSensor extends Observable {
     /**
      * Device's 3D orientation vector.
      */
-    private Vector3D orientationVector = new Vector3D(0, 0, 0);
+    private Vector3D orientationVector = new Vector3D(0, 1, 0);
+
+    /**
+     * Device's reference vector
+     */
+    private Vector2D devicesReference = new Vector2D(0, 1);
 
     /**
      * Listener for the sensors
@@ -76,8 +82,8 @@ public class OrientationSensor extends Observable {
             Matrix rotationVector = rMatrix.multiply(
                     new Matrix(
                     new double[][]{
-                            {0},
-                            {1},
+                            {devicesReference.getX()},
+                            {devicesReference.getY()},
                             {0},
                             {0}
                     }));

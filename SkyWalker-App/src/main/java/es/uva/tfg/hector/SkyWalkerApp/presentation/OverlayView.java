@@ -28,11 +28,11 @@ import es.uva.tfg.hector.SkyWalkerApp.services.Vector2D;
 import es.uva.tfg.hector.SkyWalkerApp.services.Vector3D;
 
 /**
- * Created by Hector Del Campo Pando on 18/07/2016.
+ * Overlay view controller.
+ * Handles the drawing on screen, and the points updating.
+ * @author Héctor Del Campo Pando.
  */
 public class OverlayView implements Observer{
-
-    private static final String TAG = "Overlay View";
 
     /**
      * Camera used in the underlying preview.
@@ -52,7 +52,13 @@ public class OverlayView implements Observer{
     /**
      * Position of the user.
      */
-    private PointOfInterest myPosition;
+    private PointOfInterest mySelf = new PointOfInterest(999, "Yo");
+
+    {
+        mySelf.setX(0.5f);
+        mySelf.setY(0.5f);
+        mySelf.setZ(0);
+    }
 
     /**
      * Thread that will manage listInUse points.
@@ -203,7 +209,10 @@ public class OverlayView implements Observer{
      */
     private class PainterThread extends Thread {
 
-        private volatile boolean running = false;
+        /**
+         * Thread's running state.
+         */
+        private volatile boolean running = true;
 
         /**
          * Waiting time  in milliseconds to start rewriting points.
@@ -248,16 +257,26 @@ public class OverlayView implements Observer{
 
                 synchronized (points) {
 
-                    for(PointOfInterest point : points){
+                    for(PointOfInterest point : points) {
 
                         if (point.isUndefined()) {
                             continue;
                         }
 
-                        if(inSight(point)){
-                            drawPoint(point, canvas);
+                        final Vector2D vectorToPoint =
+                        new Vector2D(
+                                point.getX() - mySelf.getX(),
+                                point.getY() - mySelf.getY()
+                        );
+                        vectorToPoint.normalize();
+
+                        final Vector3D orientationVector =
+                                orientationSensor.getOrientationVector();
+
+                        if(inSight(vectorToPoint, orientationVector)){
+                            drawPoint(point, vectorToPoint, orientationVector, canvas);
                         } else {
-                            drawIndicator(point, canvas);
+                            drawIndicator(point, vectorToPoint, orientationVector, canvas);
                         }
 
                     }
@@ -269,30 +288,24 @@ public class OverlayView implements Observer{
                 try {
                     Thread.sleep(SLEEP_TIME);
                 } catch (InterruptedException e){
-                    //TODO
+                    e.printStackTrace();
                 }
             }
 
         }
 
         @Override
-        public synchronized void start() {
-            running = true;
-            super.start();
-        }
-
-        @Override
         public void interrupt() {
-            running = false;
             super.interrupt();
+            running = false;
         }
 
         /**
          * Decide whether a {@code PointOfInterest} is in sight or not.
-         * @param point to decide on.
+         * @param vectorToPoint Direction vector from mySelf to the Point.
          * @return True if the {@code PointOfInterest} is in sight, false otherwise.
          */
-        private boolean inSight(PointOfInterest point) {
+        private boolean inSight(Vector2D vectorToPoint, Vector3D orientationVector) {
 
             float fovWidth, fovHeight;
 
@@ -304,19 +317,15 @@ public class OverlayView implements Observer{
                 fovHeight = camera.getFOVHeight();
             }
 
-            Vector3D orientationVector = orientationSensor.getOrientationVector();
-
             // Horizontal
-            final Vector2D pointHorizontalVector = new Vector2D(point.getX(), point.getY());
-            pointHorizontalVector.normalize();
-
             final Vector2D orientationOnMap = new Vector2D(orientationVector.getX(), orientationVector.getY());
+            float horizontalTheta = (float) orientationOnMap.angle(vectorToPoint);
 
             //Vertical
-            final double verticalTheta = -90.0*orientationVector.getZ();
+            final double verticalTheta = Math.abs(-90.0*orientationVector.getZ());
 
-            return ( orientationOnMap.angle(pointHorizontalVector) <= fovWidth/2 &
-                     Math.abs(verticalTheta) <= fovHeight/2 );
+            return ( horizontalTheta <= fovWidth/2 &
+                     verticalTheta <= fovHeight/2 );
 
         }
 
@@ -325,16 +334,12 @@ public class OverlayView implements Observer{
          * @param point to indicate.
          * @param canvas where to draw.
          */
-        private void drawIndicator(PointOfInterest point, Canvas canvas) {
-
-            Vector3D orientationVector = orientationSensor.getOrientationVector();
+        private void drawIndicator(PointOfInterest point, Vector2D vectorToPoint,
+                                   Vector3D orientationVector, Canvas canvas) {
 
             // Horizontal
-            final Vector2D pointHorizontalVector = new Vector2D(point.getX(), point.getY());
-            pointHorizontalVector.normalize();
-
             final Vector2D orientationOnMap = new Vector2D(orientationVector.getX(), orientationVector.getY());
-            float x = (float) orientationOnMap.angleWithSign(pointHorizontalVector)/180;
+            float x = (float) orientationOnMap.angleWithSign(vectorToPoint) / 180;
 
             //Vertical
             float y = (float) orientationVector.getZ();
@@ -389,7 +394,9 @@ public class OverlayView implements Observer{
          * @param point to be drawn.
          * @param canvas to draw on.
          */
-        private void drawPoint(PointOfInterest point, Canvas canvas){
+        private void drawPoint(PointOfInterest point, Vector2D vectorToPoint,
+                               Vector3D orientationVector, Canvas canvas) {
+
             /*
              * First get the actual position on screen.
              */
@@ -403,22 +410,13 @@ public class OverlayView implements Observer{
                 fovHeight = camera.getFOVHeight();
             }
 
-            Vector3D orientationVector = orientationSensor.getOrientationVector();
-
-            final double
-                    deviceX = orientationVector.getX(),
-                    deviceY = orientationVector.getY(),
-                    deviceZ = orientationVector.getZ();
-
             // Horizontal
-            final Vector2D pointHorizontalVector = new Vector2D(point.getX(), point.getY());
-            pointHorizontalVector.normalize();
-
-            final Vector2D orientationOnMap = new Vector2D(deviceX, deviceY);
-            final double horizontalTheta = orientationOnMap.angleWithSign(pointHorizontalVector);
+            final Vector2D orientationOnMap =
+                    new Vector2D(orientationVector.getX(), orientationVector.getY());
+            final double horizontalTheta = orientationOnMap.angleWithSign(vectorToPoint);
 
             //Vertical
-            final double verticalTheta = -90.0*deviceZ;
+            final double verticalTheta = -90.0*orientationVector.getZ();
 
             final float x = (float) (view.getWidth()/2 + horizontalTheta*view.getWidth()/fovWidth),
                         y = (float) (view.getHeight()/2 - verticalTheta*view.getHeight()/fovHeight);
@@ -426,6 +424,7 @@ public class OverlayView implements Observer{
             drawIcon(canvas, x, y, INSIGHT_ICON, 0, IN_SIGHT_ICON_SCALE);
 
             drawText(canvas, new String[]{point.getName(), "50"}, x + IN_SIGHT_ICON_SCALE*75, y + IN_SIGHT_ICON_SCALE*75);
+
         }
 
         /**
@@ -482,7 +481,7 @@ public class OverlayView implements Observer{
 
     private class ConnectionThread extends Thread {
 
-        private static final long SLEEP_TIME = 250; //miliseconds
+        private static final long SLEEP_TIME = 250; //milliseconds
 
         private volatile boolean running = true;
 
@@ -490,6 +489,23 @@ public class OverlayView implements Observer{
         public void run() {
 
             while (running) {
+
+                // Update mySelf
+                ServerFacade.getInstance(activity.getApplicationContext()).
+                        getLastPosition(new ServerFacade.OnServerResponse<MapPoint>() {
+                            @Override
+                            public void onSuccess(MapPoint newPosition) {
+                                mySelf.setX(newPosition.getX());
+                                mySelf.setY(newPosition.getY());
+                                mySelf.setZ(newPosition.getZ());
+                            }
+
+                            @Override
+                            public void onError(ServerFacade.Errors error) {
+                            }
+                        }, mySelf);
+
+                // Update all other points
                 final List<PointOfInterest> points = OverlayView.this.points;
                 for (PointOfInterest point : points) {
                     ServerFacade.getInstance(activity.getApplicationContext()).

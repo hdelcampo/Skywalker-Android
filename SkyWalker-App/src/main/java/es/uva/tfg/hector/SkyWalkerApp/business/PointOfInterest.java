@@ -28,15 +28,28 @@ public class PointOfInterest extends MapPoint implements Parcelable {
      * @return the list of demo points.
      */
     public static List<PointOfInterest> getDemoPoints () {
+
         List<PointOfInterest> points = new ArrayList<>();
+
         points.add(new PointOfInterest(0, "Dani"));
-        points.get(0).setX(1);
-        points.get(0).setY(1);
+        points.get(0).setY(0.5f);
+        points.get(0).setX(0);
         points.get(0).setZ(0);
 
-        //points.add(new PointOfInterest(1, "Diego"));
-        //points.get(1).setX(-0.25);
-        //points.get(1).setY(1);
+        points.add(new PointOfInterest(1, "Diego"));
+        points.get(1).setY(0);
+        points.get(1).setX(0.5f);
+        points.get(1).setZ(0);
+
+        points.add(new PointOfInterest(2, "Ana"));
+        points.get(2).setY(1);
+        points.get(2).setX(0.5f);
+        points.get(2).setZ(0);
+
+        points.add(new PointOfInterest(3, "Sergio"));
+        points.get(3).setY(0.5f);
+        points.get(3).setX(1);
+        points.get(3).setZ(0);
 
         return points;
     }
@@ -93,7 +106,7 @@ public class PointOfInterest extends MapPoint implements Parcelable {
 
     @Override
     public String toString() {
-        return name;
+        return name + " (" + getId() + ")";
     }
 
     public static final Parcelable.Creator<PointOfInterest> CREATOR
