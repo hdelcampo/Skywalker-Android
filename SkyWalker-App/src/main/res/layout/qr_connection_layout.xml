@@ -8,10 +8,9 @@
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="42dp"
         android:layout_gravity="center"
-        android:paddingBottom="8dp"
-        android:paddingTop="8dp"
+        android:gravity="center"
         android:text="@string/qr_header"
         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
@@ -19,7 +18,7 @@
         android:id="@+id/camera_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="42dp"
         android:layout_weight="1" />
 
 </LinearLayout>
