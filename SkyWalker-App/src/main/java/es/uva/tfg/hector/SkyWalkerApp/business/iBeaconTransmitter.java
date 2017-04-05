@@ -40,7 +40,7 @@ public class iBeaconTransmitter {
      * @return true if can transmit, false otherwise.
      */
     public static boolean canTransmit(Context context) {
-        return BeaconTransmitter.SUPPORTED != BeaconTransmitter.checkTransmissionSupported(context);
+        return BeaconTransmitter.SUPPORTED == BeaconTransmitter.checkTransmissionSupported(context);
     }
 
     /**
