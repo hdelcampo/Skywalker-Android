@@ -9,8 +9,6 @@ import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconParser;
 import org.altbeacon.beacon.BeaconTransmitter;
 
-import java.util.Collections;
-
 /**
  * An iBeacon frames transmitter,
  * only valid on Lollipop or newer.
@@ -49,7 +47,7 @@ public class iBeaconTransmitter {
      * @param major of the frame, must be 2 bytes long.
      * @param minor of the frame, must be 2 bytes long.
      */
-    public iBeaconTransmitter(Context context, String uuid, String major, String minor) {
+    public iBeaconTransmitter(Context context, String uuid, String major, String minor, byte txPower) {
 
         if (BeaconTransmitter.SUPPORTED != BeaconTransmitter.checkTransmissionSupported(context)) {
             throw new RuntimeException("This device cannot transmit BLE packets");
@@ -60,13 +58,14 @@ public class iBeaconTransmitter {
                 .setId2(major)
                 .setId3(minor)
                 .setManufacturer(0x4c00)
-                .setDataFields(Collections.singletonList(0L))
+                .setTxPower(txPower)
                 .build();
 
         BeaconParser beaconParser = new BeaconParser()
                 .setBeaconLayout(IBEACON_LAYOUT);
 
         beaconTransmitter = new BeaconTransmitter(context, beaconParser);
+        beaconTransmitter.setAdvertiseTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM);
         beaconTransmitter.setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED);
 
     }
