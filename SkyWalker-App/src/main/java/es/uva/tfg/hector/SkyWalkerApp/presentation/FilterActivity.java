@@ -57,9 +57,12 @@ public class FilterActivity extends Activity {
         from = allPoints.toArray(from);
 
         ArrayAdapter<PointOfInterest> adapter =
-                new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_multiple_choice,
-                from);
+                new ArrayAdapter<>(
+                        this,
+                        R.layout.filter_row_layout,
+                        R.id.elementTextView,
+                        from
+                );
 
         itemsList.setAdapter(adapter);
 
