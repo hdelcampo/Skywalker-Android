@@ -8,6 +8,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +21,7 @@ import es.uva.tfg.hector.SkyWalkerApp.business.PointOfInterest;
  * Fragment for Augmented Reality controls.
  * @author Hector Del Campo Pando
  */
-public class AugmentedRealityControlsFragment extends Fragment implements View.OnClickListener {
+public class AugmentedRealityControlsFragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     /**
      * Constants for new intents
@@ -42,6 +44,8 @@ public class AugmentedRealityControlsFragment extends Fragment implements View.O
 
         rootView.findViewById(R.id.filter_button).setOnClickListener(this);
         rootView.findViewById(R.id.connection_button).setOnClickListener(this);
+
+        ((Switch)rootView.findViewById(R.id.switch_debug_info)).setOnCheckedChangeListener(this);
 
         return rootView;
     }
@@ -101,6 +105,19 @@ public class AugmentedRealityControlsFragment extends Fragment implements View.O
     private void newConnection () {
         Intent dialog = new Intent(getContext(), NewConnectionActivity.class);
         startActivity(dialog);
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        switch (buttonView.getId()) {
+            case R.id.switch_debug_info:
+                View layout = getView().findViewById(R.id.debugInfoLayout);
+                if (!isChecked) {
+                    layout.setVisibility(View.VISIBLE);
+                } else {
+                    layout.setVisibility(View.INVISIBLE);
+                }
+        }
     }
 
     /**
