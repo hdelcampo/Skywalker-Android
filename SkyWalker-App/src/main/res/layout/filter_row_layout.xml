@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<es.uva.tfg.hector.SkyWalkerApp.presentation.FilterRowLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:descendantFocusability="blocksDescendants"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:background="@android:color/transparent"
+        android:clickable="false" />
+
+    <TextView
+        android:id="@+id/elementTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="Lorem Ipsum"
+        android:textSize="16sp"
+        android:typeface="normal" />
+
+</es.uva.tfg.hector.SkyWalkerApp.presentation.FilterRowLayout>

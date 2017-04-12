@@ -36,4 +36,13 @@
 
     <!-- Tags -->
     <string name="not_assigned">Not assigned</string>
+
+    <!-- Navigation drawer -->
+    <string name="connection_status_on">Connected \n%s</string>
+    <string name="connection_status_off">Disconnected</string>
+    <string name="ibeacon_status_on">Transmitting position</string>
+    <string name="ibeacon_status_off">Transmitter disconnected</string>
+    <string name="filter_label">Filter elements</string>
+    <string name="new_connection_label">New connection</string>
+
 </resources>
