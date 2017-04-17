@@ -5,11 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.DrawerLayout;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,8 +47,11 @@ public class AugmentedRealityControlsFragment extends Fragment implements View.O
 
         rootView.findViewById(R.id.filter_button).setOnClickListener(this);
         rootView.findViewById(R.id.connection_button).setOnClickListener(this);
+        rootView.findViewById(R.id.debug_info_layout).setOnClickListener(this);
 
         ((Switch)rootView.findViewById(R.id.switch_debug_info)).setOnCheckedChangeListener(this);
+
+        setBuildStamp(rootView);
 
         return rootView;
     }
@@ -71,6 +77,9 @@ public class AugmentedRealityControlsFragment extends Fragment implements View.O
                 break;
             case R.id.connection_button:
                 newConnection();
+                break;
+            case R.id.debug_info_layout:
+                ((DrawerLayout) getView()).openDrawer(Gravity.START, true);
                 break;
         }
     }
@@ -107,15 +116,32 @@ public class AugmentedRealityControlsFragment extends Fragment implements View.O
         startActivity(dialog);
     }
 
+    /**
+     * Sets a build time stamp to the UI.
+     */
+    private void setBuildStamp(View rootView) {
+        String s = "";
+        try{
+            s +=  "Version " + getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0).versionName;
+            s +=  "\nBuild " + getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0).versionCode;
+        }catch(Exception e){
+            s = "Couldn't get version info";
+        }
+
+        ((TextView)rootView.findViewById(R.id.compilationStamp)).setText(s);
+    }
+
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         switch (buttonView.getId()) {
             case R.id.switch_debug_info:
-                View layout = getView().findViewById(R.id.debugInfoLayout);
+                View layout = getView().findViewById(R.id.debug_info_layout);
                 if (!isChecked) {
-                    layout.setVisibility(View.VISIBLE);
+                    //layout.setVisibility(View.VISIBLE);
+                    layout.setAlpha(1);
                 } else {
-                    layout.setVisibility(View.INVISIBLE);
+                    //layout.setVisibility(View.INVISIBLE);
+                    layout.setAlpha(0);
                 }
         }
     }

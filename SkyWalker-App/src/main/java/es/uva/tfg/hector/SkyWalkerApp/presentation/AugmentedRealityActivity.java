@@ -3,7 +3,6 @@ package es.uva.tfg.hector.SkyWalkerApp.presentation;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
-import android.widget.TextView;
 
 import java.util.List;
 
@@ -34,22 +33,6 @@ public class AugmentedRealityActivity extends FragmentActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.augmented_reality_activity_layout);
-        setBuildStamp();
-
-    }
-
-    /**
-     * Sets a build time stamp to the UI.
-     */
-    private void setBuildStamp() {
-        String s = "";
-        try{
-            s +=  " (Build: " + getPackageManager().getPackageInfo(getPackageName(), 0).versionCode +") ";
-        }catch(Exception e){
-            s = "Couldn't get build";
-        }
-
-        ((TextView)findViewById(R.id.compilationStamp)).setText(s);
     }
 
     @Override
