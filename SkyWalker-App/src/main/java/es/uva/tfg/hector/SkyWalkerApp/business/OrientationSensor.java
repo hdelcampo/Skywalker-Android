@@ -5,6 +5,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
 
 import java.util.Observable;
 
@@ -88,9 +89,12 @@ public class OrientationSensor extends Observable {
                             {0}
                     }));
 
+            Vector2D mapVector = new Vector2D(rotationVector.get(0, 0), rotationVector.get(1, 0));
+            mapVector.rotateClockwise(70);
+
             orientationVector = new Vector3D(
-                    rotationVector.get(0, 0),
-                    rotationVector.get(1, 0),
+                    mapVector.getX(),
+                    mapVector.getY(),
                     rotationVector.get(2, 0));
             orientationVector.normalize();
 
@@ -130,12 +134,9 @@ public class OrientationSensor extends Observable {
             return output;
         }
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public void onAccuracyChanged(Sensor sensor, int i) {
-
+            Log.e("sensor", String.valueOf(i));
         }
 
     };

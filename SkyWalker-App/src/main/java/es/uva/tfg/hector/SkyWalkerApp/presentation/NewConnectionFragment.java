@@ -136,6 +136,7 @@ public abstract class NewConnectionFragment extends Fragment{
                         iBeaconTransmitter transmitter = iBeaconTransmitter.getInstance(getContext());
                         transmitter.configure(frame, (byte) -59);
                         transmitter.startTransmission();
+                        PointOfInterest.setMySelf(new PointOfInterest(frame.getMinor(), "username"));
                     }
 
                     @Override

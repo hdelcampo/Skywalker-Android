@@ -90,6 +90,7 @@ public class ManualConnectionFragment extends NewConnectionFragment implements V
                 break;
             case R.id.demo_button:
                 PointOfInterest.setPoints(PointOfInterest.getDemoPoints());
+                PointOfInterest.setMySelf(new PointOfInterest(999, "MySelf"));
                 ServerFacade.getInstance(getActivity().getApplicationContext()).setDemo();
                 startAR();
                 break;

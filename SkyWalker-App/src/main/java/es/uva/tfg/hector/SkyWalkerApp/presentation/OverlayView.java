@@ -52,13 +52,7 @@ public class OverlayView implements Observer{
     /**
      * Position of the user.
      */
-    private PointOfInterest mySelf = new PointOfInterest(999, "Yo");
-
-    {
-        mySelf.setX(0.5f);
-        mySelf.setY(0.5f);
-        mySelf.setZ(0);
-    }
+    private PointOfInterest mySelf;
 
     /**
      * Thread that will manage listInUse points.
@@ -143,6 +137,11 @@ public class OverlayView implements Observer{
         orientationSensor.addObserver(this);
 
         points = PointOfInterest.getPoints();
+        mySelf = PointOfInterest.getSelf();
+
+        mySelf.setX(0.5f);
+        mySelf.setY(0.5f);
+        mySelf.setZ(0);
 
         view.setSurfaceTextureListener(textureListener);
 
@@ -268,6 +267,12 @@ public class OverlayView implements Observer{
                                 point.getX() - mySelf.getX(),
                                 point.getY() - mySelf.getY()
                         );
+
+                        // Same position, skip.
+                        if (vectorToPoint.getY() == 0 && vectorToPoint.getX() == 0) {
+                            continue;
+                        }
+
                         vectorToPoint.normalize();
 
                         final Vector3D orientationVector =
