@@ -11,6 +11,8 @@ import es.uva.tfg.hector.SkyWalkerApp.business.Center;
 import es.uva.tfg.hector.SkyWalkerApp.business.MapPoint;
 import es.uva.tfg.hector.SkyWalkerApp.business.PointOfInterest;
 import es.uva.tfg.hector.SkyWalkerApp.business.Token;
+import es.uva.tfg.hector.SkyWalkerApp.business.iBeaconFrame;
+import es.uva.tfg.hector.SkyWalkerApp.business.iBeaconTransmitter;
 import es.uva.tfg.hector.SkyWalkerApp.persistence.ServerFacade;
 
 /**
@@ -50,7 +52,7 @@ public abstract class NewConnectionFragment extends Fragment{
 
                     @Override
                     public void onSuccess(Token response) {
-                        retrieveReceivers(dialog);
+                        registerAsBeacon(dialog, login);
                     }
 
                     @Override
@@ -118,6 +120,31 @@ public abstract class NewConnectionFragment extends Fragment{
                     }
 
                 });
+
+    }
+
+    protected void registerAsBeacon(final ProgressDialog dialog, final String username) {
+
+        dialog.setMessage(getString(R.string.connection_register_beacon));
+
+        ServerFacade.getInstance(getContext().getApplicationContext()).
+                registerAsBeacon(new ServerFacade.OnServerResponse<iBeaconFrame>() {
+
+                    @Override
+                    public void onSuccess(iBeaconFrame frame) {
+                        retrieveReceivers(dialog);
+                        iBeaconTransmitter transmitter = iBeaconTransmitter.getInstance(getContext());
+                        transmitter.configure(frame, (byte) -59);
+                        transmitter.startTransmission();
+                    }
+
+                    @Override
+                    public void onError(ServerFacade.Errors error) {
+                        dialog.dismiss();
+                        showError(error);
+                    }
+
+                }, username);
 
     }
 

@@ -10,7 +10,7 @@ import org.altbeacon.beacon.BeaconParser;
 import org.altbeacon.beacon.BeaconTransmitter;
 
 /**
- * An iBeacon frames transmitter,
+ * An iBeacon frames transmitter, as singleton;
  * only valid on Lollipop or newer.
  * @author Héctor Del Campo Pando
  */
@@ -33,6 +33,29 @@ public class iBeaconTransmitter {
     private BeaconTransmitter beaconTransmitter;
 
     /**
+     * The data to transmit.
+     */
+    private iBeaconFrame frame;
+
+    /**
+     * Singleton instance.
+     */
+    private static iBeaconTransmitter instance;
+
+    /**
+     * Retrieves the single instance.
+     * @param context of the App.
+     * @return the singleton instance.
+     */
+    public static iBeaconTransmitter getInstance(Context context) {
+        if (null == instance) {
+            instance = new iBeaconTransmitter(context);
+        }
+
+        return instance;
+    }
+
+    /**
      * Checks whether this device can be used as a transmitter or not.
      * @param context of the App.
      * @return true if can transmit, false otherwise.
@@ -43,23 +66,13 @@ public class iBeaconTransmitter {
 
     /**
      * Creates a new iBeacon transmitter.
-     * @param uuid of the frame, must be 16 bytes long.
-     * @param major of the frame, must be 2 bytes long.
-     * @param minor of the frame, must be 2 bytes long.
+     * @param context of the App.
      */
-    public iBeaconTransmitter(Context context, String uuid, String major, String minor, byte txPower) {
+    public iBeaconTransmitter(Context context) {
 
         if (BeaconTransmitter.SUPPORTED != BeaconTransmitter.checkTransmissionSupported(context)) {
             throw new RuntimeException("This device cannot transmit BLE packets");
         }
-
-        beacon = new Beacon.Builder()
-                .setId1(uuid)
-                .setId2(major)
-                .setId3(minor)
-                .setManufacturer(0x4c00)
-                .setTxPower(txPower)
-                .build();
 
         BeaconParser beaconParser = new BeaconParser()
                 .setBeaconLayout(IBEACON_LAYOUT);
@@ -67,6 +80,26 @@ public class iBeaconTransmitter {
         beaconTransmitter = new BeaconTransmitter(context, beaconParser);
         beaconTransmitter.setAdvertiseTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM);
         beaconTransmitter.setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_BALANCED);
+
+    }
+
+    /**
+     * Set ups the data to be transmitted, note that for this to take effect,
+     * any ongoing transmission must be stopped before configuring.
+     * @param frame to transmit.
+     * @param txPower to transmit.
+     */
+    public void configure(iBeaconFrame frame, byte txPower) {
+
+        this.frame = frame;
+
+        beacon = new Beacon.Builder()
+                .setId1(frame.getUUID())
+                .setId2(String.valueOf(frame.getMajor()))
+                .setId3(String.valueOf(frame.getMinor()))
+                .setManufacturer(0x4c00)
+                .setTxPower(txPower)
+                .build();
 
     }
 

@@ -31,6 +31,7 @@ import es.uva.tfg.hector.SkyWalkerApp.business.Center;
 import es.uva.tfg.hector.SkyWalkerApp.business.MapPoint;
 import es.uva.tfg.hector.SkyWalkerApp.business.PointOfInterest;
 import es.uva.tfg.hector.SkyWalkerApp.business.Token;
+import es.uva.tfg.hector.SkyWalkerApp.business.iBeaconFrame;
 
 /**
  * Handler for server petitions, as there can only be one connection per time,
@@ -132,6 +133,60 @@ public class ServerFacade {
                     parsed = new String(response.data);
                 }
                 return Response.success(parsed, HttpHeaderParser.parseCacheHeaders(response));
+            }
+        };
+
+        requestQueue.add(request);
+
+    }
+
+    /**
+     * Asks the server for info about what data to transmit as iBeacon frame.
+     * @param responseListener that will handle responses.
+     * @param username of the user that wants to transmit its position.
+     */
+    public void registerAsBeacon (final OnServerResponse <iBeaconFrame> responseListener, final String username) {
+
+        if (null == token) {
+            throw new IllegalStateException("Cannot retrieve tags without a established connection");
+        }
+
+        String url = token.getURL().concat("/api/centers/0/tags/");
+
+        JSONObject body = new JSONObject();
+        try {
+            body.put("name", username);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonRequest<JSONObject> request = new JsonObjectRequest(Request.Method.POST, url, body, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    final String UUID = "0"; //response.getString("uuid");
+                    final int major = response.getInt("major");
+                    final int minor =  response.getInt("minor");
+                    final iBeaconFrame frame = new iBeaconFrame(UUID, major, minor);
+
+                    responseListener.onSuccess(frame);
+                } catch (JSONException e) {
+                    responseListener.onError(Errors.INVALID_JSON);
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Errors errorNum = getServerError(error);
+                responseListener.onError(errorNum);
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token.getToken());
+                return headers;
             }
         };
 
