@@ -222,7 +222,7 @@ public class OverlayView implements Observer{
         /**
          * Global constants
          */
-        private static final float TEXT_SIZE = 45f;
+        private static final float TEXT_SIZE = 70f;
         private static final float STROKE_WIDTH = 0.75f;
         private static final boolean ANTI_ALIAS_ENABLED = true;
         private static final int TEXT_COLOR = Color.WHITE;
@@ -232,14 +232,14 @@ public class OverlayView implements Observer{
          * Constants for out of sight listInUse.
          */
         private final static int OUT_OF_SIGHT_ICON = R.drawable.out_of_sight_icon;
-        private final static float OUT_OF_SIGHT_ICON_SCALE = 1.5f;
+        private final static float OUT_OF_SIGHT_ICON_SCALE = 2f;
         private final static float MARGIN = 0.9f;
 
         /**
          * Constants for in sight listInUse.
          */
         private static final int INSIGHT_ICON = R.drawable.in_sight_icon;
-        private static final float IN_SIGHT_ICON_SCALE = 1.5f;
+        private static final float IN_SIGHT_ICON_SCALE = 2f;
 
         @Override
         public void run() {
@@ -324,7 +324,7 @@ public class OverlayView implements Observer{
             //Vertical
             final double verticalTheta = Math.abs(-90.0*orientationVector.getZ());
 
-            return ( horizontalTheta <= fovWidth/2 &
+            return ( horizontalTheta <= fovWidth/2 &&
                      verticalTheta <= fovHeight/2 );
 
         }
@@ -383,7 +383,7 @@ public class OverlayView implements Observer{
             }
 
             drawIcon(canvas, x, y, OUT_OF_SIGHT_ICON, (float)angle, OUT_OF_SIGHT_ICON_SCALE);
-            drawText(canvas, new String[]{point.getName()}, x, y);
+            drawText(canvas, new String[]{point.getName()}, x + 17.5f, y + 15);
 
         }
 
@@ -423,7 +423,7 @@ public class OverlayView implements Observer{
 
             drawIcon(canvas, x, y, INSIGHT_ICON, 0, IN_SIGHT_ICON_SCALE);
 
-            drawText(canvas, new String[]{point.getName(), "50"}, x + IN_SIGHT_ICON_SCALE*75, y + IN_SIGHT_ICON_SCALE*75);
+            drawText(canvas, new String[]{point.getName(), "50"}, x + IN_SIGHT_ICON_SCALE*17.5f, y + IN_SIGHT_ICON_SCALE*17.5f);
 
         }
 
@@ -434,15 +434,21 @@ public class OverlayView implements Observer{
          * @param y ordinate
          * @param angle angle to rotate icon
          */
-        private void drawIcon(Canvas canvas, final float x, final float y, final int icon, final float angle, final float scale) {
+        private void drawIcon(final Canvas canvas, final float x, final float y, final int icon, final float angle, final float scale) {
 
-            final Paint paint = new Paint();
-            final Bitmap original = BitmapFactory.decodeResource(activity.getResources(), icon);
             Matrix matrix = new Matrix();
             matrix.postRotate(angle);
             matrix.postScale(scale, scale);
+
+            final Bitmap original = BitmapFactory.decodeResource(activity.getResources(), icon);
             final Bitmap iconBitmap = Bitmap.createBitmap(original, 0, 0, original.getWidth(), original.getHeight(), matrix, true);
-            canvas.drawBitmap(iconBitmap, x, y, paint);
+
+            final Paint paint = new Paint();
+            canvas.drawBitmap(
+                    iconBitmap,
+                    x - (iconBitmap.getWidth() / 2),
+                    y - (iconBitmap.getHeight() / 2),
+                    paint);
 
         }
 
@@ -453,7 +459,7 @@ public class OverlayView implements Observer{
          * @param x abscissa
          * @param y ordinate
          */
-        private void drawText(Canvas canvas, String[] texts ,float x, float y) {
+        private void drawText(final Canvas canvas, final String[] texts , final float x, final float y) {
 
             final Paint paint = new Paint();
             final Paint border = new Paint();
@@ -479,6 +485,9 @@ public class OverlayView implements Observer{
 
     }
 
+    /**
+     * Thread that handles points updating from server.
+     */
     private class ConnectionThread extends Thread {
 
         private static final long SLEEP_TIME = 250; //milliseconds
