@@ -1,4 +1,21 @@
 -----------------------
+ Build 17 -17/04/2017-
+-----------------------
+
++ Implementado el lector QR
++ Rediseñada la actividad de nuevas conexiones, con material design, añadido gesto lateral de desplazamiento, ahora el diseño es de dialogo en pantallas grandes, y de actividad a pantalla completa en móviles
++ Rediseñado el fragmento de conexiones manuales con Material Design
++ Rediseñado el sistema de controles a “navigation drawer”, pulsar la pantalla o desplazar desde la izquierda para hacer aparecer el menu
++ Ahora la información de depuración esta oculta por defecto, para mostrarlo usar el switcher del menu de controles
++ Cambiada la forma de entrar al modo demo, ahora simplemente pulsar el botón demo
++ Implementada lógica real del sensor de orientación
++ Retocada lógica de dibujado para funcionar con posiciones reales
++ Mejorada la posición de dibujado en pantalla e incrementado el tamaño de los elementos
++ Añadidas nuevas peticiones REST para funcionar con la nueva versión de XtremeLoc
++ Implementada arquitectura en 3 capas.
++ Retoques internos para mejorar el código
+
+-----------------------
  Build 16 -21/02/2017-
 -----------------------
 
