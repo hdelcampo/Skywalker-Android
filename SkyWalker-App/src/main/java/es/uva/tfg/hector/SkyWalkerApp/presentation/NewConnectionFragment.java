@@ -26,7 +26,7 @@ public abstract class NewConnectionFragment extends Fragment{
      */
     protected void startAR() {
 
-        if (getActivity() instanceof EntryActivity) {
+        if (getActivity() instanceof EntryLoginActivity) {
             Intent intent = new Intent(getActivity(), AugmentedRealityActivity.class);
             startActivity(intent);
         }
