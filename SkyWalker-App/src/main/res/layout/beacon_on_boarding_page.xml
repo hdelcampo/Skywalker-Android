@@ -1,24 +1,23 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="bottom"
     android:orientation="vertical"
-    tools:context="es.uva.tfg.hector.SkyWalkerApp.presentation.EntryActivity$OnBoardingPageFragment">
+    tools:context="es.uva.tfg.hector.SkyWalkerApp.presentation.OnBoardingPageFragment">
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        app:srcCompat="@color/colorAccent" />
+        app:srcCompat="@drawable/beacon_page" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/ar_page_header"
+        android:text="@string/beacon_page_header"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
@@ -26,7 +25,7 @@
         android:id="@+id/textView3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/ar_page_subheader"
+        android:text="@string/beacon_page_subheader"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         android:textSize="15sp" />

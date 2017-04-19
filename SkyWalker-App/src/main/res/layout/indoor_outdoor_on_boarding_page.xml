@@ -1,24 +1,15 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="bottom"
     android:orientation="vertical"
-    tools:context="es.uva.tfg.hector.SkyWalkerApp.presentation.EntryActivity$OnBoardingPageFragment">
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        app:srcCompat="@color/colorAccent" />
+    tools:context="es.uva.tfg.hector.SkyWalkerApp.presentation.OnBoardingPageFragment">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/ar_page_header"
+        android:text="@string/indoor_outdoor_page_header"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
@@ -26,7 +17,7 @@
         android:id="@+id/textView3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/ar_page_subheader"
+        android:text="@string/indoor_outdoor_page_subheader"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         android:textSize="15sp" />
