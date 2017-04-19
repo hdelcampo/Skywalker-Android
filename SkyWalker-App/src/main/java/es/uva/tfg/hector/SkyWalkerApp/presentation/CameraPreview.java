@@ -52,7 +52,7 @@ public class CameraPreview {
 
             camera.transform(activity.getWindowManager().getDefaultDisplay().getRotation(),
                     CameraPreview.this.width == -1 ? width : CameraPreview.this.width,
-                    CameraPreview.this.height == -1 ? width : CameraPreview.this.height);
+                    CameraPreview.this.height == -1 ? height : CameraPreview.this.height);
 
             camera.startPreview();
 
@@ -70,7 +70,7 @@ public class CameraPreview {
 
             camera.transform(activity.getWindowManager().getDefaultDisplay().getRotation(),
                     CameraPreview.this.width == -1 ? width : CameraPreview.this.width,
-                    CameraPreview.this.height == -1 ? width : CameraPreview.this.height);
+                    CameraPreview.this.height == -1 ? height : CameraPreview.this.height);
 
             camera.startPreview();
 
