@@ -1,12 +1,14 @@
 package es.uva.tfg.hector.SkyWalkerApp.presentation;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import com.crashlytics.android.Crashlytics;
 
@@ -19,45 +21,64 @@ import io.fabric.sdk.android.Fabric;
  */
 public class EntryActivity extends AppCompatActivity {
 
-    /**
-     * Permissions IDs.
-     */
-    private static final int APP_PERMISSIONS = 0;
+    private ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         setTheme(android.R.style.Theme_DeviceDefault_Light_NoActionBar);
-        setContentView(R.layout.entry_layout);
-        checkPermissions();
+        setContentView(R.layout.entry_on_boarding);
+
+        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+
+        viewPager = (ViewPager) findViewById(R.id.pager);
+        viewPager.setAdapter(sectionsPagerAdapter);
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
+        tabLayout.setupWithViewPager(viewPager, true);
+
     }
 
     /**
-     * Checks App granted permissions.
+     * Called whenever login button is clicked, starts the login activity.
+     * @param view who called.
      */
-    private void checkPermissions() {
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.CAMERA},
-                    APP_PERMISSIONS);
-        }
+    public void loginClick (View view) {
+        Intent intent = new Intent(this, EntryLoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[],
-                                           int[] grantResults) {
-        switch (requestCode) {
-            case APP_PERMISSIONS: {
-                if (grantResults.length == 0
-                        || grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    Snackbar.make(findViewById(R.id.container), getString(R.string.needs_camera_permissions), Snackbar.LENGTH_LONG).show();
-                    checkPermissions();
-                }
+    /**
+     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
+     * one of the sections/tabs/pages.
+     */
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+
+        private static final int NUM_PAGES = 2;
+
+        public SectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            switch (position) {
+                case 0:
+                    return new AROnBoardingFragment();
+                case 1:
+                    return new AROnBoardingFragment();
+                default:
+                    return null;
             }
         }
+
+        @Override
+        public int getCount() {
+            return NUM_PAGES;
+        }
+
     }
 
 }
