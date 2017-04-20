@@ -26,22 +26,24 @@
         app:srcCompat="@drawable/indoor_outdoor_page" />
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        android:layout_marginBottom="56dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:gravity="center"
         android:orientation="vertical"
-        android:layout_marginBottom="56dp"
+        android:paddingEnd="32dp"
+        android:paddingStart="32dp"
         app:layout_constraintBottom_toTopOf="@+id/button_holder"
-        android:layout_marginRight="24dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginLeft="24dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:id="@+id/linearLayout">
+        app:layout_constraintRight_toRightOf="parent">
 
         <TextView
             android:id="@+id/textView4"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/indoor_outdoor_page_header"
             android:textAlignment="center"
@@ -50,14 +52,13 @@
 
         <TextView
             android:id="@+id/textView3"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:ems="14"
             android:text="@string/indoor_outdoor_page_subheader"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            android:textColor="@color/common_google_signin_btn_text_dark_default"
+            android:textColor="@color/onBoardingSubhead"
             android:textSize="15sp" />
     </LinearLayout>
 

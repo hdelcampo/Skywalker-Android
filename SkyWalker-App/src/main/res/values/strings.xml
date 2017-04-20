@@ -13,7 +13,7 @@
     <string name="ar_page_header">Next-gen navigation</string>
     <string name="ar_page_subheader">Use real world vision to locate objects and people.</string>
 
-    <string name="beacon_page_header">Your device, your location</string>
+    <string name="beacon_page_header">All in one</string>
     <string name="beacon_page_subheader">Your device also locates you, with one device you are ready to go.</string>
 
     <string name="indoor_outdoor_page_header">Beyond GPS</string>
