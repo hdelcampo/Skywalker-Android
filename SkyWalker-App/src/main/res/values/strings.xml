@@ -8,6 +8,8 @@
     <string name="retry">Retry</string>
 
     <!-- On Boarding -->
+    <string name="login">Log in</string>
+
     <string name="ar_page_header">Welcome to next-gen navigation</string>
     <string name="ar_page_subheader">Use real world vision to locate objects and people.</string>
 

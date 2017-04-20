@@ -2,6 +2,7 @@ package es.uva.tfg.hector.SkyWalkerApp.presentation;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -9,6 +10,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -23,7 +25,35 @@ import io.fabric.sdk.android.Fabric;
  */
 public class EntryActivity extends AppCompatActivity {
 
+    /**
+     * View's pager.
+     */
     private ViewPager viewPager;
+
+    /**
+     * Carousel changing times.
+     */
+    private static final long
+            INITIAL_CAROUSEL_CHANGE = 1500,
+            STANDARD_CAROUSEL_CHANGE = INITIAL_CAROUSEL_CHANGE*2;
+
+    /**
+     * Carousel handler.
+     */
+    private Handler handler = new Handler();
+
+    /**
+     * Carousel runnable.
+     */
+    private Runnable carousel = new Runnable() {
+        @Override
+        public void run() {
+            final int currentItem = viewPager.getCurrentItem();
+            viewPager.setCurrentItem(currentItem != SectionsPagerAdapter.NUM_PAGES - 1 ? currentItem + 1 : 0, true);
+            handler.postDelayed(carousel, STANDARD_CAROUSEL_CHANGE);
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +70,13 @@ public class EntryActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.setupWithViewPager(viewPager, true);
 
+        handler.postDelayed(carousel, INITIAL_CAROUSEL_CHANGE);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        stopCarousel();
+        return super.dispatchTouchEvent(ev);
     }
 
     /**
@@ -52,6 +89,18 @@ public class EntryActivity extends AppCompatActivity {
         finish();
     }
 
+    public void stopCarousel () {
+
+        if (handler == null) {
+            return;
+        }
+
+        handler.removeCallbacks(carousel);
+        handler = null;
+        carousel = null;
+
+    }
+
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -61,7 +110,7 @@ public class EntryActivity extends AppCompatActivity {
         /**
          * The number of pages to show.
          */
-        private static final int NUM_PAGES = 3;
+        static final int NUM_PAGES = 3;
 
         SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
