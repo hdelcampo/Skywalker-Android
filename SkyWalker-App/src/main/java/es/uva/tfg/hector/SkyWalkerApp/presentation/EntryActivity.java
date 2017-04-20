@@ -29,7 +29,7 @@ public class EntryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
-        setTheme(android.R.style.Theme_DeviceDefault_Light_NoActionBar);
+        setTheme(R.style.AppTheme);
         setContentView(R.layout.entry_on_boarding);
 
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
