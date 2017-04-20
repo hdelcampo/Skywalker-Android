@@ -1,33 +1,47 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="bottom"
     android:orientation="vertical"
-    tools:context="es.uva.tfg.hector.SkyWalkerApp.presentation.OnBoardingPageFragment">
+    tools:context="es.uva.tfg.hector.SkyWalkerApp.presentation.EntryActivity$OnBoardingPageFragment">
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:adjustViewBounds="true"
+        android:padding="16dp"
         app:srcCompat="@drawable/beacon_page" />
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/beacon_page_header"
-        android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="56dp"
+        android:gravity="center"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/beacon_page_subheader"
-        android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        android:textSize="15sp" />
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="32sp"
+            android:text="@string/beacon_page_header"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+            android:textColor="@color/common_google_signin_btn_text_dark_default" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/beacon_page_subheader"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textColor="@color/common_google_signin_btn_text_dark_default"
+            android:textSize="15sp" />
+    </LinearLayout>
 
 </LinearLayout>

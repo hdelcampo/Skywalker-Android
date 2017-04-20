@@ -12,6 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:adjustViewBounds="true"
+        android:padding="16dp"
         app:srcCompat="@drawable/ar_page" />
 
     <LinearLayout
@@ -19,21 +21,21 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_marginBottom="56dp"
+        android:gravity="center"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/textView4"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:lineSpacingExtra="32sp"
             android:text="@string/ar_page_header"
-            android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Headline"
             android:textColor="@color/common_google_signin_btn_text_dark_default" />
 
         <TextView
             android:id="@+id/textView3"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/ar_page_subheader"
             android:textAlignment="center"
