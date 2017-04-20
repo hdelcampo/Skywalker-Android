@@ -10,13 +10,13 @@
     <!-- On Boarding -->
     <string name="login">Log in</string>
 
-    <string name="ar_page_header">Welcome to next-gen navigation</string>
+    <string name="ar_page_header">Next-gen navigation</string>
     <string name="ar_page_subheader">Use real world vision to locate objects and people.</string>
 
     <string name="beacon_page_header">Your device, your location</string>
     <string name="beacon_page_subheader">Your device also locates you, with one device you are ready to go.</string>
 
-    <string name="indoor_outdoor_page_header">Beyond old GPS</string>
+    <string name="indoor_outdoor_page_header">Beyond GPS</string>
     <string name="indoor_outdoor_page_subheader">This App works indoors as well as outdoors. All you need is an XtremeLoc environment ready.</string>
 
     <!-- Permissions -->
