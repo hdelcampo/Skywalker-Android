@@ -84,9 +84,10 @@ public class EntryActivity extends AppCompatActivity {
      * @param view who called.
      */
     public void loginClick (View view) {
-        Intent intent = new Intent(this, NewConnectionActivity.class);
+        final boolean hasPermissions = PermissionsRequestActivity.hasEnoughPermissions(this);
+        Intent intent =  new Intent(this,
+                hasPermissions ? NewConnectionActivity.class : PermissionsRequestActivity.class);
         startActivity(intent);
-        finish();
     }
 
     public void stopCarousel () {

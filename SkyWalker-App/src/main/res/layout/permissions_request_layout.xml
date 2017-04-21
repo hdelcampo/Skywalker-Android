@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:paddingEnd="8dp"
+    android:paddingStart="8dp">
+
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintTop_creator="1">
+
+        <ImageView
+            android:id="@+id/cameraIcon"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:adjustViewBounds="true"
+            app:srcCompat="@android:drawable/ic_menu_camera" />
+
+        <TextView
+            android:id="@+id/cameraText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="false"
+            android:layout_alignTop="@+id/cameraIcon"
+            android:layout_centerVertical="false"
+            android:layout_marginStart="8dp"
+            android:layout_toEndOf="@+id/cameraIcon"
+            android:text="@string/camera_permissions_description"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title.Inverse" />
+
+        <ImageView
+            android:id="@+id/locationIcon"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="false"
+            android:layout_below="@+id/cameraIcon"
+            android:adjustViewBounds="true"
+            app:srcCompat="@android:drawable/ic_menu_mylocation" />
+
+        <TextView
+            android:id="@+id/locationText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="false"
+            android:layout_alignTop="@+id/locationIcon"
+            android:layout_centerVertical="false"
+            android:layout_marginStart="8dp"
+            android:layout_toEndOf="@+id/locationIcon"
+            android:text="@string/location_permissions_description"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title.Inverse" />
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/permissions_button"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="24dp"
+        android:onClick="askPermissions"
+        android:text="@string/grant_button" />
+
+</RelativeLayout>

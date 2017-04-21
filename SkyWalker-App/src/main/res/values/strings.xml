@@ -20,7 +20,10 @@
     <string name="indoor_outdoor_page_subheader">This App works indoors as well as outdoors. All you need is an XtremeLoc environment ready.</string>
 
     <!-- Permissions -->
-    <string name="needs_camera_permissions">This App needs camera permissions in order to work</string>
+    <string name="grant_button">Grant permissions</string>
+    <string name="camera_permissions_description">Camera is used to show real world live images.</string>
+    <string name="location_permissions_description">Location is needed to locate this device.</string>
+    <string name="needs_permissions">All requested permissions are needed.</string>
 
     <!-- Filter fragment -->
     <string name="none">None</string>

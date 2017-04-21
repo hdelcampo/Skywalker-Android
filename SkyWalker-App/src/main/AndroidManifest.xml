@@ -16,9 +16,18 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
         android:screenOrientation="sensorLandscape"
-        android:supportsRtl="true">
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="7a424b2d0d701043f224a61ff33c07c21f3a4407" />
+
+        <meta-data
+            android:name="com.google.android.gms.vision.DEPENDENCIES"
+            android:value="barcode" />
+
         <activity
             android:name=".presentation.EntryActivity"
             android:theme="@style/SplashTheme">
@@ -40,15 +49,10 @@
 
         <activity
             android:name=".presentation.NewConnectionActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme" />
+            android:label="@string/app_name"/>
 
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="7a424b2d0d701043f224a61ff33c07c21f3a4407" />
-        <meta-data
-            android:name="com.google.android.gms.vision.DEPENDENCIES"
-            android:value="barcode" />
+        <activity
+            android:name=".presentation.PermissionsRequestActivity"/>
 
     </application>
 
