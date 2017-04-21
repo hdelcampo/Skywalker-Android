@@ -40,12 +40,8 @@
 
         <activity
             android:name=".presentation.NewConnectionActivity"
-            android:label="@string/connection_title"
-            android:theme="@style/Theme.AppCompat.Light.DialogWhenLarge" />
-
-        <activity
-            android:name=".presentation.EntryLoginActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme" />
 
         <meta-data
             android:name="io.fabric.ApiKey"

@@ -1,16 +1,18 @@
 package es.uva.tfg.hector.SkyWalkerApp.presentation;
 
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.view.ViewGroup;
+import android.support.v7.widget.Toolbar;
 
 import es.uva.tfg.hector.SkyWalkerApp.R;
 
@@ -20,20 +22,19 @@ import es.uva.tfg.hector.SkyWalkerApp.R;
  */
 public class NewConnectionActivity extends AppCompatActivity {
 
+    /**
+     * Permissions IDs.
+     */
+    private static final int APP_PERMISSIONS = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.tabs_connection_layout);
 
-        ActionBar bar = getSupportActionBar();
-
-        if (bar != null) {
-            bar.setElevation(0);
-            ColorDrawable colorDrawable = new ColorDrawable(Color.WHITE);
-            bar.setBackgroundDrawable(colorDrawable);
-            ((ViewGroup.MarginLayoutParams) findViewById(R.id.pager).getLayoutParams()).topMargin = 0;
-        }
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         TabLayout tabHost = (TabLayout)findViewById(R.id.tabHost);
 
@@ -63,6 +64,35 @@ public class NewConnectionActivity extends AppCompatActivity {
             }
         });
 
+        //checkPermissions();
+
+    }
+
+    /**
+     * Checks App granted permissions.
+     */
+    private void checkPermissions() {
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA},
+                    APP_PERMISSIONS);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[],
+                                           int[] grantResults) {
+        switch (requestCode) {
+            case APP_PERMISSIONS: {
+                if (grantResults.length == 0
+                        || grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                    Snackbar.make(findViewById(R.id.container), getString(R.string.needs_camera_permissions), Snackbar.LENGTH_LONG).show();
+                    checkPermissions();
+                }
+            }
+        }
     }
 
     /**
@@ -82,18 +112,18 @@ public class NewConnectionActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
 
-            Fragment fragment;
+            Fragment fragment = null;
 
             switch (position) {
                 case 0:
-                    fragment = new QRConnectionFragment();
-                    return fragment;
-                case 1:
                     fragment = new ManualConnectionFragment();
-                    return fragment;
-                default:
-                    return null;
+                    break;
+                case 1:
+                    fragment = new QRConnectionFragment();
+                    break;
             }
+
+            return fragment;
 
         }
 
@@ -106,9 +136,9 @@ public class NewConnectionActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return NewConnectionActivity.this.getString(R.string.QR);
-                case 1:
                     return NewConnectionActivity.this.getString(R.string.Manual);
+                case 1:
+                    return NewConnectionActivity.this.getString(R.string.QR);
                 default:
                     return null;
             }

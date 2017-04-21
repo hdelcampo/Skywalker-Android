@@ -56,7 +56,6 @@ public class ManualConnectionFragment extends NewConnectionFragment implements V
         View rootView =  inflater.inflate(R.layout.manual_connection_layout, container, false);
 
         rootView.findViewById(R.id.accept_button).setOnClickListener(this);
-        rootView.findViewById(R.id.cancel_button).setOnClickListener(this);
         rootView.findViewById(R.id.demo_button).setOnClickListener(this);
 
         ((TextInputEditText) rootView.findViewById(R.id.addr_field)).addTextChangedListener(addrValidator);
@@ -85,9 +84,6 @@ public class ManualConnectionFragment extends NewConnectionFragment implements V
                 newConnection(url, username, password);
                 break;
 
-            case R.id.cancel_button:
-                getActivity().finish();
-                break;
             case R.id.demo_button:
                 PointOfInterest.setPoints(PointOfInterest.getDemoPoints());
                 PointOfInterest.setMySelf(new PointOfInterest(999, "MySelf"));

@@ -1,6 +1,6 @@
 <resources>
     <!-- General -->
-    <string name="app_name">SkyWalker-App</string>
+    <string name="app_name">SkyWalker</string>
     <string name="filter">Filter</string>
     <string name="accept">Accept</string>
     <string name="filter_title">Select elements to show</string>

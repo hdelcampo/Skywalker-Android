@@ -84,7 +84,7 @@ public class EntryActivity extends AppCompatActivity {
      * @param view who called.
      */
     public void loginClick (View view) {
-        Intent intent = new Intent(this, EntryLoginActivity.class);
+        Intent intent = new Intent(this, NewConnectionActivity.class);
         startActivity(intent);
         finish();
     }
