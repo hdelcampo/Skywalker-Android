@@ -65,9 +65,22 @@ public class AugmentedRealityControlsFragment extends Fragment implements View.O
         super.onStart();
         TapTargetView.showFor(getActivity(),
                 TapTarget.forView(getView().findViewById(R.id.navigation_drawer), getString(R.string.controls_discovery))
-                .outerCircleColor(R.color.colorPrimary)
+                .outerCircleColor(R.color.colorAccent)
                 .textColor(android.R.color.white),
-                null);
+                new TapTargetView.Listener() {
+
+                    @Override
+                    public void onOuterCircleClick(TapTargetView view) {
+                        super.onOuterCircleClick(view);
+                        view.dismiss(true);
+                    }
+
+                    @Override
+                    public void onTargetDismissed(TapTargetView view, boolean userInitiated) {
+                        super.onTargetDismissed(view, userInitiated);
+                        ((DrawerLayout) getView()).openDrawer(Gravity.START, true);
+                    }
+                });
     }
 
     @Override
