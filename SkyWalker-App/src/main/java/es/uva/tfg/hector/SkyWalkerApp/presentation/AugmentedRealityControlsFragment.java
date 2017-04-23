@@ -14,6 +14,9 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,6 +58,16 @@ public class AugmentedRealityControlsFragment extends Fragment implements View.O
         setBuildStamp(rootView);
 
         return rootView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        TapTargetView.showFor(getActivity(),
+                TapTarget.forView(getView().findViewById(R.id.navigation_drawer), getString(R.string.controls_discovery))
+                .outerCircleColor(R.color.colorPrimary)
+                .textColor(android.R.color.white),
+                null);
     }
 
     @Override
