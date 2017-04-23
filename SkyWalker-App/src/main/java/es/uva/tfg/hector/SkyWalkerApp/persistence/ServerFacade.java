@@ -363,6 +363,13 @@ public class ServerFacade {
     }
 
     /**
+     * Clears the current connection.
+     */
+    public void logout() {
+        token = null;
+    }
+
+    /**
      * Retrieves actual server error reason
      * @param error given by server
      * @return an enum for the error

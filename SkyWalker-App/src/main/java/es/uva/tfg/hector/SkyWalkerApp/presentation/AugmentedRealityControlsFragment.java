@@ -19,6 +19,7 @@ import java.util.List;
 
 import es.uva.tfg.hector.SkyWalkerApp.R;
 import es.uva.tfg.hector.SkyWalkerApp.business.PointOfInterest;
+import es.uva.tfg.hector.SkyWalkerApp.persistence.ServerFacade;
 
 /**
  * Fragment for Augmented Reality controls.
@@ -46,7 +47,7 @@ public class AugmentedRealityControlsFragment extends Fragment implements View.O
         View rootView = inflater.inflate(R.layout.augmented_reality_controls_layout, container, false);
 
         rootView.findViewById(R.id.filter_button).setOnClickListener(this);
-        rootView.findViewById(R.id.connection_button).setOnClickListener(this);
+        rootView.findViewById(R.id.logout_button).setOnClickListener(this);
         rootView.findViewById(R.id.debug_info_layout).setOnClickListener(this);
 
         ((Switch)rootView.findViewById(R.id.switch_debug_info)).setOnCheckedChangeListener(this);
@@ -75,8 +76,8 @@ public class AugmentedRealityControlsFragment extends Fragment implements View.O
             case R.id.filter_button:
                 filter();
                 break;
-            case R.id.connection_button:
-                newConnection();
+            case R.id.logout_button:
+                logout();
                 break;
             case R.id.debug_info_layout:
                 ((DrawerLayout) getView()).openDrawer(Gravity.START, true);
@@ -109,11 +110,13 @@ public class AugmentedRealityControlsFragment extends Fragment implements View.O
     }
 
     /**
-     * Shows an UI to start a new server connection.
+     * Shows an UI to start a new server connection, also logouts from server.
      */
-    private void newConnection () {
+    private void logout() {
         Intent dialog = new Intent(getContext(), NewConnectionActivity.class);
         startActivity(dialog);
+        ServerFacade.getInstance(getContext()).logout();
+        getActivity().finish();
     }
 
     /**

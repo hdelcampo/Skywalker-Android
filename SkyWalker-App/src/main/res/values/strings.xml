@@ -59,6 +59,6 @@
     <string name="ibeacon_status_on">Transmitting position</string>
     <string name="ibeacon_status_off">Transmitter disconnected</string>
     <string name="filter_label">Filter elements</string>
-    <string name="new_connection_label">New connection</string>
+    <string name="disconnect_label">Logout</string>
 
 </resources>

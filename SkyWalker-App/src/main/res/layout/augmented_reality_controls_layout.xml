@@ -142,10 +142,11 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <ImageButton
+                <ImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_marginStart="16dp"
+                    android:adjustViewBounds="true"
                     android:background="@drawable/filter_icon" />
 
                 <TextView
@@ -162,18 +163,19 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/connection_button"
+                android:id="@+id/logout_button"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:background="?android:attr/selectableItemBackground"
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <ImageButton
+                <ImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_marginStart="16dp"
-                    android:background="@drawable/new_connection_icon" />
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/ic_logout_variant_black_48dp" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -182,7 +184,7 @@
                     android:layout_weight="1"
                     android:gravity="center_vertical"
                     android:minLines="1"
-                    android:text="@string/new_connection_label"
+                    android:text="@string/disconnect_label"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
             </LinearLayout>
