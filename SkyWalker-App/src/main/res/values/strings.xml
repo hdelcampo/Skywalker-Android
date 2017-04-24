@@ -54,10 +54,8 @@
     <string name="not_assigned">Not assigned</string>
 
     <!-- Navigation drawer -->
-    <string name="connection_status_on">Connected \n%s</string>
-    <string name="connection_status_off">Disconnected</string>
-    <string name="ibeacon_status_on">Transmitting position</string>
-    <string name="ibeacon_status_off">Transmitter disconnected</string>
+    <string name="demo_mode_server">Demo mode</string>
+    <string name="server_label">Server</string>
     <string name="filter_label">Filter elements</string>
     <string name="disconnect_label">Logout</string>
     <string name="controls_discovery">Tap the screen or swipe from the edge to show controls</string>

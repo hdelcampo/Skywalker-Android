@@ -48,7 +48,7 @@
         android:layout_width="240dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="#ffffff"
+        android:background="@color/colorPrimary"
         android:elevation="16dp"
         android:orientation="vertical"
         android:paddingTop="36dp">
@@ -61,66 +61,22 @@
             android:paddingEnd="16dp"
             android:paddingStart="16dp">
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/textView6"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:text="@string/server_label"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large.Inverse" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/connectionStatusLabel"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Server status"
-                        android:textAlignment="textStart" />
-
-                    <TextView
-                        android:id="@+id/textView8"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Connected"
-                        android:textAlignment="textEnd"
-                        android:textColor="@android:color/holo_green_dark" />
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/textView9"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="https://www.xtremeloc.rdnest.com"
-                    android:textSize="12sp" />
-
-            </LinearLayout>
-
-            <LinearLayout
+            <TextView
+                android:id="@+id/real_server_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/transmitterStatusLabel"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="iBeacon status"
-                    android:textAlignment="textStart" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Connected"
-                    android:textAlignment="textEnd"
-                    android:textColor="@android:color/holo_green_dark" />
-            </LinearLayout>
-
+                android:layout_marginBottom="2dp"
+                android:layout_marginTop="2dp"
+                android:text="https://www.xtremeloc.rdnest.com"
+                android:textAppearance="@style/TextAppearance.AppCompat.Inverse"
+                android:textSize="12sp" />
         </LinearLayout>
 
         <View
@@ -148,7 +104,9 @@
                     android:layout_height="40dp"
                     android:layout_marginStart="16dp"
                     android:adjustViewBounds="true"
-                    android:background="@drawable/filter_icon" />
+                    android:background="@drawable/filter_icon"
+                    android:backgroundTint="@color/cardview_light_background"
+                    android:backgroundTintMode="src_in" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -159,7 +117,7 @@
                     android:gravity="center_vertical"
                     android:maxLines="1"
                     android:text="@string/filter_label"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+                    android:textAppearance="@style/TextAppearance.AppCompat.Inverse" />
 
             </LinearLayout>
 
@@ -176,7 +134,9 @@
                     android:layout_height="40dp"
                     android:layout_marginStart="16dp"
                     android:adjustViewBounds="true"
-                    android:background="@drawable/ic_logout_variant_black_48dp" />
+                    android:background="@drawable/logout_icon"
+                    android:backgroundTint="@color/cardview_light_background"
+                    android:backgroundTintMode="src_in" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -186,7 +146,7 @@
                     android:gravity="center_vertical"
                     android:minLines="1"
                     android:text="@string/disconnect_label"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+                    android:textAppearance="@style/TextAppearance.AppCompat.Inverse" />
 
             </LinearLayout>
         </LinearLayout>
@@ -211,14 +171,15 @@
                 android:layout_height="48dp"
                 android:checked="true"
                 android:text="Hide debug info"
-                android:textAlignment="viewStart" />
+                android:textColor="@color/cardview_light_background" />
 
             <TextView
                 android:id="@+id/compilationStamp"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:gravity="center_vertical"
-                android:text="TextView" />
+                android:text="TextView"
+                android:textAppearance="@android:style/TextAppearance.Material.Small.Inverse" />
         </LinearLayout>
 
     </LinearLayout>

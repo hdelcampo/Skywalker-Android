@@ -1,6 +1,7 @@
 package es.uva.tfg.hector.SkyWalkerApp.presentation;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -55,6 +56,8 @@ public class AugmentedRealityControlsFragment extends Fragment implements View.O
 
         ((Switch)rootView.findViewById(R.id.switch_debug_info)).setOnCheckedChangeListener(this);
 
+        ((TextView)rootView.findViewById(R.id.real_server_label)).setText(ServerFacade.getInstance(getContext()).getServer());
+
         setBuildStamp(rootView);
 
         return rootView;
@@ -86,7 +89,7 @@ public class AugmentedRealityControlsFragment extends Fragment implements View.O
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if (getActivity().RESULT_OK == resultCode) {
+        if (Activity.RESULT_OK == resultCode) {
             if (FILTER_POINTS == requestCode) {
                 List<PointOfInterest> selecteds =
                         data.getParcelableArrayListExtra(FilterActivity.POINTS_TO_SHOW);

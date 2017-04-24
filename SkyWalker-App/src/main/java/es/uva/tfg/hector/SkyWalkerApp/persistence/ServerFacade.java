@@ -370,6 +370,14 @@ public class ServerFacade {
     }
 
     /**
+     * Retrieves the server URL.
+     * @return the URL.
+     */
+    public String getServer() {
+        return token.getURL();
+    }
+
+    /**
      * Retrieves actual server error reason
      * @param error given by server
      * @return an enum for the error
@@ -402,7 +410,7 @@ public class ServerFacade {
      * Sets demo mode.
      */
     public void setDemo() {
-        token = new Token("demo", null);
+        token = new Token(context.getString(R.string.demo_mode_server), null);
     }
 
     /**
@@ -410,7 +418,7 @@ public class ServerFacade {
      * @return true if demo mode, false otherwise.
      */
     public boolean isDemo() {
-        return token.getURL().equals("demo");
+        return token.getURL().equals(context.getString(R.string.demo_mode_server));
     }
 
 
