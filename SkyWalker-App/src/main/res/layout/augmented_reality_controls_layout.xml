@@ -14,13 +14,6 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/theta"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Theta"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-
-        <TextView
             android:id="@+id/xRotation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
