@@ -222,23 +222,24 @@ public class OverlayView implements Observer{
          * Global constants
          */
         private static final float TEXT_SIZE = 70f;
-        private static final float STROKE_WIDTH = 0.75f;
+        private static final float STROKE_WIDTH = 1f;
         private static final boolean ANTI_ALIAS_ENABLED = true;
         private static final int TEXT_COLOR = Color.WHITE;
-        private static final int TEXT_BORDER_COLOR = Color.RED;
+        private static final int TEXT_BORDER_COLOR = Color.BLACK;
 
         /**
          * Constants for out of sight listInUse.
          */
         private final static int OUT_OF_SIGHT_ICON = R.drawable.out_of_sight_icon;
-        private final static float OUT_OF_SIGHT_ICON_SCALE = 2f;
+        private final static int OUT_OF_SIGHT_ICON_ANGLE_OFFSET = 90;
+        private final static float OUT_OF_SIGHT_ICON_SCALE = 1.5f;
         private final static float MARGIN = 0.9f;
 
         /**
          * Constants for in sight listInUse.
          */
         private static final int INSIGHT_ICON = R.drawable.in_sight_icon;
-        private static final float IN_SIGHT_ICON_SCALE = 2f;
+        private static final float IN_SIGHT_ICON_SCALE = 0.8f;
 
         @Override
         public void run() {
@@ -387,7 +388,7 @@ public class OverlayView implements Observer{
                 y = view.getHeight()*(1-MARGIN);
             }
 
-            drawIcon(canvas, x, y, OUT_OF_SIGHT_ICON, (float)angle, OUT_OF_SIGHT_ICON_SCALE);
+            drawIcon(canvas, x, y, OUT_OF_SIGHT_ICON, (float)angle + OUT_OF_SIGHT_ICON_ANGLE_OFFSET, OUT_OF_SIGHT_ICON_SCALE);
             drawText(canvas, new String[]{point.getName()}, x + 17.5f, y + 15);
 
         }
