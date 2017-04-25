@@ -58,6 +58,8 @@
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
                     android:layout_marginTop="16dp"
+                    android:shadowColor="@android:color/black"
+                    android:shadowRadius="2"
                     android:text="@string/qr_header"
                     android:textAlignment="center"
                     android:textAppearance="@style/TextAppearance.AppCompat.Title.Inverse"
