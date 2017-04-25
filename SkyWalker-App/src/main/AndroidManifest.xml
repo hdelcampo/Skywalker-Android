@@ -45,7 +45,7 @@
         <activity
             android:name=".presentation.FilterActivity"
             android:label="@string/filter_title"
-            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
+            android:theme="@style/AppDialog" />
 
         <activity
             android:name=".presentation.NewConnectionActivity"

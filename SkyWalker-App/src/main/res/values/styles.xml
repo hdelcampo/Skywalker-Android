@@ -12,4 +12,15 @@
         <item name="android:windowBackground">@drawable/splash_screen_style</item>
     </style>
 
+    <style name="AppDialog" parent="@android:style/Theme.DeviceDefault.Light.Dialog">
+        <item name="android:windowTitleStyle">@style/dialog_title</item>
+    </style>
+
+    <style name="dialog_title" parent="android:Widget.TextView">
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:paddingBottom">20dp</item>
+    </style>
+
 </resources>

@@ -7,7 +7,6 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:background="#1B000000"
         android:paddingBottom="1dp"
         android:paddingTop="1dp">
@@ -16,7 +15,7 @@
             android:id="@+id/itemsList"
             android:layout_width="match_parent"
             android:layout_height="168dp"
-            android:background="#FAFAFA" />
+            android:background="@color/cardview_light_background" />
     </FrameLayout>
 
     <LinearLayout
@@ -33,7 +32,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:onClick="deselectAll"
-            android:text="@string/none" />
+            android:text="@string/none"
+            android:textColor="@color/colorPrimary" />
 
         <Button
             android:id="@+id/selectButton"
@@ -42,7 +42,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:onClick="selectAll"
-            android:text="@string/all" />
+            android:text="@string/all"
+            android:textColor="@color/colorPrimary" />
 
     </LinearLayout>
 
@@ -50,6 +51,7 @@
         android:layout_width="wrap_content"
         android:layout_height="52dp"
         android:layout_gravity="end"
+        android:layout_marginBottom="8dp"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -60,7 +62,8 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:onClick="cancel"
-            android:text="@android:string/cancel" />
+            android:text="@android:string/cancel"
+            android:textColor="@color/colorPrimary" />
 
         <Button
             android:id="@+id/acceptButton"
@@ -69,7 +72,8 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:onClick="accept"
-            android:text="@android:string/ok" />
+            android:text="@android:string/ok"
+            android:textColor="@color/colorPrimary" />
 
     </LinearLayout>
 
