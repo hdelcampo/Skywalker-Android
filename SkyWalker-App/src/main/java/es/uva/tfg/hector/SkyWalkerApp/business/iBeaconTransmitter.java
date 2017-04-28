@@ -1,8 +1,12 @@
 package es.uva.tfg.hector.SkyWalkerApp.business;
 
 import android.annotation.TargetApi;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.le.AdvertiseSettings;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 
 import org.altbeacon.beacon.Beacon;
@@ -65,14 +69,56 @@ public class iBeaconTransmitter {
     }
 
     /**
+     * Checks whether bluetooth is enabled or not.
+     * @return true if bluetooth is enabled, false otherwise.
+     */
+    public static boolean isBluetoothEnabled() {
+        BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+        return adapter.isEnabled();
+    }
+
+    /**
+     * Enables bluetooth, and executes callback.
+     * If bluetooth is already enable it does nothing.
+     * @param context of the activity.
+     * @param callback to execute, can be null if nothing has to be executed.
+     */
+    public static void enableBluetooth (Context context, final OnEventCallback callback) {
+
+        BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+
+        if (adapter.isEnabled()) {
+            return;
+        }
+
+        BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                switch (intent.getAction()) {
+                    case BluetoothAdapter.ACTION_STATE_CHANGED:
+
+                        if (BluetoothAdapter.STATE_ON == intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1)) {
+                            if (null != callback) {
+                                callback.onEnabled();
+                            }
+                            context.unregisterReceiver(this);
+                        }
+                        break;
+                }
+            }
+        };
+
+        context.registerReceiver(broadcastReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
+
+        adapter.enable();
+
+    }
+
+    /**
      * Creates a new iBeacon transmitter.
      * @param context of the App.
      */
     public iBeaconTransmitter(Context context) {
-
-        if (BeaconTransmitter.SUPPORTED != BeaconTransmitter.checkTransmissionSupported(context)) {
-            throw new RuntimeException("This device cannot transmit BLE packets");
-        }
 
         BeaconParser beaconParser = new BeaconParser()
                 .setBeaconLayout(IBEACON_LAYOUT);
@@ -115,6 +161,14 @@ public class iBeaconTransmitter {
      */
     public void stopTransmission () {
         beaconTransmitter.stopAdvertising();
+    }
+
+    /**
+     * Interface for Bluetooth events callbacks.
+     */
+    public interface OnEventCallback {
+
+        void onEnabled ();
     }
 
 }
