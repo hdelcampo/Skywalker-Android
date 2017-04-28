@@ -120,6 +120,10 @@ public class iBeaconTransmitter {
      */
     public iBeaconTransmitter(Context context) {
 
+        if (!canTransmit(context)) {
+            throw new RuntimeException("Cannot transmit iBeacon frames");
+        }
+
         BeaconParser beaconParser = new BeaconParser()
                 .setBeaconLayout(IBEACON_LAYOUT);
 
