@@ -1,6 +1,6 @@
 <resources>
     <!-- General -->
-    <string name="app_name">SkyWalker</string>
+    <string name="app_name" translatable="false">Skywalker</string>
     <string name="filter">Filter</string>
     <string name="accept">Accept</string>
     <string name="filter_title">Select elements to show</string>
@@ -48,8 +48,8 @@
     <string name="bluetooth_checking">Checking bluetooth…</string>
     <string name="bluetooth_enabling">Enabling bluetooth…</string>
     <string name="no_internet">There was an error with your internet connection.</string>
-    <string name="invalid_login_data">Username or password are invalid or empty.</string>
-    <string name="invalid_url">http(s)://www.example.com</string>
+    <string name="invalid_login_data">Username or password are invalid.</string>
+    <string name="invalid_url" translatable="false">http(s)://www.example.com</string>
     <string name="invalid_qr">That"'"s not a valid QR.</string>
     <string name="server_bad_connection">Couldn"'"t retrieve server info.</string>
 
@@ -57,7 +57,6 @@
     <string name="not_assigned">Not assigned</string>
 
     <!-- Navigation drawer -->
-    <string name="demo_mode_server">Demo mode</string>
     <string name="server_label">Server</string>
     <string name="filter_label">Filter elements</string>
     <string name="controls_discovery">Tap the screen or swipe from the edge to show controls</string>
