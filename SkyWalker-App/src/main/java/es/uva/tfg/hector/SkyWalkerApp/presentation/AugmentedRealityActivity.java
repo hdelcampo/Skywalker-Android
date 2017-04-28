@@ -1,5 +1,12 @@
 package es.uva.tfg.hector.SkyWalkerApp.presentation;
 
+import android.app.AlertDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
@@ -8,6 +15,8 @@ import java.util.List;
 
 import es.uva.tfg.hector.SkyWalkerApp.R;
 import es.uva.tfg.hector.SkyWalkerApp.business.PointOfInterest;
+import es.uva.tfg.hector.SkyWalkerApp.business.iBeaconTransmitter;
+import es.uva.tfg.hector.SkyWalkerApp.persistence.ServerFacade;
 
 /**
  * Augmented reality activity
@@ -15,6 +24,56 @@ import es.uva.tfg.hector.SkyWalkerApp.business.PointOfInterest;
  */
 public class AugmentedRealityActivity extends FragmentActivity
         implements AugmentedRealityControlsFragment.AugmentedRealityControls {
+
+    /**
+     * Broadcast receiver for system events.
+     */
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            switch (intent.getAction()) {
+                case BluetoothAdapter.ACTION_STATE_CHANGED:
+
+                    if (BluetoothAdapter.STATE_ON == intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1)) {
+
+                        iBeaconTransmitter.getInstance(AugmentedRealityActivity.this).startTransmission();
+
+                    } else if (BluetoothAdapter.STATE_OFF == intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1)) {
+
+                        iBeaconTransmitter.getInstance(AugmentedRealityActivity.this).stopTransmission();
+
+                        new AlertDialog.Builder(AugmentedRealityActivity.this)
+                                .setTitle(R.string.bluetooth_disconnected_title)
+                                .setMessage(R.string.bluetooth_disconnected_msg)
+                                .setCancelable(false)
+                                .setPositiveButton(R.string.bluetooth_enable, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+                                        adapter.enable();
+                                    }
+                                })
+                                .setNegativeButton(R.string.disconnect, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        AugmentedRealityActivity.this.finish();
+                                    }
+                                })
+                                .show();
+                    }
+                break;
+            }
+        }
+    };
+
+    /**
+     * Broadcast receiver's filter.
+     */
+    private IntentFilter intentFilter = new IntentFilter();
+
+    {
+        intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+    }
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -33,6 +92,19 @@ public class AugmentedRealityActivity extends FragmentActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.augmented_reality_activity_layout);
+        if (!ServerFacade.getInstance(this).isDemo()) {
+            registerReceiver(broadcastReceiver, intentFilter);
+            iBeaconTransmitter.getInstance(this).startTransmission();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (!ServerFacade.getInstance(this).isDemo()) {
+            iBeaconTransmitter.getInstance(this).stopTransmission();
+            unregisterReceiver(broadcastReceiver);
+        }
     }
 
     @Override

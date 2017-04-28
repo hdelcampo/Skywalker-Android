@@ -134,7 +134,7 @@
                     android:gravity="center_vertical"
                     android:minLines="1"
                     android:paddingStart="8dp"
-                    android:text="@string/disconnect_label"
+                    android:text="@string/disconnect"
                     android:textAppearance="@style/TextAppearance.AppCompat" />
 
             </LinearLayout>
