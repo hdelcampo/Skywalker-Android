@@ -13,14 +13,15 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.SurfaceTexture;
+import android.hardware.SensorManager;
 import android.os.Handler;
+import android.view.LayoutInflater;
 import android.view.TextureView;
+import android.view.View;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import es.uva.tfg.hector.SkyWalkerApp.R;
@@ -37,12 +38,12 @@ import es.uva.tfg.hector.SkyWalkerApp.services.Vector3D;
  * Handles the drawing on screen, and the points updating.
  * @author Héctor Del Campo Pando.
  */
-public class OverlayView implements Observer{
+public class OverlayView implements OrientationSensor.OrientationSensorDelegate {
 
     /**
      * Camera used in the underlying preview.
      */
-    private Camera camera;  //TODO probably gonna delete this -just for quick development-
+    private Camera camera;
 
     /**
      * View where objects will be displayed.
@@ -79,7 +80,15 @@ public class OverlayView implements Observer{
      */
     public static final int MAX_ELEMENTS_TO_DRAW = 5;
 
-    private Activity activity;  //TODO probably gonna delete this -just for development purposes-
+    /**
+     * Holder activity.
+     */
+    private Activity activity;
+
+    /**
+     * Sensor calibration dialog's.
+     */
+    private AlertDialog dialog;
 
     /**
      * Listener for the given {@link TextureView}.
@@ -143,8 +152,7 @@ public class OverlayView implements Observer{
 
         view.setOpaque(false);
 
-        orientationSensor = new OrientationSensor(activity.getBaseContext());
-        orientationSensor.addObserver(this);
+        orientationSensor = new OrientationSensor(activity, this);
 
         points = PointOfInterest.getPoints();
         mySelf = PointOfInterest.getSelf();
@@ -211,23 +219,6 @@ public class OverlayView implements Observer{
         main.post(runnable);
     }
 
-    public void updateDegrees(){
-        Vector3D orientationVector = orientationSensor.getOrientationVector();
-        TextView degreeText = (TextView)activity.findViewById(R.id.zRotation);
-        degreeText.setText("X: " + String.valueOf(orientationVector.getX()));
-
-        degreeText = (TextView)activity.findViewById(R.id.yRotation);
-        degreeText.setText("Y: " + String.valueOf(orientationVector.getY()));
-
-        degreeText = (TextView)activity.findViewById(R.id.xRotation);
-        degreeText.setText("Z: " + String.valueOf(orientationVector.getZ()));
-    }
-
-    @Override
-    public void update(Observable observable, Object o) {
-        updateDegrees();
-    }
-
     public List<PointOfInterest> getActivePoints() {
         return new ArrayList<>(points);
     }
@@ -237,6 +228,37 @@ public class OverlayView implements Observer{
             points.clear();
             points.addAll(toShow);
         }
+    }
+
+    @Override
+    public void onSensorValueEvent(Vector3D value) {
+        TextView degreeText = (TextView) activity.findViewById(R.id.zRotation);
+        degreeText.setText("X: " + String.valueOf(value.getX()));
+
+        degreeText = (TextView) activity.findViewById(R.id.yRotation);
+        degreeText.setText("Y: " + String.valueOf(value.getY()));
+
+        degreeText = (TextView) activity.findViewById(R.id.xRotation);
+        degreeText.setText("Z: " + String.valueOf(value.getZ()));
+    }
+
+    @Override
+    public void onSensorAccuracyChange(int accuracy) {
+
+        if (accuracy < SensorManager.SENSOR_STATUS_ACCURACY_HIGH) {
+            LayoutInflater factory = LayoutInflater.from(activity);
+            final View view = factory.inflate(R.layout.sensor_calibration_layout, null);
+            AlertDialog.Builder builder =
+                    new AlertDialog.Builder(activity)
+                    .setCancelable(false)
+                    .setView(view);
+            dialog = builder.create();
+            dialog.show();
+        } else if (null != dialog) {
+            dialog.dismiss();
+            dialog = null;
+        }
+
     }
 
     /**
