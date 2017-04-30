@@ -46,4 +46,7 @@
     <string name="server_bad_connection">No se pudo recuperar la información del servidor.</string>
     <string name="server_label">Servidor</string>
     <string name="user_field">Usuario</string>
+    <string name="sensor_lack_msg">Lo sentimos, este dispositivo carece de los sensores necesarios para funcionar.</string>
+    <string name="sensor_lack_title">Dispositivo incompatible</string>
+    <string name="exit">Salir</string>
 </resources>

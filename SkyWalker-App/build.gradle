@@ -24,7 +24,7 @@ android {
         minSdkVersion 18
         targetSdkVersion 25
         versionCode 18
-        versionName "0.8 Beta"
+        versionName "0.9 Release Candidate"
     }
     buildTypes {
         release {
@@ -46,7 +46,7 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:cardview-v7:25.3.1'
     compile 'org.altbeacon:android-beacon-library:2.9.2'
-    compile 'com.google.android.gms:play-services-vision:10.2.1'
+    compile 'com.google.android.gms:play-services-vision:10.2.4'
     compile 'com.getkeepsafe.taptargetview:taptargetview:1.9.1'
     compile 'com.android.volley:volley:1.0.0'
     testCompile 'junit:junit:4.12'

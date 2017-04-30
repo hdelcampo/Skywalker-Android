@@ -172,4 +172,16 @@ public class OrientationSensor extends Observable {
         return orientationVector;
     }
 
+    /**
+     * Checks wheter the device is capable of using this sensor or not.
+     * @param context of the App.
+     * @return true if device has the needed sensor, false otherwise.
+     */
+    public static boolean isCapable (Context context) {
+
+        SensorManager manager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        return null != manager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+
+    }
+
 }
