@@ -1,6 +1,9 @@
 package es.uva.tfg.hector.SkyWalkerApp.presentation;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,6 +13,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.SurfaceTexture;
+import android.os.Handler;
 import android.view.TextureView;
 import android.widget.TextView;
 
@@ -17,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import es.uva.tfg.hector.SkyWalkerApp.R;
 import es.uva.tfg.hector.SkyWalkerApp.business.Camera;
@@ -68,6 +73,11 @@ public class OverlayView implements Observer{
      * The orientation's sensor that will indicate where the user is aiming.
      */
     private OrientationSensor orientationSensor;
+
+    /**
+     * The maximum number of elements to be drawn.
+     */
+    public static final int MAX_ELEMENTS_TO_DRAW = 5;
 
     private Activity activity;  //TODO probably gonna delete this -just for development purposes-
 
@@ -172,6 +182,33 @@ public class OverlayView implements Observer{
         if (connectionThread != null) {
             connectionThread.interrupt();
         }
+    }
+
+    /**
+     * Handler for internet errors.
+     * Will inform user and stop the on going AR session.
+     */
+    private void onInternetError() {
+        Handler main = new Handler(activity.getMainLooper());
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                new AlertDialog.Builder(activity)
+                        .setTitle(R.string.internet_disconnected_title)
+                        .setMessage(R.string.internet_disconnected_msg)
+                        .setCancelable(false)
+                        .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(activity, NewConnectionActivity.class);
+                                activity.startActivity(intent);
+                                activity.finish();
+                            }
+                        })
+                        .show();
+            }
+        };
+        main.post(runnable);
     }
 
     public void updateDegrees(){
@@ -496,14 +533,45 @@ public class OverlayView implements Observer{
      */
     private class ConnectionThread extends Thread {
 
+        /**
+         * The time to sleep between petitions.
+         */
         private static final long SLEEP_TIME = 250; //milliseconds
 
+        /**
+         * Running status.
+         */
         private volatile boolean running = true;
+
+        /**
+         * The number of petitions that must be error-monitored.
+         */
+        private final static int NUM_LOOPS_CHECKING = 4;
+
+        /**
+         * The maximum porcentage of errors for the given consequential petitions.
+         */
+        private final static float MAX_ERRORS_PORC = 0.6f;
 
         @Override
         public void run() {
 
+            int numLoopsWithoutCheck = 0;
+            int numPetitionsWithoutCheck = 0;
+            final AtomicInteger numErrors = new AtomicInteger(0);
+
             while (running) {
+
+                if (numLoopsWithoutCheck == NUM_LOOPS_CHECKING) {
+                    if (numPetitionsWithoutCheck * MAX_ERRORS_PORC <= numErrors.get()) {
+                        OverlayView.this.onInternetError();
+                        break;
+                    } else {
+                        numErrors.set(0);
+                        numPetitionsWithoutCheck = 0;
+                        numLoopsWithoutCheck = 0;
+                    }
+                }
 
                 // Update mySelf
                 ServerFacade.getInstance(activity.getApplicationContext()).
@@ -517,12 +585,15 @@ public class OverlayView implements Observer{
 
                             @Override
                             public void onError(ServerFacade.Errors error) {
+                                numErrors.incrementAndGet();
                             }
                         }, mySelf);
 
+                numPetitionsWithoutCheck++;
+
                 // Update all other points
                 final List<PointOfInterest> points = OverlayView.this.points;
-                for (PointOfInterest point : points) {
+                for (final PointOfInterest point : points) {
                     ServerFacade.getInstance(activity.getApplicationContext()).
                             getLastPosition(new ServerFacade.OnServerResponse<MapPoint>() {
                                 @Override
@@ -539,17 +610,20 @@ public class OverlayView implements Observer{
 
                                 @Override
                                 public void onError(ServerFacade.Errors error) {
+                                    numErrors.incrementAndGet();
                                 }
                             }, point);
+                    numPetitionsWithoutCheck++;
                 }
 
                 try {
+                    numLoopsWithoutCheck++;
                     sleep(SLEEP_TIME);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            }
 
+            }
 
         }
 

@@ -49,4 +49,6 @@
     <string name="sensor_lack_msg">Lo sentimos, este dispositivo carece de los sensores necesarios para funcionar.</string>
     <string name="sensor_lack_title">Dispositivo incompatible</string>
     <string name="exit">Salir</string>
+    <string name="internet_disconnected_title">Conexión perdida</string>
+    <string name="internet_disconnected_msg">La conexión con el servidor se ha perdido, te llevaremos a la pantalla de inicio de sesión.</string>
 </resources>
