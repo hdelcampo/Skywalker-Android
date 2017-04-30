@@ -24,7 +24,7 @@ android {
         minSdkVersion 18
         targetSdkVersion 25
         versionCode 18
-        versionName "0.9 Release Candidate"
+        versionName "0.9 RC"
     }
     buildTypes {
         release {
