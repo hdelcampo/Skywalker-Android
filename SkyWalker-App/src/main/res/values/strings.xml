@@ -72,5 +72,6 @@
     <string name="internet_disconnected_msg">The connection to the server was lost, you will be redirected to login screen.</string>
     <string name="sensor_calibration_title">Orientation is unreliable</string>
     <string name="sensor_calibration_msg">Move your device following an eight, if this message doesn\'t disappear, try restarting your device.</string>
+    <string name="selected_status_msg">Selected %1$d (Max %2$d)</string>
 
 </resources>

@@ -154,7 +154,13 @@ public class OverlayView implements OrientationSensor.OrientationSensorDelegate 
 
         orientationSensor = new OrientationSensor(activity, this);
 
-        points = PointOfInterest.getPoints();
+        List<PointOfInterest> pointsList = PointOfInterest.getPoints();
+
+        if (pointsList.size() < MAX_ELEMENTS_TO_DRAW) {
+            points = pointsList;
+        } else {
+            points = PointOfInterest.getPoints().subList(0, MAX_ELEMENTS_TO_DRAW);
+        }
         mySelf = PointOfInterest.getSelf();
 
         mySelf.setX(0.5f);

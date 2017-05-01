@@ -3,14 +3,19 @@ package es.uva.tfg.hector.SkyWalkerApp.presentation;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.SparseBooleanArray;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
-import android.widget.AbsListView;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import es.uva.tfg.hector.SkyWalkerApp.R;
 import es.uva.tfg.hector.SkyWalkerApp.business.PointOfInterest;
@@ -19,7 +24,7 @@ import es.uva.tfg.hector.SkyWalkerApp.business.PointOfInterest;
  * Dialog to filter {@Code PointsOfInterest}.
  * @author Hector Del Campo Pando
  */
-public class FilterActivity extends Activity {
+public class FilterActivity extends Activity implements FilterRowLayout.Listener {
 
     /**
      * Intent's extra data IDs
@@ -34,6 +39,11 @@ public class FilterActivity extends Activity {
     private List<PointOfInterest> usedPoints,
                         allPoints;
 
+    /**
+     * Current selected items.
+     */
+    private Set<PointOfInterest> selectedPoints = new HashSet<>(OverlayView.MAX_ELEMENTS_TO_DRAW);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +52,11 @@ public class FilterActivity extends Activity {
         usedPoints = getIntent().getParcelableArrayListExtra(USED_POINTS_EXTRA);
         allPoints = getIntent().getParcelableArrayListExtra(ALL_POINTS_EXTRA);
         addPoints();
+
+        ((TextView) findViewById(R.id.selected_counter_label)).setText(
+                String.format(
+                        getString(R.string.selected_status_msg)
+                        , selectedPoints.size(), OverlayView.MAX_ELEMENTS_TO_DRAW));
     }
 
 
@@ -51,26 +66,41 @@ public class FilterActivity extends Activity {
      */
     private void addPoints() {
         ListView itemsList = (ListView) findViewById(R.id.itemsList);
-        itemsList.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
 
-        PointOfInterest[] from = new PointOfInterest[allPoints.size()];
-        from = allPoints.toArray(from);
+        itemsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ((FilterRowLayout)view).toggle();
+            }
+        });
+
+        for (PointOfInterest point: allPoints) {
+            if (usedPoints.contains((point))) {
+                selectedPoints.add(point);
+            }
+        }
 
         ArrayAdapter<PointOfInterest> adapter =
-                new ArrayAdapter<>(
+                new ArrayAdapter<PointOfInterest>(
                         this,
                         R.layout.filter_row_layout,
                         R.id.elementTextView,
-                        from
-                );
+                        allPoints
+                ) {
+
+                    @NonNull
+                    @Override
+                    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                        FilterRowLayout view = (FilterRowLayout) super.getView(position, convertView, parent);
+                        PointOfInterest point = allPoints.get(position);
+                        view.setPoint(point);
+                        view.setListener(FilterActivity.this);
+                        view.setChecked(selectedPoints.contains(point));
+                        return view;
+                    }
+        };
 
         itemsList.setAdapter(adapter);
-
-        for(int i = 0; i < adapter.getCount(); i++) {
-            if (usedPoints.contains(adapter.getItem(i))) {
-                itemsList.setItemChecked(i, true);
-            }
-        }
 
     }
 
@@ -79,17 +109,7 @@ public class FilterActivity extends Activity {
      * @return the list of IDs.
      */
     private List<PointOfInterest> getSelectedPoints() {
-        List<PointOfInterest> selecteds = new ArrayList<>();
-        final ListView itemsList = (ListView) findViewById(R.id.itemsList);
-
-        final SparseBooleanArray checked = itemsList.getCheckedItemPositions();
-
-        for (int i = 0; i < itemsList.getAdapter().getCount(); i++) {
-            if (checked.get(i)){
-                selecteds.add(allPoints.get(i));
-            }
-        }
-
+        List<PointOfInterest> selecteds = new ArrayList<>(selectedPoints);
         return selecteds;
     }
 
@@ -113,27 +133,48 @@ public class FilterActivity extends Activity {
     }
 
     /**
-     * Checks all items inside the list view
-     * @param view who called.
-     */
-    public void selectAll(View view) {
-        final ListView itemsList = (ListView) findViewById(R.id.itemsList);
-
-        for(int i = 0; i < itemsList.getAdapter().getCount(); i++) {
-            itemsList.setItemChecked(i, true);
-        }
-
-    }
-
-    /**
      * Eliminates all checks inside the list view
      * @param view who called.
      */
     public void deselectAll(View view) {
         final ListView itemsList = (ListView) findViewById(R.id.itemsList);
 
-        for(int i = 0; i < itemsList.getAdapter().getCount(); i++) {
-            itemsList.setItemChecked(i, false);
+        selectedPoints.clear();
+
+        for(int i = 0; i < itemsList.getCount(); i++) {
+            FilterRowLayout child = ((FilterRowLayout)itemsList.getChildAt(i));
+            if (null != child) {
+                child.setChecked(false);
+            }
         }
+
+        ((TextView) findViewById(R.id.selected_counter_label)).setText(
+                String.format(
+                        getString(R.string.selected_status_msg)
+                        , selectedPoints.size(), OverlayView.MAX_ELEMENTS_TO_DRAW));
+
     }
+
+    @Override
+    public boolean canToggle (PointOfInterest point) {
+        int size = selectedPoints.size();
+        boolean contains = selectedPoints.contains(point);
+        return OverlayView.MAX_ELEMENTS_TO_DRAW > size
+                || contains;
+    }
+
+    @Override
+    public void onToggle(PointOfInterest point, boolean checked) {
+        if (checked) {
+            selectedPoints.add(point);
+        } else {
+            selectedPoints.remove(point);
+        }
+
+        ((TextView) findViewById(R.id.selected_counter_label)).setText(
+                String.format(
+                        getString(R.string.selected_status_msg)
+                , selectedPoints.size(), OverlayView.MAX_ELEMENTS_TO_DRAW));
+    }
+
 }

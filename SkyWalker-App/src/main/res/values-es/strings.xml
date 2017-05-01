@@ -53,4 +53,5 @@
     <string name="internet_disconnected_msg">La conexión con el servidor se ha perdido, te llevaremos a la pantalla de inicio de sesión.</string>
     <string name="sensor_calibration_title">Orientación no fiable</string>
     <string name="sensor_calibration_msg">Mueve tu dispositivo siguiendo un ocho, si este mensaje no desaparece, reinicia tu dispositivo.</string>
+    <string name="selected_status_msg">Seleccionados %1$d (Máx: %2$d)</string>
 </resources>
