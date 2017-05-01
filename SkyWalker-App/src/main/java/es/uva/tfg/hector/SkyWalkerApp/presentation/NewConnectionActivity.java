@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 
 import es.uva.tfg.hector.SkyWalkerApp.R;
 
@@ -16,6 +17,11 @@ import es.uva.tfg.hector.SkyWalkerApp.R;
  * @author Hector Del Campo Pando
  */
 public class NewConnectionActivity extends AppCompatActivity {
+
+    /**
+     * The QR Fragment.
+     */
+    private QRConnectionFragment qrFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,13 +45,20 @@ public class NewConnectionActivity extends AppCompatActivity {
         tabHost.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
-
+                Log.e("Tab", "selected " + tab.getPosition());
+                if (1 == tab.getPosition()) {
+                    qrFragment.enableDetection(true);
+                    qrFragment.startDetection();
+                }
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-
+                Log.e("Tab", "unselected " + tab.getPosition());
+                if (1 == tab.getPosition()) {
+                    qrFragment.stopDetection();
+                    qrFragment.enableDetection(false);
+                }
             }
 
             @Override
@@ -66,7 +79,7 @@ public class NewConnectionActivity extends AppCompatActivity {
          */
         private static final int NUM_TABS = 2;
 
-        protected Adapter(FragmentManager fm) {
+        Adapter(FragmentManager fm) {
             super(fm);
         }
 
@@ -81,6 +94,7 @@ public class NewConnectionActivity extends AppCompatActivity {
                     break;
                 case 1:
                     fragment = new QRConnectionFragment();
+                    NewConnectionActivity.this.qrFragment = (QRConnectionFragment) fragment;
                     break;
             }
 
