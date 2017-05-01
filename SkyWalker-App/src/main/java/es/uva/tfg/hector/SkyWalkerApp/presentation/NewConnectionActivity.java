@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 
 import es.uva.tfg.hector.SkyWalkerApp.R;
 
@@ -45,7 +44,6 @@ public class NewConnectionActivity extends AppCompatActivity {
         tabHost.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                Log.e("Tab", "selected " + tab.getPosition());
                 if (1 == tab.getPosition()) {
                     qrFragment.enableDetection(true);
                     qrFragment.startDetection();
@@ -54,7 +52,6 @@ public class NewConnectionActivity extends AppCompatActivity {
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                Log.e("Tab", "unselected " + tab.getPosition());
                 if (1 == tab.getPosition()) {
                     qrFragment.stopDetection();
                     qrFragment.enableDetection(false);
