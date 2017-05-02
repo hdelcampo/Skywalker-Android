@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Skywalker</string>
     <string name="Manual">Entrada manual</string>
     <string name="QR">Escanear QR</string>
     <string name="accept">Aceptar</string>
@@ -32,7 +31,6 @@
     <string name="indoor_outdoor_page_subheader">Esta App funciona tanto en edificios como al aire libre. Todo lo que necesitas es un entorno con XtremeLoc.</string>
     <string name="invalid_login_data">Usuario o contraseña incorrectas.</string>
     <string name="invalid_qr">Código QR no valido.</string>
-    <string name="invalid_url"></string>
     <string name="location_permissions_description">El posicionamiento es necesario para localizar este dispositivo.</string>
     <string name="login">Iniciar sesión</string>
     <string name="mandatory">* indica campo obligatorio</string>
