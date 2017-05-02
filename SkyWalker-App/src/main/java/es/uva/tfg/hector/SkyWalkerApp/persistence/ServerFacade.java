@@ -334,6 +334,10 @@ public class ServerFacade {
             @Override
             public void onResponse(JSONObject response) {
                 try {
+                    if (!response.has("nearest_rdhub")) {
+                        return;
+                    }
+
                     final int receiverId = response.getInt("nearest_rdhub");
                     final MapPoint receiver = Center.centers.get(0).getReceiver(receiverId);
                     final MapPoint newPosition =
