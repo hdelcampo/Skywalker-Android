@@ -66,7 +66,11 @@ public class CameraPreview {
                 return;
             }
 
-            camera.stopPreview();
+            try {
+                camera.stopPreview();
+            } catch (IllegalStateException e) {
+                return;
+            }
 
             camera.transform(activity.getWindowManager().getDefaultDisplay().getRotation(),
                     CameraPreview.this.width == -1 ? width : CameraPreview.this.width,
