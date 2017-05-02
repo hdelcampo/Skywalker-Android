@@ -41,9 +41,10 @@ public class AugmentedRealityControlsFragment extends Fragment implements View.O
      */
     private AugmentedRealityActivity controls;
 
-    public AugmentedRealityControlsFragment() {
-        // Required empty public constructor
-    }
+    /**
+     * Indicates whether this is the first time this fragment is instantiated or not.
+     */
+    private static boolean firstTime = true;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -66,6 +67,11 @@ public class AugmentedRealityControlsFragment extends Fragment implements View.O
     @Override
     public void onStart() {
         super.onStart();
+
+        if (!firstTime) {
+            return;
+        }
+
         TapTargetView.showFor(getActivity(),
                 TapTarget.forView(getView().findViewById(R.id.navigation_drawer), getString(R.string.controls_discovery))
                 .outerCircleColor(R.color.colorAccent)
@@ -86,6 +92,9 @@ public class AugmentedRealityControlsFragment extends Fragment implements View.O
                         }
                     }
                 });
+
+        firstTime = false;
+
     }
 
     @Override
@@ -144,9 +153,9 @@ public class AugmentedRealityControlsFragment extends Fragment implements View.O
      * Shows an UI to start a new server connection, also logouts from server.
      */
     private void logout() {
+        ServerFacade.getInstance(getContext()).logout();
         Intent dialog = new Intent(getContext(), NewConnectionActivity.class);
         startActivity(dialog);
-        ServerFacade.getInstance(getContext()).logout();
         getActivity().finish();
     }
 
