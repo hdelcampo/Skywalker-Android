@@ -27,8 +27,8 @@ public abstract class NewConnectionFragment extends Fragment{
     protected void startAR() {
 
         Intent intent = new Intent(getActivity(), AugmentedRealityActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
-        getActivity().finish();
 
     }
 
