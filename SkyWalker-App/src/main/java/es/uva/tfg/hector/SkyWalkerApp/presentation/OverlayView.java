@@ -458,6 +458,9 @@ public class OverlayView implements OrientationSensor.OrientationSensorDelegate 
 
             final double angle = Vector2D.getAngle(x, y);
 
+            float textOffSetX = 25f,
+                    textOffSetY = 17.5f;
+
             /*
              * So once we get angle, we must remap it to coordinates. There are 2 kinds:
              *  -Left screen and down screen, they go in reverse coordinates system
@@ -479,11 +482,13 @@ public class OverlayView implements OrientationSensor.OrientationSensorDelegate 
                 }
 
                 y = (float) (view.getHeight()*(1 - MARGIN) + ((correctedAngle/(45*2))) * view.getHeight()*(1- (1 - MARGIN) * 2));   //Decimal part from div by 45 angles
-
+                textOffSetX *= -3f;
+                textOffSetY *= -2.75f;
             } else if (45 < angle && angle <= 135) {
                 final double correctedAngle =  135 - angle;
                 x = (float) (view.getWidth()*(1 - MARGIN) + (correctedAngle/(45*2)) * view.getWidth()*(1- (1 - MARGIN) * 2));
                 y = view.getHeight()*MARGIN;
+                textOffSetY = -textOffSetY;
             } else if (135 < angle && angle <= 225) {
                 final double correctedAngle = 225 - angle;
                 x = view.getWidth()*(1-MARGIN);
@@ -492,10 +497,11 @@ public class OverlayView implements OrientationSensor.OrientationSensorDelegate 
                 final double correctedAngle = angle - 225;
                 x = (float) (view.getWidth()*(1 - MARGIN) + (correctedAngle/(45*2)) * view.getWidth()*(1- (1 - MARGIN) * 2));
                 y = view.getHeight()*(1-MARGIN);
+                textOffSetY *= 3f;
             }
 
             drawIcon(canvas, x, y, OUT_OF_SIGHT_ICON, (float)angle + OUT_OF_SIGHT_ICON_ANGLE_OFFSET, OUT_OF_SIGHT_ICON_SCALE);
-            drawText(canvas, new String[]{point.getName()}, x + 17.5f, y + 15);
+            drawText(canvas, new String[]{point.getName()}, x + textOffSetX, y + textOffSetY);
 
         }
 
