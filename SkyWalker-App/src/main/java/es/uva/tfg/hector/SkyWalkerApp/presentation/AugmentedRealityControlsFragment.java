@@ -81,7 +81,9 @@ public class AugmentedRealityControlsFragment extends Fragment implements View.O
                     @Override
                     public void onTargetDismissed(TapTargetView view, boolean userInitiated) {
                         super.onTargetDismissed(view, userInitiated);
-                        ((DrawerLayout) getView()).openDrawer(Gravity.START, true);
+                        if (null != getView()) {
+                            ((DrawerLayout) getView()).openDrawer(Gravity.START, true);
+                        }
                     }
                 });
     }

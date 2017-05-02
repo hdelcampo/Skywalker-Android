@@ -1,5 +1,7 @@
 package es.uva.tfg.hector.SkyWalkerApp.presentation;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,6 +19,7 @@ import android.view.ViewGroup;
 import com.crashlytics.android.Crashlytics;
 
 import es.uva.tfg.hector.SkyWalkerApp.R;
+import es.uva.tfg.hector.SkyWalkerApp.business.OrientationSensor;
 import io.fabric.sdk.android.Fabric;
 
 /**
@@ -71,12 +74,34 @@ public class EntryActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager, true);
 
         handler.postDelayed(carousel, INITIAL_CAROUSEL_CHANGE);
+
+        if (!OrientationSensor.isCapable(this)) {
+            showSensorWarning();
+        }
+
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         stopCarousel();
         return super.dispatchTouchEvent(ev);
+    }
+
+    /**
+     * Shows to the user the lack of sensors.
+     */
+    private void showSensorWarning () {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.sensor_lack_title)
+                .setMessage(R.string.sensor_lack_msg)
+                .setCancelable(false)
+                .setNegativeButton(R.string.exit, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+                .show();
     }
 
     /**

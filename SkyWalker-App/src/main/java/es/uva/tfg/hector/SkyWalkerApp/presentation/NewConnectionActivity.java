@@ -17,6 +17,11 @@ import es.uva.tfg.hector.SkyWalkerApp.R;
  */
 public class NewConnectionActivity extends AppCompatActivity {
 
+    /**
+     * The QR Fragment.
+     */
+    private QRConnectionFragment qrFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,13 +44,18 @@ public class NewConnectionActivity extends AppCompatActivity {
         tabHost.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
-
+                if (1 == tab.getPosition()) {
+                    qrFragment.enableDetection(true);
+                    qrFragment.startDetection();
+                }
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-
+                if (1 == tab.getPosition()) {
+                    qrFragment.stopDetection();
+                    qrFragment.enableDetection(false);
+                }
             }
 
             @Override
@@ -66,7 +76,7 @@ public class NewConnectionActivity extends AppCompatActivity {
          */
         private static final int NUM_TABS = 2;
 
-        protected Adapter(FragmentManager fm) {
+        Adapter(FragmentManager fm) {
             super(fm);
         }
 
@@ -81,6 +91,7 @@ public class NewConnectionActivity extends AppCompatActivity {
                     break;
                 case 1:
                     fragment = new QRConnectionFragment();
+                    NewConnectionActivity.this.qrFragment = (QRConnectionFragment) fragment;
                     break;
             }
 

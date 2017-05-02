@@ -410,7 +410,7 @@ public class ServerFacade {
      * Sets demo mode.
      */
     public void setDemo() {
-        token = new Token(context.getString(R.string.demo_mode_server), null);
+        token = new Token(context.getString(R.string.demo), null);
     }
 
     /**
@@ -418,7 +418,7 @@ public class ServerFacade {
      * @return true if demo mode, false otherwise.
      */
     public boolean isDemo() {
-        return token.getURL().equals(context.getString(R.string.demo_mode_server));
+        return token.getURL().equals(context.getString(R.string.demo));
     }
 
 

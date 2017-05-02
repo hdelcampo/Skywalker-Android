@@ -63,6 +63,11 @@ public class QRConnectionFragment extends NewConnectionFragment {
      */
     private QRDetectorThread detectorThread;
 
+    /**
+     * QR detection state.
+     */
+    private boolean stopped = true;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -83,22 +88,42 @@ public class QRConnectionFragment extends NewConnectionFragment {
     public void onResume() {
         super.onResume();
         camera.start();
-        detectorThread = new QRDetectorThread();
-        detectorThread.start();
+        if (!stopped) {
+            startDetection();
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
         camera.stop();
-        try {
-            detectorThread.interrupt();
-            detectorThread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } finally {
-            detectorThread = null;
+        if (!stopped) {
+            stopDetection();
         }
+    }
+
+    /**
+     * Starts QR detection.
+     */
+    public void startDetection() {
+        detectorThread = new QRDetectorThread();
+        detectorThread.start();
+    }
+
+    /**
+     * Stops QR detection.
+     */
+    public void stopDetection() {
+        detectorThread.interrupt();
+        detectorThread = null;
+    }
+
+    /**
+     * Sets whether QR detection should be re-enabled on fragment resume or not.
+     * @param enabled true if detection should be re-enabled, false otherwise.
+     */
+    public void enableDetection(boolean enabled) {
+        stopped = !enabled;
     }
 
     @SuppressWarnings("ConstantConditions")

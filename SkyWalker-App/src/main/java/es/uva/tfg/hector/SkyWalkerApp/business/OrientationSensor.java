@@ -5,9 +5,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.util.Log;
-
-import java.util.Observable;
 
 import es.uva.tfg.hector.SkyWalkerApp.services.Matrix;
 import es.uva.tfg.hector.SkyWalkerApp.services.Vector2D;
@@ -17,7 +14,7 @@ import es.uva.tfg.hector.SkyWalkerApp.services.Vector3D;
  * Orientation sensors manager
  * @author Hector Del Campo Pando
  **/
-public class OrientationSensor extends Observable {
+public class OrientationSensor {
 
     /**
      * Sensor data sampling refresh delay in microseconds
@@ -45,9 +42,14 @@ public class OrientationSensor extends Observable {
     private Vector2D devicesReference = new Vector2D(0, 1);
 
     /**
+     * Delegate who wants to get sensor events.
+     */
+    private OrientationSensorDelegate delegate;
+
+    /**
      * Listener for the sensors
      */
-    private SensorEventListener sEvent = new SensorEventListener(){
+    private SensorEventListener eventListener = new SensorEventListener(){
 
         /**
          * Value to filter data.
@@ -98,8 +100,8 @@ public class OrientationSensor extends Observable {
                     rotationVector.get(2, 0));
             orientationVector.normalize();
 
-            setChanged();
-            notifyObservers();
+            delegate.onSensorValueEvent(orientationVector);
+
         }
 
         /**
@@ -135,8 +137,10 @@ public class OrientationSensor extends Observable {
         }
 
         @Override
-        public void onAccuracyChanged(Sensor sensor, int i) {
-            Log.e("sensor", String.valueOf(i));
+        public void onAccuracyChanged(Sensor sensor, int value) {
+            if (Sensor.TYPE_ROTATION_VECTOR == sensor.getType()) {
+                delegate.onSensorAccuracyChange(value);
+            }
         }
 
     };
@@ -144,24 +148,26 @@ public class OrientationSensor extends Observable {
     /**
      * Creates a new {@link OrientationSensor}, beware events won't be registered until {@link #registerEvents()} is called.
      * @param context where the sensor will be used.
+     * @param delegate who wants to receive events.
      */
-    public OrientationSensor(Context context) {
+    public OrientationSensor(Context context, OrientationSensorDelegate delegate) {
         manager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         sensorRt = manager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+        this.delegate = delegate;
     }
 
     /**
      * Starts registering sensors changes.
      */
     public void registerEvents(){
-        manager.registerListener(sEvent, sensorRt, SENSOR_DELAY);
+        manager.registerListener(eventListener, sensorRt, SENSOR_DELAY);
     }
 
     /**
      * Stops registering sensors changes.
      */
     public void unregisterEvents(){
-        manager.unregisterListener(sEvent);
+        manager.unregisterListener(eventListener);
     }
 
     /**
@@ -170,6 +176,37 @@ public class OrientationSensor extends Observable {
      */
     public Vector3D getOrientationVector() {
         return orientationVector;
+    }
+
+    /**
+     * Checks wheter the device is capable of using this sensor or not.
+     * @param context of the App.
+     * @return true if device has the needed sensor, false otherwise.
+     */
+    public static boolean isCapable (Context context) {
+
+        SensorManager manager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        return null != manager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+
+    }
+
+    /**
+     * Interface for sensor event's delegates
+     */
+    public interface OrientationSensorDelegate {
+
+        /**
+         * Callback for sensor value's changes.
+         * @param values the new orientation values.
+         */
+        void onSensorValueEvent (Vector3D values);
+
+        /**
+         * Callback for sensor's accuracy changes.
+         * @param accuracy the new accuracy value.
+         */
+        void onSensorAccuracyChange (int accuracy);
+
     }
 
 }

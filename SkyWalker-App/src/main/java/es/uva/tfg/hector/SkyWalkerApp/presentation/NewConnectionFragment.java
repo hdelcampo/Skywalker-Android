@@ -22,7 +22,7 @@ import es.uva.tfg.hector.SkyWalkerApp.persistence.ServerFacade;
 public abstract class NewConnectionFragment extends Fragment{
 
     /**
-     * Starts the Augmented Reality interface on a new activity if caller is not a dialog.
+     * Starts the Augmented Reality interface on a new activity.
      */
     protected void startAR() {
 
@@ -49,7 +49,7 @@ public abstract class NewConnectionFragment extends Fragment{
 
                     @Override
                     public void onSuccess(Token response) {
-                        registerAsBeacon(dialog, login);
+                        checkBluetooth(dialog, login);
                     }
 
                     @Override
@@ -144,6 +144,27 @@ public abstract class NewConnectionFragment extends Fragment{
                 }, username);
 
     }
+
+    private void checkBluetooth(final ProgressDialog dialog, final String login) {
+
+        dialog.setMessage(getString(R.string.bluetooth_checking));
+
+        if (iBeaconTransmitter.isBluetoothEnabled()) {
+            registerAsBeacon(dialog, login);
+        } else {
+            dialog.setMessage(getString(R.string.bluetooth_enabling));
+
+            iBeaconTransmitter.enableBluetooth(getContext(), new iBeaconTransmitter.OnEventCallback() {
+                @Override
+                public void onEnabled() {
+                    registerAsBeacon(dialog, login);
+                }
+            });
+        }
+
+    }
+
+
 
     /**
      * Handles showing error to the user.

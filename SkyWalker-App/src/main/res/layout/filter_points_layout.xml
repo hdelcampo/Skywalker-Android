@@ -18,63 +18,54 @@
             android:background="@color/cardview_light_background" />
     </FrameLayout>
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/selected_counter_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="Selected 4 out of 8"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="52dp"
-        android:layout_gravity="start"
+        android:layout_marginBottom="8dp"
         android:gravity="center"
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/deselectButton"
+            android:id="@+id/none_button"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
             android:layout_marginStart="8dp"
             android:onClick="deselectAll"
             android:text="@string/none"
             android:textColor="@color/colorPrimary" />
 
         <Button
-            android:id="@+id/selectButton"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:onClick="selectAll"
-            android:text="@string/all"
-            android:textColor="@color/colorPrimary" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="52dp"
-        android:layout_gravity="end"
-        android:layout_marginBottom="8dp"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/cancelButton"
+            android:id="@+id/cancel_button"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
+            android:layout_toStartOf="@+id/accept_button"
             android:onClick="cancel"
             android:text="@android:string/cancel"
             android:textColor="@color/colorPrimary" />
 
         <Button
-            android:id="@+id/acceptButton"
+            android:id="@+id/accept_button"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_marginEnd="8dp"
             android:onClick="accept"
             android:text="@android:string/ok"
             android:textColor="@color/colorPrimary" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>
