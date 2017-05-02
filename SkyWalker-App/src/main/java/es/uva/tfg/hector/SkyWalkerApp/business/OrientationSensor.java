@@ -92,7 +92,7 @@ public class OrientationSensor {
                     }));
 
             Vector2D mapVector = new Vector2D(rotationVector.get(0, 0), rotationVector.get(1, 0));
-            mapVector.rotateClockwise(70);
+            mapVector.rotateClockwise(5);
 
             orientationVector = new Vector3D(
                     mapVector.getX(),

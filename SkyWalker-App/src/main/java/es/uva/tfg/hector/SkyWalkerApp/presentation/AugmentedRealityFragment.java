@@ -54,6 +54,18 @@ public class AugmentedRealityFragment extends Fragment {
         overlayView.stop();
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        overlayView.saveState(outState);
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        overlayView.restore(savedInstanceState);
+    }
+
     /**
      * Retrieves all points that are being shown.
      * @return A list of points being shown.

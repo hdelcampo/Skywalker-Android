@@ -14,7 +14,9 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.SurfaceTexture;
 import android.hardware.SensorManager;
+import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.TextureView;
 import android.view.View;
@@ -40,6 +42,13 @@ import es.uva.tfg.hector.SkyWalkerApp.services.Vector3D;
  * @author Héctor Del Campo Pando.
  */
 public class OverlayView implements OrientationSensor.OrientationSensorDelegate {
+
+    /**
+     * Restoring keys
+     */
+    private static final String
+            RESTORE_POINTS_KEY = "points",
+            RESTORE_MYSELF_KEY = "mySelf";
 
     /**
      * Camera used in the underlying preview.
@@ -165,7 +174,7 @@ public class OverlayView implements OrientationSensor.OrientationSensorDelegate 
         if (pointsList.size() < MAX_ELEMENTS_TO_DRAW) {
             points = pointsList;
         } else {
-            points = PointOfInterest.getPoints().subList(0, MAX_ELEMENTS_TO_DRAW);
+            points = new ArrayList<>(PointOfInterest.getPoints().subList(0, MAX_ELEMENTS_TO_DRAW));
         }
         mySelf = PointOfInterest.getSelf();
 
@@ -202,6 +211,32 @@ public class OverlayView implements OrientationSensor.OrientationSensorDelegate 
         if (connectionThread != null) {
             connectionThread.interrupt();
         }
+    }
+
+    /**
+     * Saves current state.
+     * @param outState where to save state.
+     */
+    public void saveState(Bundle outState) {
+        if (null == outState) {
+            return;
+        }
+
+        outState.putParcelableArrayList(RESTORE_POINTS_KEY, (ArrayList<? extends Parcelable>) points);
+        outState.putParcelable(RESTORE_MYSELF_KEY, mySelf);
+    }
+
+    /**
+     * Restores previous state.
+     * @param inState old state, if any.
+     */
+    public void restore(Bundle inState) {
+        if (null == inState) {
+            return;
+        }
+
+        points = inState.getParcelableArrayList(RESTORE_POINTS_KEY);
+        mySelf = inState.getParcelable(RESTORE_MYSELF_KEY);
     }
 
     /**
