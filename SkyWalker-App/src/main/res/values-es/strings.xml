@@ -25,7 +25,7 @@
     <string name="disconnect">Cerrar sesión</string>
     <string name="filter">Filtrar</string>
     <string name="filter_label">Filtrar elementos</string>
-    <string name="filter_title">Seleccionar elementos a mostrar</string>
+    <string name="filter_title">Seleccionar elementos</string>
     <string name="grant_button">Otorgar permisos</string>
     <string name="indoor_outdoor_page_header">Más allá del GPS</string>
     <string name="indoor_outdoor_page_subheader">Esta App funciona tanto en edificios como al aire libre. Todo lo que necesitas es un entorno con XtremeLoc.</string>

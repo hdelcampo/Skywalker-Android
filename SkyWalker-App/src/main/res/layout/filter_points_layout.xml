@@ -20,11 +20,13 @@
 
     <TextView
         android:id="@+id/selected_counter_label"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="start"
         android:layout_margin="8dp"
+        android:paddingStart="12dp"
         android:text="Selected 4 out of 8"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
     <RelativeLayout
         android:layout_width="wrap_content"

@@ -3,7 +3,7 @@
     <string name="app_name" translatable="false">Skywalker</string>
     <string name="filter">Filter</string>
     <string name="accept">Accept</string>
-    <string name="filter_title">Select elements to show</string>
+    <string name="filter_title">Select items</string>
     <string name="connection_title">Start a new connection</string>
     <string name="retry">Retry</string>
     <string name="disconnect">Logout</string>
