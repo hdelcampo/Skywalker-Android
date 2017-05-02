@@ -1,4 +1,21 @@
 -----------------------
+ Build 19 -02/05/2017-
+
+ Release Candidate
+
+-----------------------
+
++ Añadida traducción al español
++ Añadido comprobaciones del estado del bluetooth
++ Añadidas comprobaciones del estado de la conexión
++ Permitida la rotación solamente para la vista de realidad aumentada
++ Añadida comprobación de sensores al inicio
++ Añadida comprobación de la calibración del sensor
++ Añadido un máximo de elementos a mostrar
++ Ajustada la posición de los elementos en la vista de realidad aumentada
++ Solucionados bugs
+
+-----------------------
  Build 18 -25/04/2017-
 -----------------------
 
