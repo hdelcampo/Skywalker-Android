@@ -101,37 +101,38 @@ public class QRConnectionFragment extends NewConnectionFragment {
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     void showError(ServerFacade.Errors error) {
 
         connecting = false;
 
+        if(snackbar != null) {
+            return;
+        }
+
         switch (error) {
-            case INVALID_QR:
-
-                if(snackbar != null) {
-                    return;
-                }
-
+            case INVALID_QR: case INVALID_URL:
                 snackbar = Snackbar.make(getView(), getString(R.string.invalid_qr), Snackbar.LENGTH_LONG);
-                snackbar.addCallback(new Snackbar.Callback() {
-                            @Override
-                            public void onDismissed(Snackbar transientBottomBar, int event) {
-                                snackbar = null;
-                            }
-                        });
-                snackbar.show();
-                break;
-            case INVALID_URL:
-                Snackbar.make(getView(), getString(R.string.invalid_qr), Snackbar.LENGTH_LONG).show();
                 break;
             case INVALID_USERNAME_OR_PASSWORD:
-                Snackbar.make(getView(), getString(R.string.invalid_login_data), Snackbar.LENGTH_LONG).show();
+                snackbar = Snackbar.make(getView(), getString(R.string.invalid_login_data), Snackbar.LENGTH_LONG);
+                break;
+            case NO_CONNECTION: case TIME_OUT:
+                snackbar = Snackbar.make(getView(), getString(R.string.no_internet), Snackbar.LENGTH_LONG);
                 break;
             default:
-                Snackbar.make(getView(), getString(R.string.server_bad_connection), Snackbar.LENGTH_LONG).show();
+                snackbar = Snackbar.make(getView(), getString(R.string.server_bad_connection), Snackbar.LENGTH_LONG);
                 break;
         }
+
+        snackbar.addCallback(new Snackbar.Callback() {
+            @Override
+            public void onDismissed(Snackbar transientBottomBar, int event) {
+                snackbar = null;
+            }
+        });
+        snackbar.show();
 
     }
 
