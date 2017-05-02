@@ -68,6 +68,11 @@ public class ServerFacade {
     private Context context;
 
     /**
+     * Indicator for not having stabilised a connection.
+     */
+    private boolean logged = false;
+
+    /**
      * Retrieves the singleton instance.
      * @param context of the App to make petitions.
      * @return the singleton instance.
@@ -115,6 +120,7 @@ public class ServerFacade {
             @Override
             public void onResponse(String response) {
                 token = new Token(url, response);
+                logged = true;
                 responseListener.onSuccess(token);
             }
         }, new Response.ErrorListener() {
@@ -147,7 +153,7 @@ public class ServerFacade {
      */
     public void registerAsBeacon (final OnServerResponse <iBeaconFrame> responseListener, final String username) {
 
-        if (null == token) {
+        if (!logged) {
             throw new IllegalStateException("Cannot retrieve tags without a established connection");
         }
 
@@ -201,7 +207,7 @@ public class ServerFacade {
      */
     public void getCenterReceivers (final OnServerResponse <List<MapPoint>> responseListener, final Center center) {
 
-        if (null == token) {
+        if (!logged) {
             throw new IllegalStateException("Cannot retrieve tags without a established connection");
         }
 
@@ -259,7 +265,7 @@ public class ServerFacade {
      */
     public void getAvailableTags(final OnServerResponse <List<PointOfInterest>> responseListener) {
 
-        if (null == token) {
+        if (!logged) {
             throw new IllegalStateException("Cannot retrieve tags without a established connection");
         }
 
@@ -318,7 +324,7 @@ public class ServerFacade {
      */
     public void getLastPosition (final OnServerResponse <MapPoint> responseListener, final PointOfInterest tag) {
 
-        if (null == token) {
+        if (!logged) {
             throw new IllegalStateException("Cannot retrieve tags without a established connection");
         }
 
@@ -366,7 +372,7 @@ public class ServerFacade {
      * Clears the current connection.
      */
     public void logout() {
-        token = null;
+        logged = false;
     }
 
     /**
