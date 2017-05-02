@@ -16,6 +16,7 @@ import android.webkit.URLUtil;
 import android.widget.EditText;
 
 import es.uva.tfg.hector.SkyWalkerApp.R;
+import es.uva.tfg.hector.SkyWalkerApp.business.Center;
 import es.uva.tfg.hector.SkyWalkerApp.business.PointOfInterest;
 import es.uva.tfg.hector.SkyWalkerApp.persistence.ServerFacade;
 
@@ -87,6 +88,7 @@ public class ManualConnectionFragment extends NewConnectionFragment implements V
             case R.id.demo_button:
                 PointOfInterest.setPoints(PointOfInterest.getDemoPoints());
                 PointOfInterest.setMySelf(new PointOfInterest(999, "MySelf"));
+                Center.centers.add(new Center(0));
                 ServerFacade.getInstance(getActivity().getApplicationContext()).setDemo();
                 startAR();
                 break;
