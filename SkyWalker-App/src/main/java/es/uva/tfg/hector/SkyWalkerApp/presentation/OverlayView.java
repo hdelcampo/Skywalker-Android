@@ -26,6 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import es.uva.tfg.hector.SkyWalkerApp.R;
 import es.uva.tfg.hector.SkyWalkerApp.business.Camera;
+import es.uva.tfg.hector.SkyWalkerApp.business.Center;
 import es.uva.tfg.hector.SkyWalkerApp.business.MapPoint;
 import es.uva.tfg.hector.SkyWalkerApp.business.OrientationSensor;
 import es.uva.tfg.hector.SkyWalkerApp.business.PointOfInterest;
@@ -59,6 +60,11 @@ public class OverlayView implements OrientationSensor.OrientationSensorDelegate 
      * Position of the user.
      */
     private PointOfInterest mySelf;
+
+    /**
+     * Current center.
+     */
+    private Center center = Center.centers.get(0);
 
     /**
      * Thread that will manage listInUse points.
@@ -492,9 +498,26 @@ public class OverlayView implements OrientationSensor.OrientationSensorDelegate 
             final float x = (float) (view.getWidth()/2 + horizontalTheta*view.getWidth()/fovWidth),
                         y = (float) (view.getHeight()/2 - verticalTheta*view.getHeight()/fovHeight);
 
-            drawIcon(canvas, x, y, INSIGHT_ICON, 0, IN_SIGHT_ICON_SCALE);
+            Vector2D distanceVector = new Vector2D(
+                    point.getX() - mySelf.getX(),
+                    point.getY() - mySelf.getY()
+            );
 
-            drawText(canvas, new String[]{point.getName(), "50"}, x + IN_SIGHT_ICON_SCALE*17.5f, y + IN_SIGHT_ICON_SCALE*17.5f);
+            double distance = distanceVector.module() * center.getScale();
+            int floorDelta = point.getZ() - mySelf.getZ();
+            String floorIndicator = "";
+
+            if (floorDelta > 0) {
+                floorIndicator = " +" + floorDelta + "\u25B2";
+            } else if (floorDelta < 0){
+                floorIndicator = " " + floorDelta + "\u25BC";
+            }
+
+            drawIcon(canvas, x, y, INSIGHT_ICON, 0, IN_SIGHT_ICON_SCALE);
+            drawText(canvas, new String[]{point.getName(),
+                            String.format("%.2f", distance) +
+                            floorIndicator},
+                    x + IN_SIGHT_ICON_SCALE*19.5f, y + IN_SIGHT_ICON_SCALE*17.5f);
 
         }
 

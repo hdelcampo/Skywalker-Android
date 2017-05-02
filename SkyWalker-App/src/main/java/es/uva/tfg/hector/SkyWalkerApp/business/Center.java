@@ -15,6 +15,8 @@ public class Center {
 
     private final int id;
 
+    private final float scale = 128;
+
     private final Vector2D mapNorth;
 
     private final SparseArray<MapPoint> receivers = new SparseArray<>();
@@ -45,5 +47,9 @@ public class Center {
 
     public Vector2D getMapNorth () {
         return mapNorth;
+    }
+
+    public float getScale() {
+        return scale;
     }
 }
