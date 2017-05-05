@@ -36,6 +36,7 @@
             android:layout_centerVertical="false"
             android:layout_marginStart="8dp"
             android:layout_toEndOf="@+id/cameraIcon"
+            android:minHeight="56dp"
             android:text="@string/camera_permissions_description"
             android:textAppearance="@style/TextAppearance.AppCompat.Title.Inverse" />
 
@@ -54,11 +55,13 @@
             android:id="@+id/locationText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="false"
             android:layout_alignParentTop="false"
             android:layout_alignTop="@+id/locationIcon"
             android:layout_centerVertical="false"
             android:layout_marginStart="8dp"
             android:layout_toEndOf="@+id/locationIcon"
+            android:minHeight="56dp"
             android:text="@string/location_permissions_description"
             android:textAppearance="@style/TextAppearance.AppCompat.Title.Inverse" />
     </RelativeLayout>
