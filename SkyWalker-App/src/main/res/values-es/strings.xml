@@ -14,7 +14,7 @@
     <string name="bluetooth_disconnected_title">Bluetooth desconectado</string>
     <string name="bluetooth_enable">Encender bluetooth</string>
     <string name="bluetooth_enabling">Encendiendo bluetooth…</string>
-    <string name="camera_permissions_description">La cámara se utiliza para mostrar imagenes del mundo real</string>
+    <string name="camera_permissions_description">La cámara se utiliza para mostrar imagenes del mundo real.</string>
     <string name="connection_recievers">Reciviendo antenas…</string>
     <string name="connection_register_beacon">Registrandose como localizador…</string>
     <string name="connection_started">Conectando…</string>
