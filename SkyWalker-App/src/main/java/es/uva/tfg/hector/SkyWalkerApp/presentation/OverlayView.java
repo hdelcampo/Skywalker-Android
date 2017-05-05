@@ -73,7 +73,7 @@ public class OverlayView implements OrientationSensor.OrientationSensorDelegate 
     /**
      * Current center.
      */
-    private Center center = Center.centers.get(0);
+    private Center center;
 
     /**
      * Thread that will manage listInUse points.
@@ -177,6 +177,7 @@ public class OverlayView implements OrientationSensor.OrientationSensorDelegate 
             points = new ArrayList<>(PointOfInterest.getPoints().subList(0, MAX_ELEMENTS_TO_DRAW));
         }
         mySelf = PointOfInterest.getSelf();
+        center = Center.centers.get(0);
 
         mySelf.setX(0.5f);
         mySelf.setY(0.5f);
