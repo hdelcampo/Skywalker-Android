@@ -29,10 +29,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import es.uva.tfg.hector.SkyWalkerApp.R;
 import es.uva.tfg.hector.SkyWalkerApp.business.Camera;
 import es.uva.tfg.hector.SkyWalkerApp.business.Center;
-import es.uva.tfg.hector.SkyWalkerApp.business.MapPoint;
 import es.uva.tfg.hector.SkyWalkerApp.business.OrientationSensor;
 import es.uva.tfg.hector.SkyWalkerApp.business.PointOfInterest;
-import es.uva.tfg.hector.SkyWalkerApp.persistence.ServerFacade;
+import es.uva.tfg.hector.SkyWalkerApp.business.User;
+import es.uva.tfg.hector.SkyWalkerApp.services.PersistenceOperationDelegate;
 import es.uva.tfg.hector.SkyWalkerApp.services.Vector2D;
 import es.uva.tfg.hector.SkyWalkerApp.services.Vector3D;
 
@@ -195,7 +195,7 @@ public class OverlayView implements OrientationSensor.OrientationSensorDelegate 
             textureListener.onSurfaceTextureAvailable(view.getSurfaceTexture(), view.getWidth(), view.getHeight());
         }
 
-        if (!ServerFacade.getInstance(activity.getApplicationContext()).isDemo()) {
+        if (!User.getInstance().isDemo(activity)) {
             connectionThread = new ConnectionThread();
             connectionThread.start();
         }
@@ -666,46 +666,26 @@ public class OverlayView implements OrientationSensor.OrientationSensorDelegate 
                     }
                 }
 
-                // Update mySelf
-                ServerFacade.getInstance(activity.getApplicationContext()).
-                        getLastPosition(new ServerFacade.OnServerResponse<MapPoint>() {
-                            @Override
-                            public void onSuccess(MapPoint newPosition) {
-                                mySelf.setX(newPosition.getX());
-                                mySelf.setY(newPosition.getY());
-                                mySelf.setZ(newPosition.getZ());
-                            }
+                final PersistenceOperationDelegate delegate = new PersistenceOperationDelegate() {
+                    @Override
+                    public void onSuccess() {
 
-                            @Override
-                            public void onError(ServerFacade.Errors error) {
-                                numErrors.incrementAndGet();
-                            }
-                        }, mySelf);
+                    }
+
+                    @Override
+                    public void onError(Errors error) {
+                        numErrors.incrementAndGet();
+                    }
+                };
+
+                // Update mySelf
+                mySelf.updatePosition(activity.getApplicationContext(), delegate);
 
                 numPetitionsWithoutCheck++;
 
                 // Update all other points
-                final List<PointOfInterest> points = OverlayView.this.points;
-                for (final PointOfInterest point : points) {
-                    ServerFacade.getInstance(activity.getApplicationContext()).
-                            getLastPosition(new ServerFacade.OnServerResponse<MapPoint>() {
-                                @Override
-                                public void onSuccess(MapPoint newPosition) {
-                                    for (PointOfInterest point: points) {
-                                        if (point.equals(newPosition)) {
-                                            point.setX(newPosition.getX());
-                                            point.setY(newPosition.getY());
-                                            point.setZ(newPosition.getZ());
-                                        }
-                                    }
-
-                                }
-
-                                @Override
-                                public void onError(ServerFacade.Errors error) {
-                                    numErrors.incrementAndGet();
-                                }
-                            }, point);
+                for (final PointOfInterest point : OverlayView.this.points) {
+                    point.updatePosition(activity.getApplicationContext(), delegate);
                     numPetitionsWithoutCheck++;
                 }
 

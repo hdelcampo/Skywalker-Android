@@ -1,5 +1,10 @@
 package es.uva.tfg.hector.SkyWalkerApp.business;
 
+import android.content.Context;
+
+import es.uva.tfg.hector.SkyWalkerApp.persistence.ServerFacade;
+import es.uva.tfg.hector.SkyWalkerApp.services.PersistenceOperationDelegate;
+
 /**
  * A Map point, with coordinates, number of floor and ID.
  */
@@ -75,6 +80,42 @@ public class MapPoint {
      */
     public int getId() {
         return id;
+    }
+
+    public void updatePosition (Context context, final PersistenceOperationDelegate delegate) {
+        ServerFacade.getInstance(context).
+                getLastPosition(new ServerFacade.OnServerResponse<MapPoint>() {
+                    @Override
+                    public void onSuccess(MapPoint newPosition) {
+
+                                setX(newPosition.getX());
+                                setY(newPosition.getY());
+                                setZ(newPosition.getZ());
+
+                        if (null != delegate) {
+                            delegate.onSuccess();
+                        }
+
+                    }
+
+                    @Override
+                    public void onError(ServerFacade.Errors error) {
+                        PersistenceOperationDelegate.Errors errorToBack;
+
+                        switch (error) {
+                            case NO_CONNECTION: case TIME_OUT:
+                                errorToBack = PersistenceOperationDelegate.Errors.INTERNET_ERROR;
+                                break;
+                            default:
+                                errorToBack = PersistenceOperationDelegate.Errors.SERVER_ERROR;
+                                break;
+                        }
+
+                        if (null != delegate) {
+                            delegate.onError(errorToBack);
+                        }
+                    }
+                }, this);
     }
 
     @Override

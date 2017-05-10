@@ -31,6 +31,7 @@ import es.uva.tfg.hector.SkyWalkerApp.business.Center;
 import es.uva.tfg.hector.SkyWalkerApp.business.MapPoint;
 import es.uva.tfg.hector.SkyWalkerApp.business.PointOfInterest;
 import es.uva.tfg.hector.SkyWalkerApp.business.Token;
+import es.uva.tfg.hector.SkyWalkerApp.business.User;
 import es.uva.tfg.hector.SkyWalkerApp.business.iBeaconFrame;
 
 /**
@@ -44,7 +45,7 @@ public class ServerFacade {
      * Enum for server errors.
      */
     public enum Errors {
-        INVALID_QR, INVALID_URL, NO_CONNECTION, INVALID_USERNAME_OR_PASSWORD, INVALID_JSON, TIME_OUT, UNKNOWN
+        NO_CONNECTION, INVALID_USERNAME_OR_PASSWORD, INVALID_JSON, TIME_OUT, UNKNOWN
     }
 
     /**
@@ -58,19 +59,9 @@ public class ServerFacade {
     private final RequestQueue requestQueue;
 
     /**
-     * Connection token.
-     */
-    private Token token;
-
-    /**
      * Requests context.
      */
     private Context context;
-
-    /**
-     * Indicator for not having stabilised a connection.
-     */
-    private boolean logged = false;
 
     /**
      * Retrieves the singleton instance.
@@ -119,8 +110,7 @@ public class ServerFacade {
         JsonRequest<String> request = new JsonRequest<String>(Request.Method.POST, apiURL, params.toString(), new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                token = new Token(url, response);
-                logged = true;
+                Token token = new Token(url, response);
                 responseListener.onSuccess(token);
             }
         }, new Response.ErrorListener() {
@@ -153,11 +143,11 @@ public class ServerFacade {
      */
     public void registerAsBeacon (final OnServerResponse <iBeaconFrame> responseListener, final String username) {
 
-        if (!logged) {
+        if (!User.getInstance().isLogged()) {
             throw new IllegalStateException("Cannot retrieve tags without a established connection");
         }
 
-        String url = token.getURL().concat("/api/centers/0/tags/");
+        String url = User.getInstance().getToken().getURL().concat("/api/centers/0/tags/");
 
         JSONObject body = new JSONObject();
         try {
@@ -191,7 +181,7 @@ public class ServerFacade {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + token.getToken());
+                headers.put("Authorization", "Bearer " +  User.getInstance().getToken().getToken());
                 return headers;
             }
         };
@@ -207,11 +197,11 @@ public class ServerFacade {
      */
     public void getCenterReceivers (final OnServerResponse <List<MapPoint>> responseListener, final Center center) {
 
-        if (!logged) {
+        if (!User.getInstance().isLogged()) {
             throw new IllegalStateException("Cannot retrieve tags without a established connection");
         }
 
-        String url = token.getURL().concat("/api/centers/" + center.getId() + "/rdhubs");
+        String url =  User.getInstance().getToken().getURL().concat("/api/centers/" + center.getId() + "/rdhubs");
 
         JsonRequest<JSONArray> request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
@@ -250,7 +240,7 @@ public class ServerFacade {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + token.getToken());
+                headers.put("Authorization", "Bearer " + User.getInstance().getToken().getToken());
                 return headers;
             }
         };
@@ -265,12 +255,12 @@ public class ServerFacade {
      */
     public void getAvailableTags(final OnServerResponse <List<PointOfInterest>> responseListener) {
 
-        if (!logged) {
+        if (!User.getInstance().isLogged()) {
             throw new IllegalStateException("Cannot retrieve tags without a established connection");
         }
 
         //TODO center real
-        String url = token.getURL().concat("/api/centers/0/tags");
+        String url =  User.getInstance().getToken().getURL().concat("/api/centers/0/tags");
 
         JsonRequest<JSONArray> request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
@@ -308,7 +298,7 @@ public class ServerFacade {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + token.getToken());
+                headers.put("Authorization", "Bearer " +  User.getInstance().getToken().getToken());
                 return headers;
             }
         };
@@ -320,15 +310,15 @@ public class ServerFacade {
     /**
      * Retrieves the last known position for a given tag.
      * @param responseListener that will handle responses.
-     * @param tag to ask for.
+     * @param point to ask for.
      */
-    public void getLastPosition (final OnServerResponse <MapPoint> responseListener, final PointOfInterest tag) {
+    public void getLastPosition (final OnServerResponse <MapPoint> responseListener, final MapPoint point) {
 
-        if (!logged) {
+        if (!User.getInstance().isLogged()) {
             throw new IllegalStateException("Cannot retrieve tags without a established connection");
         }
 
-        String url = token.getURL().concat("/api/centers/0/tags/" + tag.getId());
+        String url = User.getInstance().getToken().getURL().concat("/api/centers/0/tags/" + point.getId());
 
         JsonRequest<JSONObject> request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -342,7 +332,7 @@ public class ServerFacade {
                     final MapPoint receiver = Center.centers.get(0).getReceiver(receiverId);
                     final MapPoint newPosition =
                             new MapPoint(
-                                    tag.getId(),
+                                    point.getId(),
                                     receiver.getX(),
                                     receiver.getY(),
                                     receiver.getZ());
@@ -363,28 +353,13 @@ public class ServerFacade {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + token.getToken());
+                headers.put("Authorization", "Bearer " + User.getInstance().getToken().getToken());
                 return headers;
             }
         };
 
         requestQueue.add(request);
 
-    }
-
-    /**
-     * Clears the current connection.
-     */
-    public void logout() {
-        logged = false;
-    }
-
-    /**
-     * Retrieves the server URL.
-     * @return the URL.
-     */
-    public String getServer() {
-        return token.getURL();
     }
 
     /**
@@ -415,23 +390,7 @@ public class ServerFacade {
         return errorEnum;
 
     }
-
-    /**
-     * Sets demo mode.
-     */
-    public void setDemo() {
-        token = new Token(context.getString(R.string.demo), null);
-    }
-
-    /**
-     * Retrieves whether connection is in demo mode or not.
-     * @return true if demo mode, false otherwise.
-     */
-    public boolean isDemo() {
-        return token.getURL().equals(context.getString(R.string.demo));
-    }
-
-
+    
     /**
      * Interface that must be implemented by caller in order to recieve responses
      * @author Hector Del Campo Pando

@@ -19,7 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import es.uva.tfg.hector.SkyWalkerApp.R;
-import es.uva.tfg.hector.SkyWalkerApp.persistence.ServerFacade;
+import es.uva.tfg.hector.SkyWalkerApp.services.PersistenceOperationDelegate;
 
 /**
  * Fragment to handle QR UI connections.
@@ -131,7 +131,7 @@ public class QRConnectionFragment extends NewConnectionFragment {
 
     @SuppressWarnings("ConstantConditions")
     @Override
-    void showError(ServerFacade.Errors error) {
+    void showError(PersistenceOperationDelegate.Errors error) {
 
         connecting = false;
 
@@ -140,13 +140,13 @@ public class QRConnectionFragment extends NewConnectionFragment {
         }
 
         switch (error) {
-            case INVALID_QR: case INVALID_URL:
+            case INVALID_URL:
                 snackbar = Snackbar.make(getView(), getString(R.string.invalid_qr), Snackbar.LENGTH_LONG);
                 break;
-            case INVALID_USERNAME_OR_PASSWORD:
+            case INVALID_CREDENTIALS:
                 snackbar = Snackbar.make(getView(), getString(R.string.invalid_login_data), Snackbar.LENGTH_LONG);
                 break;
-            case NO_CONNECTION: case TIME_OUT:
+            case INTERNET_ERROR:
                 snackbar = Snackbar.make(getView(), getString(R.string.no_internet), Snackbar.LENGTH_LONG);
                 break;
             default:
@@ -196,7 +196,7 @@ public class QRConnectionFragment extends NewConnectionFragment {
 
                     return result;
                 } catch (Exception e) {
-                    showError(ServerFacade.Errors.INVALID_JSON);
+                    showError(PersistenceOperationDelegate.Errors.SERVER_ERROR);
                     e.printStackTrace();
                 }
 
@@ -274,7 +274,7 @@ public class QRConnectionFragment extends NewConnectionFragment {
                     if (isXtremeLocQR(content)) {
                         treatQR(content);
                     } else {
-                        showError(ServerFacade.Errors.INVALID_QR);
+                        showError(PersistenceOperationDelegate.Errors.INVALID_URL);
                     }
                 }
 

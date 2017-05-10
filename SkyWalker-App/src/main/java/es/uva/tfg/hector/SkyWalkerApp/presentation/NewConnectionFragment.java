@@ -4,16 +4,11 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
-import java.util.List;
-
 import es.uva.tfg.hector.SkyWalkerApp.R;
 import es.uva.tfg.hector.SkyWalkerApp.business.Center;
-import es.uva.tfg.hector.SkyWalkerApp.business.MapPoint;
-import es.uva.tfg.hector.SkyWalkerApp.business.PointOfInterest;
-import es.uva.tfg.hector.SkyWalkerApp.business.Token;
-import es.uva.tfg.hector.SkyWalkerApp.business.iBeaconFrame;
+import es.uva.tfg.hector.SkyWalkerApp.business.User;
 import es.uva.tfg.hector.SkyWalkerApp.business.iBeaconTransmitter;
-import es.uva.tfg.hector.SkyWalkerApp.persistence.ServerFacade;
+import es.uva.tfg.hector.SkyWalkerApp.services.PersistenceOperationDelegate;
 
 /**
  * Base fragment for new connection fragments.
@@ -44,21 +39,22 @@ public abstract class NewConnectionFragment extends Fragment{
         final ProgressDialog dialog =
                 ProgressDialog.show(getContext(), null, getString(R.string.connection_started), true, false);
 
-        ServerFacade.getInstance(getContext().getApplicationContext())
-                .getToken(new ServerFacade.OnServerResponse<Token>() {
-
+        User.getInstance().login(getContext().getApplicationContext(),
+                url,
+                login,
+                password,
+                new PersistenceOperationDelegate() {
                     @Override
-                    public void onSuccess(Token response) {
-                        checkBluetooth(dialog, login);
+                    public void onSuccess() {
+                        checkBluetooth(dialog);
                     }
 
                     @Override
-                    public void onError(ServerFacade.Errors error) {
+                    public void onError(Errors error) {
                         dialog.dismiss();
                         showError(error);
                     }
-
-                }, url, login, password);
+                });
 
     }
 
@@ -66,28 +62,24 @@ public abstract class NewConnectionFragment extends Fragment{
      * Retrieves the receivers for the center.
      * @param dialog to control.
      */
-    protected void retrieveReceivers(final ProgressDialog dialog) {
+    private void retrieveReceivers(final ProgressDialog dialog) {
 
         dialog.setMessage(getString(R.string.connection_recievers));
 
         Center.centers.add(new Center(0));
 
-        ServerFacade.getInstance(getContext().getApplicationContext())
-                .getCenterReceivers(new ServerFacade.OnServerResponse<List<MapPoint>>() {
+        Center.centers.get(0).loadReceivers(getActivity().getApplicationContext(), new PersistenceOperationDelegate() {
+            @Override
+            public void onSuccess() {
+                retrieveTags(dialog);
+            }
 
-                    @Override
-                    public void onSuccess(List<MapPoint> receivers) {
-                        Center.centers.get(0).addReceivers(receivers);
-                        retrieveTags(dialog);
-                    }
-
-                    @Override
-                    public void onError(ServerFacade.Errors error) {
-                        dialog.dismiss();
-                        showError(error);
-                    }
-
-                }, Center.centers.get(0)); //TODO center real
+            @Override
+            public void onError(Errors error) {
+                dialog.dismiss();
+                showError(error);
+            }
+        });
 
     }
 
@@ -96,68 +88,67 @@ public abstract class NewConnectionFragment extends Fragment{
      * Retrieves the tags available for the connection token.
      * @param dialog to handle.
      */
-    protected void retrieveTags (final ProgressDialog dialog) {
+    private void retrieveTags (final ProgressDialog dialog) {
 
         dialog.setMessage(getString(R.string.connection_tags));
 
-        ServerFacade.getInstance(getContext().getApplicationContext()).
-                getAvailableTags(new ServerFacade.OnServerResponse<List<PointOfInterest>>() {
-
+        Center.centers.get(0).loadTags(getContext().getApplicationContext(),
+                new PersistenceOperationDelegate() {
                     @Override
-                    public void onSuccess(List<PointOfInterest> points) {
-                        PointOfInterest.setPoints(points);
+                    public void onSuccess() {
                         dialog.dismiss();
                         startAR();
                     }
 
                     @Override
-                    public void onError(ServerFacade.Errors error) {
+                    public void onError(Errors error) {
                         dialog.dismiss();
                         showError(error);
                     }
-
                 });
 
     }
 
-    protected void registerAsBeacon(final ProgressDialog dialog, final String username) {
+    /**
+     * Registers this device as a beacon.
+     * @param dialog to handle.
+     */
+    private void registerAsBeacon(final ProgressDialog dialog) {
 
         dialog.setMessage(getString(R.string.connection_register_beacon));
 
-        ServerFacade.getInstance(getContext().getApplicationContext()).
-                registerAsBeacon(new ServerFacade.OnServerResponse<iBeaconFrame>() {
+        User.getInstance().registerBeacon(getContext().getApplicationContext(), new PersistenceOperationDelegate() {
+            @Override
+            public void onSuccess() {
+                retrieveReceivers(dialog);
+            }
 
-                    @Override
-                    public void onSuccess(iBeaconFrame frame) {
-                        retrieveReceivers(dialog);
-                        iBeaconTransmitter transmitter = iBeaconTransmitter.getInstance(getContext());
-                        transmitter.configure(frame, (byte) -59);
-                        PointOfInterest.setMySelf(new PointOfInterest(frame.getMinor(), "username"));
-                    }
-
-                    @Override
-                    public void onError(ServerFacade.Errors error) {
-                        dialog.dismiss();
-                        showError(error);
-                    }
-
-                }, username);
+            @Override
+            public void onError(Errors error) {
+                dialog.dismiss();
+                showError(error);
+            }
+        });
 
     }
 
-    private void checkBluetooth(final ProgressDialog dialog, final String login) {
+    /**
+     * Checks if bluetooth is enabled or not.
+     * @param dialog to handle.
+     */
+    private void checkBluetooth(final ProgressDialog dialog) {
 
         dialog.setMessage(getString(R.string.bluetooth_checking));
 
         if (iBeaconTransmitter.isBluetoothEnabled()) {
-            registerAsBeacon(dialog, login);
+            registerAsBeacon(dialog);
         } else {
             dialog.setMessage(getString(R.string.bluetooth_enabling));
 
             iBeaconTransmitter.enableBluetooth(getContext(), new iBeaconTransmitter.OnEventCallback() {
                 @Override
                 public void onEnabled() {
-                    registerAsBeacon(dialog, login);
+                    registerAsBeacon(dialog);
                 }
             });
         }
@@ -170,6 +161,6 @@ public abstract class NewConnectionFragment extends Fragment{
      * Handles showing error to the user.
      * @param error to be shown.
      */
-    abstract void showError(ServerFacade.Errors error);
+    abstract void showError(PersistenceOperationDelegate.Errors error);
 
 }

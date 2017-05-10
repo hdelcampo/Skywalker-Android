@@ -18,7 +18,8 @@ import android.widget.EditText;
 import es.uva.tfg.hector.SkyWalkerApp.R;
 import es.uva.tfg.hector.SkyWalkerApp.business.Center;
 import es.uva.tfg.hector.SkyWalkerApp.business.PointOfInterest;
-import es.uva.tfg.hector.SkyWalkerApp.persistence.ServerFacade;
+import es.uva.tfg.hector.SkyWalkerApp.business.User;
+import es.uva.tfg.hector.SkyWalkerApp.services.PersistenceOperationDelegate;
 
 /**
  * Fragment to handle Manual UI connections.
@@ -89,19 +90,19 @@ public class ManualConnectionFragment extends NewConnectionFragment implements V
                 PointOfInterest.setPoints(PointOfInterest.getDemoPoints());
                 PointOfInterest.setMySelf(new PointOfInterest(999, "MySelf"));
                 Center.centers.add(new Center(0));
-                ServerFacade.getInstance(getActivity().getApplicationContext()).setDemo();
+                User.getInstance().setDemo(getContext().getApplicationContext());
                 startAR();
                 break;
         }
     }
 
     @Override
-    protected void showError(ServerFacade.Errors error) {
+    protected void showError(PersistenceOperationDelegate.Errors error) {
         switch (error) {
             case INVALID_URL:
                 toggleInvalidURL(true);
                 break;
-            case NO_CONNECTION: case TIME_OUT:
+            case INTERNET_ERROR:
                 Snackbar.make(getView(), R.string.no_internet, Snackbar.LENGTH_LONG)
                         .setAction(R.string.retry, new View.OnClickListener() {
                             @Override
@@ -113,7 +114,7 @@ public class ManualConnectionFragment extends NewConnectionFragment implements V
                             }
                         }).show();
                 break;
-            case INVALID_USERNAME_OR_PASSWORD:
+            case INVALID_CREDENTIALS:
                 toggleCredentialsError(true);
                 break;
             default:

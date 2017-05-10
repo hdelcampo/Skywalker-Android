@@ -23,7 +23,7 @@ import java.util.List;
 
 import es.uva.tfg.hector.SkyWalkerApp.R;
 import es.uva.tfg.hector.SkyWalkerApp.business.PointOfInterest;
-import es.uva.tfg.hector.SkyWalkerApp.persistence.ServerFacade;
+import es.uva.tfg.hector.SkyWalkerApp.business.User;
 
 /**
  * Fragment for Augmented Reality controls.
@@ -57,7 +57,7 @@ public class AugmentedRealityControlsFragment extends Fragment implements View.O
 
         ((Switch)rootView.findViewById(R.id.switch_debug_info)).setOnCheckedChangeListener(this);
 
-        ((TextView)rootView.findViewById(R.id.real_server_label)).setText(ServerFacade.getInstance(getContext()).getServer());
+        ((TextView)rootView.findViewById(R.id.real_server_label)).setText(User.getInstance().getToken().getURL());
 
         setBuildStamp(rootView);
 
@@ -153,7 +153,6 @@ public class AugmentedRealityControlsFragment extends Fragment implements View.O
      * Shows an UI to start a new server connection, also logouts from server.
      */
     private void logout() {
-        ServerFacade.getInstance(getContext()).logout();
         Intent dialog = new Intent(getContext(), NewConnectionActivity.class);
         startActivity(dialog);
         getActivity().finish();

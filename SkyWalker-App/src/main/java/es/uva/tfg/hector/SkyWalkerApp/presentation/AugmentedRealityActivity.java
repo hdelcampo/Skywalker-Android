@@ -15,8 +15,8 @@ import java.util.List;
 
 import es.uva.tfg.hector.SkyWalkerApp.R;
 import es.uva.tfg.hector.SkyWalkerApp.business.PointOfInterest;
+import es.uva.tfg.hector.SkyWalkerApp.business.User;
 import es.uva.tfg.hector.SkyWalkerApp.business.iBeaconTransmitter;
-import es.uva.tfg.hector.SkyWalkerApp.persistence.ServerFacade;
 
 /**
  * Augmented reality activity
@@ -92,7 +92,7 @@ public class AugmentedRealityActivity extends FragmentActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.augmented_reality_activity_layout);
-        if (!ServerFacade.getInstance(this).isDemo()) {
+        if (!User.getInstance().isDemo(this)) {
             registerReceiver(broadcastReceiver, intentFilter);
             iBeaconTransmitter.getInstance(this).startTransmission();
         }
@@ -101,10 +101,11 @@ public class AugmentedRealityActivity extends FragmentActivity
     @Override
     protected void onStop() {
         super.onStop();
-        if (!ServerFacade.getInstance(this).isDemo()) {
+        if (!User.getInstance().isDemo(this)) {
             iBeaconTransmitter.getInstance(this).stopTransmission();
             unregisterReceiver(broadcastReceiver);
         }
+        User.getInstance().logout();
     }
 
     @Override
