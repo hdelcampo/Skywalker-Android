@@ -147,7 +147,7 @@ public class ServerFacade {
             throw new IllegalStateException("Cannot retrieve tags without a established connection");
         }
 
-        String url = User.getInstance().getToken().getURL().concat("/api/centers/0/tags/");
+        String url = User.getInstance().getToken().getURL().concat("/api/centers/" + User.getInstance().getCenter().getId() + "/tags/");
 
         JSONObject body = new JSONObject();
         try {
@@ -260,7 +260,7 @@ public class ServerFacade {
         }
 
         //TODO center real
-        String url =  User.getInstance().getToken().getURL().concat("/api/centers/0/tags");
+        String url =  User.getInstance().getToken().getURL().concat("/api/centers/" + User.getInstance().getCenter().getId() + "/tags");
 
         JsonRequest<JSONArray> request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
@@ -318,7 +318,7 @@ public class ServerFacade {
             throw new IllegalStateException("Cannot retrieve tags without a established connection");
         }
 
-        String url = User.getInstance().getToken().getURL().concat("/api/centers/0/tags/" + point.getId());
+        String url = User.getInstance().getToken().getURL().concat("/api/centers/" + User.getInstance().getCenter().getId() + "/tags/" + point.getId());
 
         JsonRequest<JSONObject> request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override

@@ -31,7 +31,7 @@ public class Center {
         mapNorth = new Vector2D(0, 1);
     }
 
-    public void addReceivers(List<MapPoint> receivers) {
+    private void addReceivers(List<MapPoint> receivers) {
 
         for (MapPoint receiver: receivers) {
             this.receivers.put(receiver.getId(), receiver);
@@ -117,6 +117,7 @@ public class Center {
                     public void onSuccess(List<PointOfInterest> points) {
 
                         MapPoint userPoint = User.getInstance().getPosition();
+                        //noinspection SuspiciousMethodCalls
                         points.remove(userPoint);
 
                         Center.this.points = points;
