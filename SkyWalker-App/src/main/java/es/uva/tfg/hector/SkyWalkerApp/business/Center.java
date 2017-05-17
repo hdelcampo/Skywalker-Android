@@ -3,7 +3,6 @@ package es.uva.tfg.hector.SkyWalkerApp.business;
 import android.content.Context;
 import android.util.SparseArray;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import es.uva.tfg.hector.SkyWalkerApp.persistence.ServerFacade;
@@ -26,12 +25,9 @@ public class Center {
 
     private List<PointOfInterest> points;
 
-    public static List<Center> centers = new ArrayList<>();
-
     public Center (int id) {
         this.id = id;
         mapNorth = new Vector2D(0, 1);
-        centers.add(this);
     }
 
     public void addReceivers(List<MapPoint> receivers) {

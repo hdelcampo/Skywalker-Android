@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 
 import es.uva.tfg.hector.SkyWalkerApp.R;
-import es.uva.tfg.hector.SkyWalkerApp.business.Center;
 import es.uva.tfg.hector.SkyWalkerApp.business.User;
 import es.uva.tfg.hector.SkyWalkerApp.business.iBeaconTransmitter;
 import es.uva.tfg.hector.SkyWalkerApp.services.PersistenceOperationDelegate;
@@ -66,9 +65,7 @@ public abstract class NewConnectionFragment extends Fragment{
 
         dialog.setMessage(getString(R.string.connection_recievers));
 
-        Center.centers.add(new Center(0));
-
-        Center.centers.get(0).loadReceivers(getActivity().getApplicationContext(), new PersistenceOperationDelegate() {
+        User.getInstance().getCenter().loadReceivers(getActivity().getApplicationContext(), new PersistenceOperationDelegate() {
             @Override
             public void onSuccess() {
                 retrieveTags(dialog);
@@ -92,7 +89,7 @@ public abstract class NewConnectionFragment extends Fragment{
 
         dialog.setMessage(getString(R.string.connection_tags));
 
-        Center.centers.get(0).loadTags(getContext().getApplicationContext(),
+        User.getInstance().getCenter().loadTags(getContext().getApplicationContext(),
                 new PersistenceOperationDelegate() {
                     @Override
                     public void onSuccess() {

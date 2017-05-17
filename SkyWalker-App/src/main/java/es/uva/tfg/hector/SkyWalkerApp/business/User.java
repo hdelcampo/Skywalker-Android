@@ -16,6 +16,12 @@ public class User {
 
     private String username;
 
+    private iBeaconTransmitter transmitter = new iBeaconTransmitter();
+
+    private MapPoint position = new MapPoint(0, 0.5f, 0.5f, 0);
+
+    private Center center = new Center(0);
+
     private static User instance = new User();
 
     public static User getInstance() {
@@ -77,8 +83,16 @@ public class User {
         return token.getURL().equals(context.getString(R.string.demo));
     }
 
+    public void setCenter(Center center) {
+        this.center = center;
+    }
+
     public Token getToken() {
         return token;
+    }
+
+    public Center getCenter () {
+        return center;
     }
 
     /**
@@ -88,6 +102,14 @@ public class User {
         token = new Token(context.getString(R.string.demo), null);
     }
 
+    public iBeaconTransmitter getTransmitter() {
+        return transmitter;
+    }
+
+    public MapPoint getPosition() {
+        return position;
+    }
+
     public void registerBeacon (final Context context, final PersistenceOperationDelegate delegate) {
 
         ServerFacade.getInstance(context).
@@ -95,9 +117,10 @@ public class User {
 
                     @Override
                     public void onSuccess(iBeaconFrame frame) {
-                        iBeaconTransmitter transmitter = iBeaconTransmitter.getInstance(context);
+                        center = new Center(0);
+                        transmitter.init(context);
                         transmitter.configure(frame, (byte) -59);
-                        PointOfInterest.setMySelf(new PointOfInterest(frame.getMinor(), username));
+                        position = new MapPoint(frame.getMinor(), -1, -1, -1);
                         if (null != delegate) {
                             delegate.onSuccess();
                         }

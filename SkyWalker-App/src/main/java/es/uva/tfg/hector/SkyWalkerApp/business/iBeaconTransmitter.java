@@ -42,24 +42,6 @@ public class iBeaconTransmitter {
     private iBeaconFrame frame;
 
     /**
-     * Singleton instance.
-     */
-    private static iBeaconTransmitter instance;
-
-    /**
-     * Retrieves the single instance.
-     * @param context of the App.
-     * @return the singleton instance.
-     */
-    public static iBeaconTransmitter getInstance(Context context) {
-        if (null == instance) {
-            instance = new iBeaconTransmitter(context);
-        }
-
-        return instance;
-    }
-
-    /**
      * Checks whether this device can be used as a transmitter or not.
      * @param context of the App.
      * @return true if can transmit, false otherwise.
@@ -115,10 +97,10 @@ public class iBeaconTransmitter {
     }
 
     /**
-     * Creates a new iBeacon transmitter.
+     * Configures a new iBeacon transmitter.
      * @param context of the App.
      */
-    public iBeaconTransmitter(Context context) {
+    public void init(Context context) {
 
         if (!canTransmit(context)) {
             throw new RuntimeException("Cannot transmit iBeacon frames");

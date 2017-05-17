@@ -19,11 +19,6 @@ public class PointOfInterest extends MapPoint implements Parcelable {
     private static List<PointOfInterest> points;
 
     /**
-     * This device's point.
-     */
-    private static PointOfInterest mySelf;
-
-    /**
      * Name of the point.
      */
     private String name;
@@ -60,36 +55,18 @@ public class PointOfInterest extends MapPoint implements Parcelable {
     }
 
     /**
-     * Returns this device's point
-     * @return the self point.
-     */
-    public static PointOfInterest getSelf () {
-        return mySelf;
-    }
-
-    /**
      * Sets the points the App has access to,
      * creating a new ArrayList and cloning all of its contents.
      * @param newPoints to set as accessible.
      */
     public static void setPoints(List<PointOfInterest> newPoints) {
 
-        points = new ArrayList<>(newPoints.size());
+        points = new ArrayList<>(newPoints);
 
         for (PointOfInterest point : newPoints) {
-            if (!point.equals(mySelf)) {
-                points.add(point.copy());
-            }
+            points.add(point.copy());
         }
 
-    }
-
-    /**
-     * Sets the self point.
-     * @param mySelf point.
-     */
-    public static void setMySelf(PointOfInterest mySelf) {
-        PointOfInterest.mySelf = mySelf;
     }
 
     /**

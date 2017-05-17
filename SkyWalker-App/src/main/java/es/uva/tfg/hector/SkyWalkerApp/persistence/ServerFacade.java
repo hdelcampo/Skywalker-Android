@@ -329,7 +329,7 @@ public class ServerFacade {
                     }
 
                     final int receiverId = response.getInt("nearest_rdhub");
-                    final MapPoint receiver = Center.centers.get(0).getReceiver(receiverId);
+                    final MapPoint receiver = User.getInstance().getCenter().getReceiver(receiverId);
                     final MapPoint newPosition =
                             new MapPoint(
                                     point.getId(),

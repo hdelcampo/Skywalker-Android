@@ -88,8 +88,7 @@ public class ManualConnectionFragment extends NewConnectionFragment implements V
 
             case R.id.demo_button:
                 PointOfInterest.setPoints(PointOfInterest.getDemoPoints());
-                PointOfInterest.setMySelf(new PointOfInterest(999, "MySelf"));
-                Center.centers.add(new Center(0));
+                User.getInstance().setCenter(new Center(0));
                 User.getInstance().setDemo(getContext().getApplicationContext());
                 startAR();
                 break;

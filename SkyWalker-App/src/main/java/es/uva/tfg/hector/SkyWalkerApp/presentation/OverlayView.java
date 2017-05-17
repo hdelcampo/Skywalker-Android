@@ -29,6 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import es.uva.tfg.hector.SkyWalkerApp.R;
 import es.uva.tfg.hector.SkyWalkerApp.business.Camera;
 import es.uva.tfg.hector.SkyWalkerApp.business.Center;
+import es.uva.tfg.hector.SkyWalkerApp.business.MapPoint;
 import es.uva.tfg.hector.SkyWalkerApp.business.OrientationSensor;
 import es.uva.tfg.hector.SkyWalkerApp.business.PointOfInterest;
 import es.uva.tfg.hector.SkyWalkerApp.business.User;
@@ -47,8 +48,7 @@ public class OverlayView implements OrientationSensor.OrientationSensorDelegate 
      * Restoring keys
      */
     private static final String
-            RESTORE_POINTS_KEY = "points",
-            RESTORE_MYSELF_KEY = "mySelf";
+            RESTORE_POINTS_KEY = "points";
 
     /**
      * Camera used in the underlying preview.
@@ -68,7 +68,7 @@ public class OverlayView implements OrientationSensor.OrientationSensorDelegate 
     /**
      * Position of the user.
      */
-    private PointOfInterest mySelf;
+    private MapPoint mySelf;
 
     /**
      * Current center.
@@ -176,8 +176,8 @@ public class OverlayView implements OrientationSensor.OrientationSensorDelegate 
         } else {
             points = new ArrayList<>(PointOfInterest.getPoints().subList(0, MAX_ELEMENTS_TO_DRAW));
         }
-        mySelf = PointOfInterest.getSelf();
-        center = Center.centers.get(0);
+        mySelf = User.getInstance().getPosition();
+        center = User.getInstance().getCenter();
 
         mySelf.setX(0.5f);
         mySelf.setY(0.5f);
@@ -191,6 +191,8 @@ public class OverlayView implements OrientationSensor.OrientationSensorDelegate 
      * Forces a texture available call.
      */
     public void start () {
+        mySelf = User.getInstance().getPosition();
+
         if (view.isAvailable()) {
             textureListener.onSurfaceTextureAvailable(view.getSurfaceTexture(), view.getWidth(), view.getHeight());
         }
@@ -224,7 +226,6 @@ public class OverlayView implements OrientationSensor.OrientationSensorDelegate 
         }
 
         outState.putParcelableArrayList(RESTORE_POINTS_KEY, (ArrayList<? extends Parcelable>) points);
-        outState.putParcelable(RESTORE_MYSELF_KEY, mySelf);
     }
 
     /**
@@ -237,7 +238,6 @@ public class OverlayView implements OrientationSensor.OrientationSensorDelegate 
         }
 
         points = inState.getParcelableArrayList(RESTORE_POINTS_KEY);
-        mySelf = inState.getParcelable(RESTORE_MYSELF_KEY);
     }
 
     /**

@@ -16,7 +16,6 @@ import java.util.List;
 import es.uva.tfg.hector.SkyWalkerApp.R;
 import es.uva.tfg.hector.SkyWalkerApp.business.PointOfInterest;
 import es.uva.tfg.hector.SkyWalkerApp.business.User;
-import es.uva.tfg.hector.SkyWalkerApp.business.iBeaconTransmitter;
 
 /**
  * Augmented reality activity
@@ -36,11 +35,11 @@ public class AugmentedRealityActivity extends FragmentActivity
 
                     if (BluetoothAdapter.STATE_ON == intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1)) {
 
-                        iBeaconTransmitter.getInstance(AugmentedRealityActivity.this).startTransmission();
+                        User.getInstance().getTransmitter().startTransmission();
 
                     } else if (BluetoothAdapter.STATE_OFF == intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1)) {
 
-                        iBeaconTransmitter.getInstance(AugmentedRealityActivity.this).stopTransmission();
+                        User.getInstance().getTransmitter().stopTransmission();
 
                         new AlertDialog.Builder(AugmentedRealityActivity.this)
                                 .setTitle(R.string.bluetooth_disconnected_title)
@@ -92,9 +91,14 @@ public class AugmentedRealityActivity extends FragmentActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.augmented_reality_activity_layout);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         if (!User.getInstance().isDemo(this)) {
             registerReceiver(broadcastReceiver, intentFilter);
-            iBeaconTransmitter.getInstance(this).startTransmission();
+            User.getInstance().getTransmitter().startTransmission();
         }
     }
 
@@ -102,7 +106,7 @@ public class AugmentedRealityActivity extends FragmentActivity
     protected void onStop() {
         super.onStop();
         if (!User.getInstance().isDemo(this)) {
-            iBeaconTransmitter.getInstance(this).stopTransmission();
+            User.getInstance().getTransmitter().stopTransmission();
             unregisterReceiver(broadcastReceiver);
         }
     }
