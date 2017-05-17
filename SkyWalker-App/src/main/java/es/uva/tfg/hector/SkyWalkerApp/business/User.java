@@ -20,7 +20,7 @@ public class User {
 
     private MapPoint position = new MapPoint(0, 0.5f, 0.5f, 0);
 
-    private Center center = new Center(0);
+    private Center center;
 
     private static User instance = new User();
 

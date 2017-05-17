@@ -14,11 +14,6 @@ import java.util.List;
 public class PointOfInterest extends MapPoint implements Parcelable {
 
     /**
-     * The list of server retrieved points.
-     */
-    private static List<PointOfInterest> points;
-
-    /**
      * Name of the point.
      */
     private String name;
@@ -54,37 +49,6 @@ public class PointOfInterest extends MapPoint implements Parcelable {
         return points;
     }
 
-    /**
-     * Sets the points the App has access to,
-     * creating a new ArrayList and cloning all of its contents.
-     * @param newPoints to set as accessible.
-     */
-    public static void setPoints(List<PointOfInterest> newPoints) {
-
-        points = new ArrayList<>(newPoints);
-
-        for (PointOfInterest point : newPoints) {
-            points.add(point.copy());
-        }
-
-    }
-
-    /**
-     * Retrieves a new list of all points,
-     * the retrieved list is modification safe.
-     * @return the list of points
-     */
-    public static List<PointOfInterest> getPoints() {
-
-        List<PointOfInterest> returnPoints = new ArrayList<>();
-
-        for (PointOfInterest point : points) {
-            returnPoints.add(point.copy());
-        }
-
-        return returnPoints;
-
-    }
 
     /**
      * Creates a new point of interest with standard coordinates (-1, -1, -1).
@@ -143,7 +107,7 @@ public class PointOfInterest extends MapPoint implements Parcelable {
         dest.writeString(name);
     }
 
-    private PointOfInterest copy() {
+    PointOfInterest copy() {
         PointOfInterest newPoint = new PointOfInterest(this.getId(), this.getName());
         newPoint.setX(this.getX());
         newPoint.setY(this.getY());

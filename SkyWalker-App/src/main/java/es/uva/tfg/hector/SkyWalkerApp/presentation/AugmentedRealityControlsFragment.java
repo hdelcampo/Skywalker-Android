@@ -140,7 +140,7 @@ public class AugmentedRealityControlsFragment extends Fragment implements View.O
     private void filter () {
         Intent dialog = new Intent(getContext(), FilterActivity.class);
 
-        ArrayList<PointOfInterest> allPoints = (ArrayList) PointOfInterest.getPoints();
+        ArrayList<PointOfInterest> allPoints = (ArrayList) User.getInstance().getCenter().getPoints();
         dialog.putParcelableArrayListExtra(FilterActivity.ALL_POINTS_EXTRA, allPoints);
 
         ArrayList<PointOfInterest> usedPoints = (ArrayList) controls.getActivePoints();
@@ -179,11 +179,9 @@ public class AugmentedRealityControlsFragment extends Fragment implements View.O
             case R.id.switch_debug_info:
                 View layout = getView().findViewById(R.id.debug_info_layout);
                 if (!isChecked) {
-                    //layout.setVisibility(View.VISIBLE);
-                    layout.setAlpha(1);
+                    layout.setVisibility(View.VISIBLE);
                 } else {
-                    //layout.setVisibility(View.INVISIBLE);
-                    layout.setAlpha(0);
+                    layout.setVisibility(View.INVISIBLE);
                 }
         }
     }

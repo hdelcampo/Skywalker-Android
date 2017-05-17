@@ -3,6 +3,7 @@ package es.uva.tfg.hector.SkyWalkerApp.business;
 import android.content.Context;
 import android.util.SparseArray;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import es.uva.tfg.hector.SkyWalkerApp.persistence.ServerFacade;
@@ -36,6 +37,25 @@ public class Center {
             this.receivers.put(receiver.getId(), receiver);
         }
 
+    }
+
+    /**
+     * Sets the points the App has access to,
+     * creating a new ArrayList and cloning all of its contents.
+     * @param newPoints to set as accessible.
+     */
+    public void setPoints(List<PointOfInterest> newPoints) {
+
+        points = new ArrayList<>(newPoints.size());
+
+        for (PointOfInterest point : newPoints) {
+            points.add(point.copy());
+        }
+
+    }
+
+    public List<PointOfInterest> getPoints() {
+        return points;
     }
 
     public MapPoint getReceiver(final int id) {
@@ -96,8 +116,10 @@ public class Center {
                     @Override
                     public void onSuccess(List<PointOfInterest> points) {
 
+                        MapPoint userPoint = User.getInstance().getPosition();
+                        points.remove(userPoint);
+
                         Center.this.points = points;
-                        PointOfInterest.setPoints(points);
 
                         if (null != delegate) {
                             delegate.onSuccess();
