@@ -105,6 +105,11 @@ public class AugmentedRealityActivity extends FragmentActivity
             iBeaconTransmitter.getInstance(this).stopTransmission();
             unregisterReceiver(broadcastReceiver);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         User.getInstance().logout();
     }
 
