@@ -179,9 +179,9 @@ public class AugmentedRealityControlsFragment extends Fragment implements View.O
             case R.id.switch_debug_info:
                 View layout = getView().findViewById(R.id.debug_info_layout);
                 if (!isChecked) {
-                    layout.setVisibility(View.VISIBLE);
+                    layout.setAlpha(1);
                 } else {
-                    layout.setVisibility(View.INVISIBLE);
+                    layout.setAlpha(0);
                 }
         }
     }
