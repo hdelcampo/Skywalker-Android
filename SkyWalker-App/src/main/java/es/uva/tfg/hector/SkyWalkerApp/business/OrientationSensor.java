@@ -6,7 +6,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
-import es.uva.tfg.hector.SkyWalkerApp.services.Matrix;
 import es.uva.tfg.hector.SkyWalkerApp.services.Vector2D;
 import es.uva.tfg.hector.SkyWalkerApp.services.Vector3D;
 
@@ -35,11 +34,6 @@ public class OrientationSensor {
      * Device's 3D orientation vector.
      */
     private Vector3D orientationVector = new Vector3D(0, 1, 0);
-
-    /**
-     * Device's reference vector
-     */
-    private Vector2D devicesReference = new Vector2D(0, 1);
 
     /**
      * Delegate who wants to get sensor events.
@@ -73,48 +67,20 @@ public class OrientationSensor {
             float[] rotationMatrix = new float[16];
             SensorManager.getRotationMatrixFromVector(rotationMatrix, rotateVector);
 
-            // Compensate device's rotation
-            remapCoordinates(rotationMatrix, rotationMatrix);
-
-            Matrix rMatrix = new Matrix(4, 4);
-
-            for (int i = 0; i < rotationMatrix.length; i++) {
-                rMatrix.set(i / 4, i % 4 , rotationMatrix[i]);
-            }
-
-            Matrix rotationVector = rMatrix.multiply(
-                    new Matrix(
-                    new double[][]{
-                            {devicesReference.getX()},
-                            {devicesReference.getY()},
-                            {0},
-                            {0}
-                    }));
-
-            Vector2D mapVector = new Vector2D(rotationVector.get(0, 0), rotationVector.get(1, 0));
+            Vector2D mapVector =
+                    new Vector2D(
+                            -rotationMatrix[2],
+                            -rotationMatrix[6]);
             mapVector.rotateClockwise(5);
 
             orientationVector = new Vector3D(
                     mapVector.getX(),
                     mapVector.getY(),
-                    rotationVector.get(2, 0));
+                    -rotationMatrix[10]);
             orientationVector.normalize();
 
             delegate.onSensorValueEvent(orientationVector);
 
-        }
-
-        /**
-         * Remaps coordinates considering device rotation.
-         * Note that input and output parameters can't be the same.
-         * @param rotationMatrix input to be remaped.
-         * @param remappedRotationMatrix output remaped.
-         */
-        private void remapCoordinates(float[] rotationMatrix, float[] remappedRotationMatrix) {
-            SensorManager.remapCoordinateSystem(rotationMatrix,
-                    SensorManager.AXIS_X,
-                    SensorManager.AXIS_Z,
-                    remappedRotationMatrix);
         }
 
         /**
