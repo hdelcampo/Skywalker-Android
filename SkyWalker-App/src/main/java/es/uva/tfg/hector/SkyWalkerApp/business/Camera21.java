@@ -239,10 +239,10 @@ public class Camera21 extends Camera {
 
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void evaluateFOV() {
         SizeF sSize = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE);
-        //TODO ARRAY?
         float fLength = cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS)[0];
 
         setFOVWidth((float) Math.toDegrees((2 * Math.atan(sSize.getWidth() / (2 * fLength)))));

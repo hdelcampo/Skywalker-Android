@@ -40,6 +40,7 @@ public class User {
                     @Override
                     public void onSuccess(Token response) {
                         token = response;
+                        center = new Center(0);
                         User.this.username = username;
                         if (null != delegate) {
                             delegate.onSuccess();

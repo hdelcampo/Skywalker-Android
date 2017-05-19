@@ -259,7 +259,6 @@ public class ServerFacade {
             throw new IllegalStateException("Cannot retrieve tags without a established connection");
         }
 
-        //TODO center real
         String url =  User.getInstance().getToken().getURL().concat("/api/centers/" + User.getInstance().getCenter().getId() + "/tags");
 
         JsonRequest<JSONArray> request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
