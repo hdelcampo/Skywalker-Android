@@ -557,7 +557,7 @@ public class OverlayView implements OrientationSensor.OrientationSensorDelegate 
 
             drawIcon(canvas, x, y, INSIGHT_ICON, 0, IN_SIGHT_ICON_SCALE);
             drawText(canvas, new String[]{point.getName(),
-                            String.format("%.2f", distance) +
+                            String.format("%.2fm", distance) +
                             floorIndicator},
                     x + IN_SIGHT_ICON_SCALE*19.5f, y + IN_SIGHT_ICON_SCALE*17.5f);
 
