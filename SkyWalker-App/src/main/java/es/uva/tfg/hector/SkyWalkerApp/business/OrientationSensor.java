@@ -48,12 +48,12 @@ public class OrientationSensor {
         /**
          * Value to filter data.
          */
-        private static final float ALPHA = 0.25f;
+        private static final float ALPHA = .25f;
 
         /**
          * Sensor's values.
          */
-        private float[] rotateVector;
+        private float[] previousValues;
 
         @Override
         public void onSensorChanged(SensorEvent sensorEvent) {
@@ -62,21 +62,21 @@ public class OrientationSensor {
                 return;
             }
 
-            rotateVector = lowFilter(sensorEvent.values.clone(), rotateVector);
+            float[] rotationMatrix = new float[9];
+            SensorManager.getRotationMatrixFromVector(rotationMatrix, sensorEvent.values.clone());
 
-            float[] rotationMatrix = new float[16];
-            SensorManager.getRotationMatrixFromVector(rotationMatrix, rotateVector);
+            previousValues = lowFilter(new float[]{rotationMatrix[2], rotationMatrix[5], rotationMatrix[8]}, previousValues);
 
             Vector2D mapVector =
                     new Vector2D(
-                            -rotationMatrix[2],
-                            -rotationMatrix[6]);
+                            -previousValues[0],
+                            -previousValues[1]);
             mapVector.rotateClockwise(5);
 
             orientationVector = new Vector3D(
                     mapVector.getX(),
                     mapVector.getY(),
-                    -rotationMatrix[10]);
+                    -previousValues[2]);
             orientationVector.normalize();
 
             delegate.onSensorValueEvent(orientationVector);
