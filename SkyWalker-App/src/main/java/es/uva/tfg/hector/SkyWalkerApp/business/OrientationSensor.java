@@ -5,6 +5,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Handler;
+import android.os.HandlerThread;
 
 import es.uva.tfg.hector.SkyWalkerApp.services.Vector2D;
 import es.uva.tfg.hector.SkyWalkerApp.services.Vector3D;
@@ -29,6 +31,11 @@ public class OrientationSensor {
      * Orientation's sensors.
      */
     private Sensor sensorRt;
+
+    /**
+     * Orientation's handling thread.
+     */
+    private HandlerThread thread;
 
     /**
      * Device's 3D orientation vector.
@@ -125,8 +132,11 @@ public class OrientationSensor {
     /**
      * Starts registering sensors changes.
      */
-    public void registerEvents(){
-        manager.registerListener(eventListener, sensorRt, SENSOR_DELAY);
+    public void registerEvents() {
+        thread = new HandlerThread("Orientation thread");
+        thread.start();
+        Handler handler = new Handler(thread.getLooper());
+        manager.registerListener(eventListener, sensorRt, SENSOR_DELAY, handler);
     }
 
     /**
@@ -134,6 +144,7 @@ public class OrientationSensor {
      */
     public void unregisterEvents(){
         manager.unregisterListener(eventListener);
+        thread.quitSafely();
     }
 
     /**
@@ -145,7 +156,7 @@ public class OrientationSensor {
     }
 
     /**
-     * Checks wheter the device is capable of using this sensor or not.
+     * Checks whether the device is capable of using this sensor or not.
      * @param context of the App.
      * @return true if device has the needed sensor, false otherwise.
      */

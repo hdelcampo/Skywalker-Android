@@ -279,33 +279,50 @@ public class OverlayView implements OrientationSensor.OrientationSensorDelegate 
     }
 
     @Override
-    public void onSensorValueEvent(Vector3D value) {
-        TextView degreeText = (TextView) activity.findViewById(R.id.zRotation);
-        degreeText.setText("X: " + String.valueOf(value.getX()));
+    public void onSensorValueEvent(final Vector3D value) {
 
-        degreeText = (TextView) activity.findViewById(R.id.yRotation);
-        degreeText.setText("Y: " + String.valueOf(value.getY()));
 
-        degreeText = (TextView) activity.findViewById(R.id.xRotation);
-        degreeText.setText("Z: " + String.valueOf(value.getZ()));
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                TextView degreeText = (TextView) activity.findViewById(R.id.xRotation);
+                degreeText.setText("X: " + String.valueOf(value.getX()));
+
+                degreeText = (TextView) activity.findViewById(R.id.yRotation);
+                degreeText.setText("Y: " + String.valueOf(value.getY()));
+
+                degreeText = (TextView) activity.findViewById(R.id.zRotation);
+                degreeText.setText("Z: " + String.valueOf(value.getZ()));
+            }
+        };
+
+        activity.runOnUiThread(runnable);
+
     }
 
     @Override
-    public void onSensorAccuracyChange(int accuracy) {
+    public void onSensorAccuracyChange(final int accuracy) {
 
-        if (accuracy < SensorManager.SENSOR_STATUS_ACCURACY_HIGH) {
-            LayoutInflater factory = LayoutInflater.from(activity);
-            final View view = factory.inflate(R.layout.sensor_calibration_layout, null);
-            AlertDialog.Builder builder =
-                    new AlertDialog.Builder(activity)
-                    .setCancelable(false)
-                    .setView(view);
-            dialog = builder.create();
-            dialog.show();
-        } else if (null != dialog) {
-            dialog.dismiss();
-            dialog = null;
-        }
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (accuracy < SensorManager.SENSOR_STATUS_ACCURACY_HIGH) {
+                    LayoutInflater factory = LayoutInflater.from(activity);
+                    final View view = factory.inflate(R.layout.sensor_calibration_layout, null);
+                    AlertDialog.Builder builder =
+                            new AlertDialog.Builder(activity)
+                                    .setCancelable(false)
+                                    .setView(view);
+                    dialog = builder.create();
+                    dialog.show();
+                } else if (null != dialog) {
+                    dialog.dismiss();
+                    dialog = null;
+                }
+            }
+        };
+
+        activity.runOnUiThread(runnable);
 
     }
 
