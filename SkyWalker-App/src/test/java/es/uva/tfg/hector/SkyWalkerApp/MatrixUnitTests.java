@@ -35,6 +35,24 @@ public class MatrixUnitTests {
 
     }
 
+    @Test
+    public void constructEmpty () {
+
+        final int rows = 5, cols = 10;
+
+        final Matrix matrix = new Matrix(rows, cols);
+
+        assertEquals(rows, matrix.getRows());
+        assertEquals(cols, matrix.getCols());
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                assertEquals(0, matrix.get(i,j), 0);
+            }
+        }
+
+    }
+
     /*
      * Multiply method
      */

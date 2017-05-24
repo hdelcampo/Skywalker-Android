@@ -36,21 +36,6 @@ public class Matrix {
     }
 
     /**
-     * Constructs a lineal matrix, aka vector.
-     * @param vector container of data.
-     *//*
-    public Matrix (final double[] vector) {
-        this.rows = 1;
-        this.cols = vector.length;
-        this.data = new double[rows][cols];
-
-        for (int i = 0; i < cols; i++) {
-            data[0][i] = vector[i];
-        }
-
-    }*/
-
-    /**
      * Retrieves the matrix multiplication as this*rightFactor.
      * @param rightFactor the right multiplier matrix.
      */
