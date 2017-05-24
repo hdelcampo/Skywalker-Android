@@ -4,7 +4,7 @@ package es.uva.tfg.hector.SkyWalkerApp.services;
  * Geometric 2D vector.
  * @author Héctor Del Campo Pando
  */
-public class Vector2D implements Vector<Vector2D> {
+public class Vector2D {
 
     /**
      * Vector's components.
@@ -38,19 +38,29 @@ public class Vector2D implements Vector<Vector2D> {
         this.y = y;
     }
 
-    @Override
+    /**
+     * Normalizes this vector.
+     */
     public void normalize() {
         final double length = module();
         x /= length;
         y /= length;
     }
 
-    @Override
+    /**
+     * Geometric's dot product.
+     * @param v other vector.
+     * @return the dot product result.
+     */
     public double dotProduct(Vector2D v) {
         return (x*v.getX()) + (y*v.getY());
     }
 
-    @Override
+    /**
+     * Retrieves vector's inner angle.
+     * @param v other vector.
+     * @return the inner angle in degrees.
+     */
     public double angle(Vector2D v) {
         final double product = dotProduct(v);
         final double cos = product/(module()*v.module());
@@ -70,7 +80,10 @@ public class Vector2D implements Vector<Vector2D> {
         return -Math.toDegrees(Math.atan2(det, cos));
     }
 
-    @Override
+    /**
+     * Returns the vector's length.
+     * @return the vector's length.
+     */
     public double module() {
         return Math.sqrt((x*x) + (y*y));
     }
