@@ -16,6 +16,7 @@ import android.hardware.camera2.CaptureRequest;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.SizeF;
 import android.view.Surface;
@@ -28,9 +29,13 @@ import java.util.Collections;
  * @author Hector Del Campo Pando
  */
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-public class Camera21 extends Camera {
+class Camera21 extends Camera {
 
-    public static final String BACKGROUND_THREAD = "CameraThread";
+    /**
+     * Thread debug label.
+     */
+    private static final String BACKGROUND_THREAD = "CameraThread";
+
     /**
      * Selected camera
      */
@@ -69,21 +74,21 @@ public class Camera21 extends Camera {
     /**
      * Camera's callback
      */
-    private CameraDevice.StateCallback mStateCallback = new CameraDevice.StateCallback() {
+    private final CameraDevice.StateCallback mStateCallback = new CameraDevice.StateCallback() {
 
         @Override
-        public void onOpened(CameraDevice camera) {
+        public void onOpened(@NonNull CameraDevice camera) {
             cameraDevice = camera;
             evaluateFOV();
         }
 
         @Override
-        public void onDisconnected(CameraDevice camera) {
+        public void onDisconnected(@NonNull CameraDevice camera) {
             closeCamera();
         }
 
         @Override
-        public void onError(CameraDevice camera, int error) {
+        public void onError(@NonNull CameraDevice camera, int error) {
 
         }
 
@@ -107,8 +112,7 @@ public class Camera21 extends Camera {
     }
 
     /**
-     * Creates a capture request, with preview template,
-     * if camera is not opened yet, this call will make thread sleep until its opened.
+     * Creates a capture request, with preview template.
      */
     private void createCaptureRequest() {
 
@@ -129,19 +133,20 @@ public class Camera21 extends Camera {
             cameraDevice.createCaptureSession(Collections.singletonList(surface), new CameraCaptureSession.StateCallback() {
 
                 @Override
-                public void onConfigured(CameraCaptureSession session) {
+                public void onConfigured(@NonNull CameraCaptureSession session) {
                     previewSession = session;
                     startUpdatingPreview();
                 }
 
                 @Override
-                public void onConfigureFailed(CameraCaptureSession session) {
-                    Log.e(TAG, "configure failed");
+                public void onConfigureFailed(@NonNull CameraCaptureSession session) {
+                    Log.e("Camera 2", "configure failed");
                 }
             }, backgroundHandler);
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
+
     }
 
     /**
@@ -187,6 +192,7 @@ public class Camera21 extends Camera {
 
         try {
             String cameraId = getRearCamera(manager);
+            //noinspection ConstantConditions
             manager.openCamera(cameraId, mStateCallback, backgroundHandler);
         } catch (CameraAccessException e) {
             e.printStackTrace();
@@ -205,6 +211,7 @@ public class Camera21 extends Camera {
         int orientation;
         for(final String id: manager.getCameraIdList()){
             cameraCharacteristics = manager.getCameraCharacteristics(id);
+            //noinspection ConstantConditions
             orientation = cameraCharacteristics.get(CameraCharacteristics.LENS_FACING);
 
             if(CameraCharacteristics.LENS_FACING_BACK == orientation){
@@ -224,7 +231,7 @@ public class Camera21 extends Camera {
             cameraDevice = null;
         }
 
-        /**
+        /*
          * Stop threads
          */
         backgroundThread.quitSafely();

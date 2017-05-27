@@ -13,7 +13,8 @@ import java.util.List;
  * Camera API for Android API 1 or greater
  * @author Hector Del Campo Pando
  */
-public class Camera1 extends es.uva.tfg.hector.SkyWalkerApp.business.Camera {
+@SuppressWarnings("deprecation")
+class Camera1 extends es.uva.tfg.hector.SkyWalkerApp.business.Camera {
 
     /**
      * {@link android.hardware.Camera} to control.
@@ -90,7 +91,7 @@ public class Camera1 extends es.uva.tfg.hector.SkyWalkerApp.business.Camera {
                 degrees = 270;
                 break;
             default:
-                Log.e(TAG, "Wrong screen rotation");
+                Log.e("Camera 1", "Wrong screen rotation");
                 break;
         }
 
@@ -136,8 +137,6 @@ public class Camera1 extends es.uva.tfg.hector.SkyWalkerApp.business.Camera {
         Camera.Size optimalSize = null;
         double minDiff = Double.MAX_VALUE;
 
-        int targetHeight = h;
-
         for (Camera.Size size : sizes) {
             if (size.width == h && size.height == w) {
                 return size;
@@ -147,18 +146,18 @@ public class Camera1 extends es.uva.tfg.hector.SkyWalkerApp.business.Camera {
         for (Camera.Size size : sizes) {
             double ratio = (double) size.width / size.height;
             if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE) continue;
-            if (Math.abs(size.height - targetHeight) < minDiff) {
+            if (Math.abs(size.height - h) < minDiff) {
                 optimalSize = size;
-                minDiff = Math.abs(size.height - targetHeight);
+                minDiff = Math.abs(size.height - h);
             }
         }
 
         if (optimalSize == null) {
             minDiff = Double.MAX_VALUE;
             for (Camera.Size size : sizes) {
-                if (Math.abs(size.height - targetHeight) < minDiff) {
+                if (Math.abs(size.height - h) < minDiff) {
                     optimalSize = size;
-                    minDiff = Math.abs(size.height - targetHeight);
+                    minDiff = Math.abs(size.height - h);
                 }
             }
         }

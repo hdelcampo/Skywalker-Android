@@ -7,12 +7,10 @@ import java.io.IOException;
 import java.util.Observable;
 
 /**
- * API for camera, Android API Level independent
+ * API for camera, Android API Level independent.
  * @author Hector Del Campo Pando
  */
 public abstract class Camera extends Observable {
-
-    protected final static String TAG = "Camera";
 
     /**
      * Field of view of the selected camera, and the selected configuration for that camera.
@@ -35,8 +33,8 @@ public abstract class Camera extends Observable {
     }
 
     /**
-     * Sets where to show the camera's preview
-     * @param view
+     * Sets where to show the camera's preview.
+     * @param view where preview is shown.
      */
     public abstract void setView(TextureView view) throws IOException;
 
@@ -68,6 +66,9 @@ public abstract class Camera extends Observable {
 
     /**
      * Changes camera's orientation to the actual device's one.
+     * @param height of the view.
+     * @param width of the view.
+     * @param rotation of the device.
      */
     public abstract void transform(int rotation, int width, int height);
 
@@ -91,7 +92,7 @@ public abstract class Camera extends Observable {
      * Setter for field of view width.
      * @param width on degrees.
      */
-    protected void setFOVWidth(float width){
+    void setFOVWidth(float width){
         fovWidth = width;
     }
 
@@ -99,7 +100,7 @@ public abstract class Camera extends Observable {
      * Setter for field of view height.
      * @param height on degrees.
      */
-    protected void setFOVHeight(float height){
+    void setFOVHeight(float height){
         fovHeight = height;
     }
 
