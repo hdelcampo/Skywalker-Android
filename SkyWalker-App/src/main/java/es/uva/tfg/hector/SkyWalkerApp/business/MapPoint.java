@@ -7,6 +7,7 @@ import es.uva.tfg.hector.SkyWalkerApp.services.PersistenceOperationDelegate;
 
 /**
  * A Map point, with coordinates, number of floor and ID.
+ * @author Héctor Del Campo Pando
  */
 public class MapPoint {
 
@@ -42,26 +43,50 @@ public class MapPoint {
         this.z = z;
     }
 
+    /**
+     * Retrieves the X coordinate.
+     * @return the X coordinate
+     */
     public float getX() {
         return x;
     }
 
+    /**
+     * Changes the X coordinate.
+     * @param x to set.
+     */
     public void setX(float x) {
         this.x = x;
     }
 
+    /**
+     * Retrieves the Y coordinate.
+     * @return the Y coordinate.
+     */
     public float getY() {
         return y;
     }
 
+    /**
+     * Sets the Y coordinate.
+     * @param y to set.
+     */
     public void setY(float y) {
         this.y = y;
     }
 
+    /**
+     * Gets the Z coordinate.
+     * @return the Z coordinate.
+     */
     public int getZ() {
         return z;
     }
 
+    /**
+     * Changes the Z coordinate.
+     * @param z to set.
+     */
     public void setZ(int z) {
         this.z = z;
     }
@@ -82,6 +107,11 @@ public class MapPoint {
         return id;
     }
 
+    /**
+     * Updates the position of the point, asking the persistence system the new one.
+     * @param context to use.
+     * @param delegate callback for success or error events.
+     */
     public void updatePosition (Context context, final PersistenceOperationDelegate delegate) {
         ServerFacade.getInstance(context).
                 getLastPosition(new ServerFacade.OnServerResponse<MapPoint>() {

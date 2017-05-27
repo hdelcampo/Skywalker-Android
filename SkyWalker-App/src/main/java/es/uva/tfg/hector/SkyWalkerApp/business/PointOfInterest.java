@@ -8,7 +8,6 @@ import java.util.List;
 
 /**
  * Points to be shown on the augmented reality overlay.
- * This class also handles the served retrieved points.
  * @author Héctor Del Campo Pando
  */
 public class PointOfInterest extends MapPoint implements Parcelable {
@@ -16,7 +15,7 @@ public class PointOfInterest extends MapPoint implements Parcelable {
     /**
      * Name of the point.
      */
-    private String name;
+    private final String name;
 
     /**
      * Retrieves a list of points for demo purposes.
@@ -73,6 +72,9 @@ public class PointOfInterest extends MapPoint implements Parcelable {
         return name + " (" + getId() + ")";
     }
 
+    /**
+     * Parcelable creator
+     */
     public static final Parcelable.Creator<PointOfInterest> CREATOR
             = new Parcelable.Creator<PointOfInterest>() {
         public PointOfInterest createFromParcel(Parcel in) {
@@ -84,6 +86,10 @@ public class PointOfInterest extends MapPoint implements Parcelable {
         }
     };
 
+    /**
+     * Constructor for parcelable calls.
+     * @param in old values to use.
+     */
     private PointOfInterest(Parcel in) {
         super(in.readInt(),
                 in.readFloat(),
@@ -107,6 +113,10 @@ public class PointOfInterest extends MapPoint implements Parcelable {
         dest.writeString(name);
     }
 
+    /**
+     * Creates an exact copy of this.
+     * @return the copy of this.
+     */
     PointOfInterest copy() {
         PointOfInterest newPoint = new PointOfInterest(this.getId(), this.getName());
         newPoint.setX(this.getX());
