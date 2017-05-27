@@ -1,5 +1,6 @@
 package es.uva.tfg.hector.SkyWalkerApp.persistence;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 
 import com.android.volley.AuthFailureError;
@@ -27,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 
 import es.uva.tfg.hector.SkyWalkerApp.R;
-import es.uva.tfg.hector.SkyWalkerApp.business.Center;
 import es.uva.tfg.hector.SkyWalkerApp.business.MapPoint;
 import es.uva.tfg.hector.SkyWalkerApp.business.PointOfInterest;
 import es.uva.tfg.hector.SkyWalkerApp.business.Token;
@@ -51,6 +51,7 @@ public class ServerFacade {
     /**
      * Singleton instance.
      */
+    @SuppressLint("StaticFieldLeak")
     private static ServerFacade instance;
 
     /**
@@ -83,7 +84,7 @@ public class ServerFacade {
      * @param context of the App.
      */
     private ServerFacade(Context context) {
-        this.context = context;
+        this.context = context.getApplicationContext();
         requestQueue = Volley.newRequestQueue(context);
     }
 
@@ -121,7 +122,7 @@ public class ServerFacade {
             }
         }) {
             @Override
-            protected Response parseNetworkResponse(NetworkResponse response) {
+            protected Response<String> parseNetworkResponse(NetworkResponse response) {
                 String parsed;
                 try {
                     parsed = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
@@ -195,13 +196,13 @@ public class ServerFacade {
      * @param responseListener that will handle responses.
      * @param center whose receivers must be retreived.
      */
-    public void getCenterReceivers (final OnServerResponse <List<MapPoint>> responseListener, final Center center) {
+    public void getCenterReceivers (final OnServerResponse <List<MapPoint>> responseListener, final int center) {
 
         if (!User.getInstance().isLogged()) {
             throw new IllegalStateException("Cannot retrieve tags without a established connection");
         }
 
-        String url =  User.getInstance().getToken().getURL().concat("/api/centers/" + center.getId() + "/rdhubs");
+        String url =  User.getInstance().getToken().getURL().concat("/api/centers/" + center + "/rdhubs");
 
         JsonRequest<JSONArray> request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override

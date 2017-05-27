@@ -105,7 +105,7 @@ public class Center {
 
             }
 
-        }, this);
+        }, id);
     }
 
     public void loadTags (Context context, final PersistenceOperationDelegate delegate) {
