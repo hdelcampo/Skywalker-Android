@@ -87,7 +87,7 @@ public class ManualConnectionFragment extends NewConnectionFragment implements V
                 break;
 
             case R.id.demo_button:
-                User.getInstance().setCenter(new Center(0));
+                User.getInstance().setCenter(new Center(0, 40));
                 User.getInstance().getCenter().setPoints(PointOfInterest.getDemoPoints());
                 User.getInstance().setDemo(getContext().getApplicationContext());
                 startAR();

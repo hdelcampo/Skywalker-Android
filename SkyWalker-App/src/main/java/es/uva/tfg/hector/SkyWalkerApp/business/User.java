@@ -70,7 +70,7 @@ public class User {
                     @Override
                     public void onSuccess(Token response) {
                         token = response;
-                        center = new Center(0);
+                        center = new Center(0, 128);
                         User.this.username = username;
                         if (null != delegate) {
                             delegate.onSuccess();
@@ -181,7 +181,6 @@ public class User {
 
                     @Override
                     public void onSuccess(iBeaconFrame frame) {
-                        center = new Center(0);
                         transmitter.init(context);
                         transmitter.configure(frame, (byte) -59);
                         position = new MapPoint(frame.getMinor(), -1, -1, -1);

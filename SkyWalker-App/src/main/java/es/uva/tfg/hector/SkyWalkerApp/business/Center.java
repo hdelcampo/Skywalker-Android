@@ -16,21 +16,46 @@ import es.uva.tfg.hector.SkyWalkerApp.services.Vector2D;
  */
 public class Center {
 
+    /**
+     * The center's id.
+     */
     private final int id;
 
-    private final float scale = 128;
+    /**
+     * The center's scale
+     */
+    private final float scale;
 
+    /**
+     * The center's north in XtremeLoc coordinates.
+     */
     private final Vector2D mapNorth;
 
+    /**
+     * The center's receivers.
+     */
     private final SparseArray<MapPoint> receivers = new SparseArray<>();
 
+    /**
+     * The center's points.
+     */
     private List<PointOfInterest> points;
 
-    public Center (int id) {
+    /**
+     * Creates a new center.
+     * @param id of the center.
+     * @param scale center's real length.
+     */
+    public Center (int id, float scale) {
+        this.scale = scale;
         this.id = id;
         mapNorth = new Vector2D(0, 1);
     }
 
+    /**
+     * Adds new receivers.
+     * @param receivers to be added.
+     */
     private void addReceivers(List<MapPoint> receivers) {
 
         for (MapPoint receiver: receivers) {
@@ -54,26 +79,52 @@ public class Center {
 
     }
 
+    /**
+     * Retrieves the list of points.
+     * @return the list of points.
+     */
     public List<PointOfInterest> getPoints() {
         return points;
     }
 
+    /**
+     * Retrieves a receivier by its id.
+     * @param id of the receiver.
+     * @return the receiver, or null if there is none with the given id.
+     */
     public MapPoint getReceiver(final int id) {
         return receivers.get(id);
     }
 
+    /**
+     * The center's id.
+     * @return the id.
+     */
     public int getId () {
         return id;
     }
 
+    /**
+     * Returns the map's north.
+     * @return the map's north.
+     */
     public Vector2D getMapNorth () {
         return mapNorth;
     }
 
+    /**
+     * Returns the real length.
+     * @return the center's length in meters.
+     */
     public float getScale() {
         return scale;
     }
 
+    /**
+     * Retrieves the center's receivers from the persistence system.
+     * @param context to use.
+     * @param delegate callback for success or error events.
+     */
     public void loadReceivers (Context context, final PersistenceOperationDelegate delegate) {
         ServerFacade.getInstance(context).getCenterReceivers(new ServerFacade.OnServerResponse<List<MapPoint>>() {
 
@@ -108,6 +159,11 @@ public class Center {
         }, id);
     }
 
+    /**
+     * Retrieves the center's tags from the persistence system.
+     * @param context to use.
+     * @param delegate callback for success or error events.
+     */
     public void loadTags (Context context, final PersistenceOperationDelegate delegate) {
 
         ServerFacade.getInstance(context).
