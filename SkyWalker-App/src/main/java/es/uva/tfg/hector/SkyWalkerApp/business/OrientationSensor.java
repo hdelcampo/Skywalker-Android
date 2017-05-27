@@ -12,7 +12,7 @@ import es.uva.tfg.hector.SkyWalkerApp.services.Vector2D;
 import es.uva.tfg.hector.SkyWalkerApp.services.Vector3D;
 
 /**
- * Orientation sensors manager
+ * Orientation sensors manager.
  * @author Hector Del Campo Pando
  **/
 public class OrientationSensor {
@@ -25,12 +25,12 @@ public class OrientationSensor {
     /**
      * Sensor's manager.
      */
-    private SensorManager manager;
+    private final SensorManager manager;
 
     /**
      * Orientation's sensors.
      */
-    private Sensor sensorRt;
+    private final Sensor sensorRt;
 
     /**
      * Orientation's handling thread.
@@ -45,12 +45,12 @@ public class OrientationSensor {
     /**
      * Delegate who wants to get sensor events.
      */
-    private OrientationSensorDelegate delegate;
+    private final OrientationSensorDelegate delegate;
 
     /**
      * Listener for the sensors
      */
-    private SensorEventListener eventListener = new SensorEventListener(){
+    private final SensorEventListener eventListener = new SensorEventListener(){
 
         /**
          * Value to filter data.
