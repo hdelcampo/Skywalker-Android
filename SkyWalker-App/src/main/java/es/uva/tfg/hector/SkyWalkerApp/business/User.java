@@ -12,22 +12,52 @@ import es.uva.tfg.hector.SkyWalkerApp.services.PersistenceOperationDelegate;
  */
 public class User {
 
+    /**
+     * The user's token.
+     */
     private Token token;
 
+    /**
+     * The user's username.
+     */
     private String username;
 
-    private iBeaconTransmitter transmitter = new iBeaconTransmitter();
+    /**
+     * The BLE transmitter.
+     */
+    private final iBeaconTransmitter transmitter = new iBeaconTransmitter();
 
+    /**
+     * Position on map.
+     */
     private MapPoint position = new MapPoint(0, 0.5f, 0.5f, 0);
 
+    /**
+     * Associated center.
+     */
     private Center center;
 
-    private static User instance = new User();
+    /**
+     * Singleton instance.
+     */
+    private static final User instance = new User();
 
+    /**
+     * Returns the singleton instance.
+     * @return the instance.
+     */
     public static User getInstance() {
         return instance;
     }
 
+    /**
+     * Logins a user in a server.
+     * @param context to login.
+     * @param server where to login.
+     * @param username of the user.
+     * @param password of the user.
+     * @param delegate callback for success or error.
+     */
     public void login(Context context,
                       String server,
                       final String username,
@@ -68,10 +98,17 @@ public class User {
                 }, server, username, password);
     }
 
+    /**
+     * Logouts the user, settnig it's token to null.
+     */
     public void logout() {
         token = null;
     }
 
+    /**
+     * Checks if user is logged in a server.
+     * @return true if logged, false otherwise.
+     */
     public boolean isLogged() {
         return token != null;
     }
@@ -84,33 +121,59 @@ public class User {
         return token.getURL().equals(context.getString(R.string.demo));
     }
 
+    /**
+     * Sets the user's center.
+     * @param center to set.
+     */
     public void setCenter(Center center) {
         this.center = center;
     }
 
+    /**
+     * Retrieves the user's token.
+     * @return the token.
+     */
     public Token getToken() {
         return token;
     }
 
+    /**
+     * Retrieves the user's center.
+     * @return the center.
+     */
     public Center getCenter () {
         return center;
     }
 
     /**
      * Sets demo mode.
+     * @param context to use.
      */
     public void setDemo(Context context) {
         token = new Token(context.getString(R.string.demo), null);
     }
 
+    /**
+     * Retrieves the BLE transmitter.
+     * @return the transmitter.
+     */
     public iBeaconTransmitter getTransmitter() {
         return transmitter;
     }
 
+    /**
+     * Retrieves the user's position.
+     * @return the position.
+     */
     public MapPoint getPosition() {
         return position;
     }
 
+    /**
+     * Registers this device as the user's beacon.
+     * @param context to use.
+     * @param delegate callback for success or errors.
+     */
     public void registerBeacon (final Context context, final PersistenceOperationDelegate delegate) {
 
         ServerFacade.getInstance(context).
