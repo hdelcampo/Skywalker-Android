@@ -1,5 +1,6 @@
 package es.uva.tfg.hector.SkyWalkerApp.presentation;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
@@ -27,7 +28,7 @@ public class AugmentedRealityActivity extends FragmentActivity
     /**
      * Broadcast receiver for system events.
      */
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             switch (intent.getAction()) {
@@ -68,12 +69,13 @@ public class AugmentedRealityActivity extends FragmentActivity
     /**
      * Broadcast receiver's filter.
      */
-    private IntentFilter intentFilter = new IntentFilter();
+    private final IntentFilter intentFilter = new IntentFilter();
 
     {
         intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
     }
 
+    @SuppressLint("InlinedApi")
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);

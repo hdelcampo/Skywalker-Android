@@ -64,6 +64,7 @@ public class AugmentedRealityControlsFragment extends Fragment implements View.O
         return rootView;
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void onStart() {
         super.onStart();
@@ -110,6 +111,7 @@ public class AugmentedRealityControlsFragment extends Fragment implements View.O
 
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -140,10 +142,10 @@ public class AugmentedRealityControlsFragment extends Fragment implements View.O
     private void filter () {
         Intent dialog = new Intent(getContext(), FilterActivity.class);
 
-        ArrayList<PointOfInterest> allPoints = (ArrayList) User.getInstance().getCenter().getPoints();
+        ArrayList<PointOfInterest> allPoints = (ArrayList<PointOfInterest>) User.getInstance().getCenter().getPoints();
         dialog.putParcelableArrayListExtra(FilterActivity.ALL_POINTS_EXTRA, allPoints);
 
-        ArrayList<PointOfInterest> usedPoints = (ArrayList) controls.getActivePoints();
+        ArrayList<PointOfInterest> usedPoints = (ArrayList<PointOfInterest>) controls.getActivePoints();
         dialog.putParcelableArrayListExtra(FilterActivity.USED_POINTS_EXTRA, usedPoints);
 
         startActivityForResult(dialog, FILTER_POINTS);
@@ -173,6 +175,7 @@ public class AugmentedRealityControlsFragment extends Fragment implements View.O
         ((TextView)rootView.findViewById(R.id.compilationStamp)).setText(s);
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         switch (buttonView.getId()) {
@@ -189,7 +192,8 @@ public class AugmentedRealityControlsFragment extends Fragment implements View.O
     /**
      * Interface an Augmented Reality that must be controlled must implement.
      */
-    public interface AugmentedRealityControls {
+    @SuppressWarnings("unused")
+    interface AugmentedRealityControls {
 
         /**
          * Retrieves points being shown.
