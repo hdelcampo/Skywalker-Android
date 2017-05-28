@@ -108,6 +108,7 @@ public class EntryActivity extends AppCompatActivity {
      * Called whenever login button is clicked, starts the login activity.
      * @param view who called.
      */
+    @SuppressWarnings("UnusedParameters")
     public void loginClick (View view) {
         final boolean hasPermissions = PermissionsRequestActivity.hasEnoughPermissions(this);
         Intent intent =  new Intent(this,
@@ -115,7 +116,7 @@ public class EntryActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void stopCarousel () {
+    private void stopCarousel() {
 
         if (handler == null) {
             return;
