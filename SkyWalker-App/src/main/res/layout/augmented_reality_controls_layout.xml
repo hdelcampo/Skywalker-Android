@@ -36,140 +36,144 @@
 
     </LinearLayout>
     <!-- The navigation drawer -->
-    <LinearLayout
+    <ScrollView
         android:id="@+id/navigation_drawer"
+        android:elevation="16dp"
         android:layout_width="240dp"
-        android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="@color/cardview_light_background"
-        android:elevation="16dp"
-        android:orientation="vertical">
-
+        android:layout_height="match_parent">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            android:orientation="vertical"
-            android:paddingBottom="16dp"
-            android:paddingEnd="16dp"
-            android:paddingStart="16dp"
-            android:paddingTop="24dp">
-
-            <TextView
-                android:id="@+id/textView6"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/server_label"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large.Inverse" />
-
-            <TextView
-                android:id="@+id/real_server_label"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="https://www.xtremeloc.rdnest.com"
-                android:textAppearance="@style/TextAppearance.AppCompat.Inverse"
-                android:textSize="12sp" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/background_dark"
-            android:paddingBottom="8dp"
-            android:paddingTop="8dp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="8dp"
-            android:paddingEnd="16dp"
-            android:paddingStart="16dp"
-            android:paddingTop="8dp">
+            android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/filter_button"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:background="?android:attr/selectableItemBackground"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:adjustViewBounds="true"
-                    android:background="@drawable/filter_icon" />
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:orientation="vertical"
+                android:paddingBottom="16dp"
+                android:paddingEnd="16dp"
+                android:paddingStart="16dp"
+                android:paddingTop="24dp">
 
                 <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:maxLines="1"
-                    android:paddingStart="8dp"
-                    android:text="@string/filter_label"
-                    android:textAppearance="@style/TextAppearance.AppCompat" />
+                    android:id="@+id/textView6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/server_label"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large.Inverse" />
 
+                <TextView
+                    android:id="@+id/real_server_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="https://www.xtremeloc.rdnest.com"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Inverse"
+                    android:textSize="12sp" />
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/background_dark"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp" />
 
             <LinearLayout
-                android:id="@+id/logout_button"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:background="?android:attr/selectableItemBackground"
-                android:gravity="center"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="8dp"
+                android:paddingEnd="16dp"
+                android:paddingStart="16dp"
+                android:paddingTop="8dp">
 
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:adjustViewBounds="true"
-                    android:background="@drawable/logout_icon" />
+                <LinearLayout
+                    android:id="@+id/filter_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:adjustViewBounds="true"
+                        android:background="@drawable/filter_icon" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:maxLines="1"
+                        android:paddingStart="8dp"
+                        android:text="@string/filter_label"
+                        android:textAppearance="@style/TextAppearance.AppCompat" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/logout_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:adjustViewBounds="true"
+                        android:background="@drawable/logout_icon" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:minLines="1"
+                        android:paddingStart="8dp"
+                        android:text="@string/disconnect"
+                        android:textAppearance="@style/TextAppearance.AppCompat" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/background_dark"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingEnd="16dp"
+                android:paddingStart="16dp">
+
+                <Switch
+                    android:id="@+id/switch_debug_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:checked="true"
+                    android:text="Hide debug info" />
 
                 <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:id="@+id/compilationStamp"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
                     android:gravity="center_vertical"
-                    android:minLines="1"
-                    android:paddingStart="8dp"
-                    android:text="@string/disconnect"
-                    android:textAppearance="@style/TextAppearance.AppCompat" />
-
+                    android:text="TextView"
+                    android:textAppearance="@android:style/TextAppearance.DeviceDefault.Small" />
             </LinearLayout>
+
         </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/background_dark"
-            android:paddingBottom="8dp"
-            android:paddingTop="8dp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingEnd="16dp"
-            android:paddingStart="16dp">
-
-            <Switch
-                android:id="@+id/switch_debug_info"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:checked="true"
-                android:text="Hide debug info" />
-
-            <TextView
-                android:id="@+id/compilationStamp"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:gravity="center_vertical"
-                android:text="TextView"
-                android:textAppearance="@android:style/TextAppearance.Material.Small" />
-        </LinearLayout>
-
-    </LinearLayout>
+    </ScrollView>
 
 </android.support.v4.widget.DrawerLayout>
