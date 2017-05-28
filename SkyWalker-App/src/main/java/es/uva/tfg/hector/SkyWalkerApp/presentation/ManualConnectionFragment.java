@@ -31,7 +31,7 @@ public class ManualConnectionFragment extends NewConnectionFragment implements V
      * Address form validator,
      * this will show error and keep the ok button disabled until a valid URL has been inserted.
      */
-    private TextWatcher addrValidator = new TextWatcher() {
+    private final TextWatcher addrValidator = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -66,6 +66,7 @@ public class ManualConnectionFragment extends NewConnectionFragment implements V
 
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -95,6 +96,7 @@ public class ManualConnectionFragment extends NewConnectionFragment implements V
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     protected void showError(PersistenceOperationDelegate.Errors error) {
         switch (error) {
@@ -127,6 +129,7 @@ public class ManualConnectionFragment extends NewConnectionFragment implements V
      */
     private void hideKeyboard() {
         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        //noinspection ConstantConditions
         imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
     }
 
@@ -134,6 +137,7 @@ public class ManualConnectionFragment extends NewConnectionFragment implements V
      * Toggles URL error messages.
      * @param state whether error must be shown or not.
      */
+    @SuppressWarnings("ConstantConditions")
     private void toggleInvalidURL(boolean state) {
 
         final TextInputLayout addressLayout =
@@ -153,6 +157,7 @@ public class ManualConnectionFragment extends NewConnectionFragment implements V
      * Toggles the credentials error messages.
      * @param state whether error must be shown or not.
      */
+    @SuppressWarnings("ConstantConditions")
     private void toggleCredentialsError(boolean state) {
 
         final TextInputLayout usernameLayout =

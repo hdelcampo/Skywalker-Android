@@ -96,9 +96,7 @@ public class QRConnectionFragment extends NewConnectionFragment {
     @Override
     public void onPause() {
         super.onPause();
-        try {
-            camera.stop();
-        } catch (IllegalStateException e) {}
+        camera.stop();
 
         if (!stopped) {
             stopDetection();
