@@ -12,31 +12,29 @@ import es.uva.tfg.hector.SkyWalkerApp.business.Camera;
  * Controls the camera preview
  * @author Hector Del Campo Pando
  */
-public class CameraPreview {
-
-    private final static String TAG = "Preview";
+class CameraPreview {
 
     /**
      * {@link TextureView} where to display the camera preview.
      */
-    private TextureView previewView;
+    private final TextureView previewView;
 
     /**
      * Camera from where take images.
      */
-    private Camera camera;
+    private final Camera camera;
 
     /**
      * Activity where this preview lives in.
      */
-    private Activity activity;
+    private final Activity activity;
 
     private final int width, height;
 
     /**
      * The view listener
      */
-    private TextureView.SurfaceTextureListener surfaceTextureListener = new TextureView.SurfaceTextureListener(){
+    private final TextureView.SurfaceTextureListener surfaceTextureListener = new TextureView.SurfaceTextureListener(){
 
         @Override
         public void onSurfaceTextureAvailable(SurfaceTexture surface,
@@ -95,7 +93,7 @@ public class CameraPreview {
      * Creates a new camera preview.
      * @param view where to show the camera preview.
      */
-    public CameraPreview(TextureView view, Activity activity){
+    CameraPreview(TextureView view, Activity activity){
         this.activity = activity;
         previewView = view;
         camera = Camera.createInstance();
@@ -108,7 +106,7 @@ public class CameraPreview {
      * Creates a new camera preview.
      * @param view where to show the camera preview.
      */
-    public CameraPreview(TextureView view, Activity activity, int width, int height){
+    CameraPreview(TextureView view, Activity activity, int width, int height){
         this.activity = activity;
         previewView = view;
         camera = Camera.createInstance();
@@ -117,11 +115,17 @@ public class CameraPreview {
         this.height = height;
     }
 
-    public void stop () {
+    /**
+     * Stops the camera.
+     */
+    void stop() {
         camera.stopPreview();
         camera.closeCamera();
     }
 
+    /**
+     * Starts the camera.
+     */
     public void start () {
         camera.openCamera(activity);
         if (previewView.isAvailable()) {
