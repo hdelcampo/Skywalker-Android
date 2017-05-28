@@ -1,5 +1,6 @@
 package es.uva.tfg.hector.SkyWalkerApp.presentation;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -42,7 +43,7 @@ import es.uva.tfg.hector.SkyWalkerApp.services.Vector3D;
  * Handles the drawing on screen, and the points updating.
  * @author Héctor Del Campo Pando.
  */
-public class OverlayView implements OrientationSensor.OrientationSensorDelegate {
+class OverlayView implements OrientationSensor.OrientationSensorDelegate {
 
     /**
      * Restoring keys
@@ -53,17 +54,17 @@ public class OverlayView implements OrientationSensor.OrientationSensorDelegate 
     /**
      * Camera used in the underlying preview.
      */
-    private Camera camera;
+    private final Camera camera;
 
     /**
      * View where objects will be displayed.
      */
-    private TextureView view;
+    private final TextureView view;
 
     /**
      * {@link PointOfInterest} to be displayed.
      */
-    private List<PointOfInterest> points;
+    private final List<PointOfInterest> points;
 
     /**
      * Position of the user.
@@ -73,7 +74,7 @@ public class OverlayView implements OrientationSensor.OrientationSensorDelegate 
     /**
      * Current center.
      */
-    private Center center;
+    private final Center center;
 
     /**
      * Thread that will manage listInUse points.
@@ -88,17 +89,17 @@ public class OverlayView implements OrientationSensor.OrientationSensorDelegate 
     /**
      * The orientation's sensor that will indicate where the user is aiming.
      */
-    private OrientationSensor orientationSensor;
+    private final OrientationSensor orientationSensor;
 
     /**
      * The maximum number of elements to be drawn.
      */
-    public static final int MAX_ELEMENTS_TO_DRAW = 5;
+    static final int MAX_ELEMENTS_TO_DRAW = 5;
 
     /**
      * Holder activity.
      */
-    private Activity activity;
+    private final Activity activity;
 
     /**
      * Sensor calibration dialog's.
@@ -108,7 +109,7 @@ public class OverlayView implements OrientationSensor.OrientationSensorDelegate 
     /**
      * Listener for the given {@link TextureView}.
      */
-    private TextureView.SurfaceTextureListener textureListener = new TextureView.SurfaceTextureListener() {
+    private final TextureView.SurfaceTextureListener textureListener = new TextureView.SurfaceTextureListener() {
 
         /**
          * Indicates whether surface was already destroyed or not.
@@ -160,7 +161,7 @@ public class OverlayView implements OrientationSensor.OrientationSensorDelegate 
 
     };
 
-    public OverlayView(TextureView view, Activity activity, Camera camera){
+    OverlayView(TextureView view, Activity activity, Camera camera){
         this.activity = activity;
         this.view = view;
         this.camera = camera;
@@ -206,7 +207,7 @@ public class OverlayView implements OrientationSensor.OrientationSensorDelegate 
     /**
      * Forces a texture destroyed call.
      */
-    public void stop () {
+    void stop() {
         if (view.isAvailable()) {
             textureListener.onSurfaceTextureDestroyed(view.getSurfaceTexture());
         }
@@ -220,7 +221,7 @@ public class OverlayView implements OrientationSensor.OrientationSensorDelegate 
      * Saves current state.
      * @param outState where to save state.
      */
-    public void saveState(Bundle outState) {
+    void saveState(Bundle outState) {
         if (null == outState) {
             return;
         }
@@ -232,12 +233,14 @@ public class OverlayView implements OrientationSensor.OrientationSensorDelegate 
      * Restores previous state.
      * @param inState old state, if any.
      */
-    public void restore(Bundle inState) {
+    void restore(Bundle inState) {
         if (null == inState) {
             return;
         }
 
-        points = inState.getParcelableArrayList(RESTORE_POINTS_KEY);
+        points.clear();
+        //noinspection ConstantConditions
+        points.addAll(inState.<PointOfInterest>getParcelableArrayList(RESTORE_POINTS_KEY));
     }
 
     /**
@@ -267,11 +270,19 @@ public class OverlayView implements OrientationSensor.OrientationSensorDelegate 
         main.post(runnable);
     }
 
-    public List<PointOfInterest> getActivePoints() {
+    /**
+     * Retrieves a copy of the active points.
+     * @return the list of the active points.
+     */
+    List<PointOfInterest> getActivePoints() {
         return new ArrayList<>(points);
     }
 
-    public void display(List<PointOfInterest> toShow) {
+    /**
+     * Sets the points to show.
+     * @param toShow list of points to show.
+     */
+    void display(List<PointOfInterest> toShow) {
         synchronized (points) {
             points.clear();
             points.addAll(toShow);
@@ -308,7 +319,7 @@ public class OverlayView implements OrientationSensor.OrientationSensorDelegate 
             public void run() {
                 if (accuracy < SensorManager.SENSOR_STATUS_ACCURACY_HIGH) {
                     LayoutInflater factory = LayoutInflater.from(activity);
-                    final View view = factory.inflate(R.layout.sensor_calibration_layout, null);
+                    @SuppressLint("InflateParams") final View view = factory.inflate(R.layout.sensor_calibration_layout, null);
                     AlertDialog.Builder builder =
                             new AlertDialog.Builder(activity)
                                     .setCancelable(false)
@@ -530,6 +541,7 @@ public class OverlayView implements OrientationSensor.OrientationSensorDelegate 
          * @param point to be drawn.
          * @param canvas to draw on.
          */
+        @SuppressLint("DefaultLocale")
         private void drawPoint(PointOfInterest point, Vector2D vectorToPoint,
                                Vector3D orientationVector, Canvas canvas) {
 
