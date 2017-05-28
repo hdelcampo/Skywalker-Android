@@ -29,8 +29,13 @@ public class FilterRowLayout extends LinearLayout implements Checkable {
     /**
      * Checkable listener.
      */
-    private Listener listener;
+    private FilterCellDelegate listener;
 
+    /**
+     * Creates a new row layout.
+     * @param context to use.
+     * @param attrs of the layot.
+     */
     public FilterRowLayout(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
@@ -61,10 +66,18 @@ public class FilterRowLayout extends LinearLayout implements Checkable {
         }
     }
 
-    public void setListener(Listener listener) {
+    /**
+     * Sets a listener for callbacks
+     * @param listener to add.
+     */
+    public void setListener(FilterCellDelegate listener) {
         this.listener = listener;
     }
 
+    /**
+     * Sets the point to hold.
+     * @param point to hold.
+     */
     public void setPoint (PointOfInterest point) {
         this.point = point;
     }
@@ -72,7 +85,7 @@ public class FilterRowLayout extends LinearLayout implements Checkable {
     /**
      * Delegate interface.
      */
-    interface Listener {
+    interface FilterCellDelegate {
 
         /**
          * Decides whether this view can toggle its checkbox or not.

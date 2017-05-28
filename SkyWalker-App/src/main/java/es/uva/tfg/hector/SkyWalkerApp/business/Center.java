@@ -80,11 +80,11 @@ public class Center {
     }
 
     /**
-     * Retrieves the list of points.
+     * Retrieves a copy of the list of points.
      * @return the list of points.
      */
     public List<PointOfInterest> getPoints() {
-        return points;
+        return new ArrayList<>(points);
     }
 
     /**

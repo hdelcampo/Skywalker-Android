@@ -21,10 +21,10 @@ import es.uva.tfg.hector.SkyWalkerApp.R;
 import es.uva.tfg.hector.SkyWalkerApp.business.PointOfInterest;
 
 /**
- * Dialog to filter {@Code PointsOfInterest}.
+ * Dialog to filter {@code PointsOfInterest}.
  * @author Hector Del Campo Pando
  */
-public class FilterActivity extends Activity implements FilterRowLayout.Listener {
+public class FilterActivity extends Activity implements FilterRowLayout.FilterCellDelegate {
 
     /**
      * Intent's extra data IDs
@@ -42,7 +42,7 @@ public class FilterActivity extends Activity implements FilterRowLayout.Listener
     /**
      * Current selected items.
      */
-    private Set<PointOfInterest> selectedPoints = new HashSet<>(OverlayView.MAX_ELEMENTS_TO_DRAW);
+    private final Set<PointOfInterest> selectedPoints = new HashSet<>(OverlayView.MAX_ELEMENTS_TO_DRAW);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,14 +109,14 @@ public class FilterActivity extends Activity implements FilterRowLayout.Listener
      * @return the list of IDs.
      */
     private List<PointOfInterest> getSelectedPoints() {
-        List<PointOfInterest> selecteds = new ArrayList<>(selectedPoints);
-        return selecteds;
+        return new ArrayList<>(selectedPoints);
     }
 
     /**
      * Finishes the activity and sets result as a list of selected {@link PointOfInterest}'s IDs.
      * @param view who called.
      */
+    @SuppressWarnings("UnusedParameters")
     public void accept(View view) {
         Intent returnIntent = new Intent();
         returnIntent.putParcelableArrayListExtra(POINTS_TO_SHOW, (ArrayList<PointOfInterest>) getSelectedPoints());
@@ -128,6 +128,7 @@ public class FilterActivity extends Activity implements FilterRowLayout.Listener
      * Finishes the activity without changing anything.
      * @param view who called.
      */
+    @SuppressWarnings("UnusedParameters")
     public void cancel(View view) {
         finish();
     }
@@ -136,6 +137,7 @@ public class FilterActivity extends Activity implements FilterRowLayout.Listener
      * Eliminates all checks inside the list view
      * @param view who called.
      */
+    @SuppressWarnings("UnusedParameters")
     public void deselectAll(View view) {
         final ListView itemsList = (ListView) findViewById(R.id.itemsList);
 
