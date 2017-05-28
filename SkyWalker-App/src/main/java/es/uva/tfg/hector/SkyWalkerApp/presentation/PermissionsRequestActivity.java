@@ -17,6 +17,10 @@ import java.util.List;
 
 import es.uva.tfg.hector.SkyWalkerApp.R;
 
+/**
+ * Activity to ask permissions.
+ * @author Héctor Del Campo Pando
+ */
 public class PermissionsRequestActivity extends AppCompatActivity {
 
     /**
@@ -30,9 +34,10 @@ public class PermissionsRequestActivity extends AppCompatActivity {
         setContentView(R.layout.permissions_request_layout);
     }
 
+    @SuppressWarnings("UnusedParameters")
     public void askPermissions (View v) {
 
-        List<String> permissions = new ArrayList();
+        List<String> permissions = new ArrayList<>();
 
          if (PackageManager.PERMISSION_DENIED == ContextCompat.checkSelfPermission(this,
                 Manifest.permission.CAMERA)) {
