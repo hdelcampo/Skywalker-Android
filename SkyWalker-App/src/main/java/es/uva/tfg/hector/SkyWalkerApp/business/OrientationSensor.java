@@ -48,6 +48,11 @@ public class OrientationSensor {
     private final OrientationSensorDelegate delegate;
 
     /**
+     * Offset to correct angle.
+     */
+    private final float mapNorthOffset = User.getInstance().getCenter().getMapNorth();
+
+    /**
      * Listener for the sensors
      */
     private final SensorEventListener eventListener = new SensorEventListener(){
@@ -78,7 +83,7 @@ public class OrientationSensor {
                     new Vector2D(
                             -previousValues[0],
                             -previousValues[1]);
-            mapVector.rotateClockwise(5);
+            mapVector.rotateClockwise(mapNorthOffset);
 
             orientationVector = new Vector3D(
                     mapVector.getX(),

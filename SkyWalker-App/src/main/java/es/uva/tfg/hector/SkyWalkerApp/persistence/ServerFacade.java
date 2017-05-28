@@ -62,7 +62,7 @@ public class ServerFacade {
     /**
      * Requests context.
      */
-    private Context context;
+    private final Context context;
 
     /**
      * Retrieves the singleton instance.

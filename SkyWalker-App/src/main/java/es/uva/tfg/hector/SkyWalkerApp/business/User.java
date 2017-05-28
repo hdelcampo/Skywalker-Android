@@ -70,7 +70,7 @@ public class User {
                     @Override
                     public void onSuccess(Token response) {
                         token = response;
-                        center = new Center(0, 128);
+                        center = new Center(0, 128, 5);
                         User.this.username = username;
                         if (null != delegate) {
                             delegate.onSuccess();

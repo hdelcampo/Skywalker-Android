@@ -8,7 +8,6 @@ import java.util.List;
 
 import es.uva.tfg.hector.SkyWalkerApp.persistence.ServerFacade;
 import es.uva.tfg.hector.SkyWalkerApp.services.PersistenceOperationDelegate;
-import es.uva.tfg.hector.SkyWalkerApp.services.Vector2D;
 
 /**
  * A real world center, equipped with indoor location.
@@ -29,7 +28,7 @@ public class Center {
     /**
      * The center's north in XtremeLoc coordinates.
      */
-    private final Vector2D mapNorth;
+    private final float mapNorthOffset;
 
     /**
      * The center's receivers.
@@ -46,10 +45,10 @@ public class Center {
      * @param id of the center.
      * @param scale center's real length.
      */
-    public Center (int id, float scale) {
+    public Center (int id, float scale, float mapNorthOffset) {
         this.scale = scale;
         this.id = id;
-        mapNorth = new Vector2D(0, 1);
+        this.mapNorthOffset = mapNorthOffset;
     }
 
     /**
@@ -105,11 +104,11 @@ public class Center {
     }
 
     /**
-     * Returns the map's north.
-     * @return the map's north.
+     * Returns the map's north angle offset.
+     * @return the map's north offset in degrees.
      */
-    public Vector2D getMapNorth () {
-        return mapNorth;
+    float getMapNorth() {
+        return mapNorthOffset;
     }
 
     /**
