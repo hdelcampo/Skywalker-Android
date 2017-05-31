@@ -161,7 +161,7 @@ public class ServerFacade {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    final String UUID = "0"; //response.getString("uuid");
+                    final String UUID = "3E8C0296-168B-4940-ADB0-B3088F7EE30E";
                     final int major = response.getInt("major");
                     final int minor =  response.getInt("minor");
                     final iBeaconFrame frame = new iBeaconFrame(UUID, major, minor);
