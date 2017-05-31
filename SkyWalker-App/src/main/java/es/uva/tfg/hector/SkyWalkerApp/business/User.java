@@ -82,6 +82,9 @@ public class User {
                         PersistenceOperationDelegate.Errors errorToBack;
 
                         switch (error) {
+                            case INVALID_USERNAME_OR_PASSWORD:
+                                errorToBack = PersistenceOperationDelegate.Errors.INVALID_CREDENTIALS;
+                                break;
                             case NO_CONNECTION: case TIME_OUT:
                                 errorToBack = PersistenceOperationDelegate.Errors.INTERNET_ERROR;
                                 break;
