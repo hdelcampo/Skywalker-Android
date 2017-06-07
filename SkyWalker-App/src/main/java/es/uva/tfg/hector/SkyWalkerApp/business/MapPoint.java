@@ -118,8 +118,8 @@ public class MapPoint {
                     @Override
                     public void onSuccess(MapPoint newPosition) {
 
-                                setX(newPosition.getX());
-                                setY(newPosition.getY());
+                                setX(newPosition.getY());
+                                setY(newPosition.getX());
                                 setZ(newPosition.getZ());
 
                         if (null != delegate) {
