@@ -63,7 +63,7 @@ public abstract class NewConnectionFragment extends Fragment{
      */
     private void retrieveReceivers(final ProgressDialog dialog) {
 
-        dialog.setMessage(getString(R.string.connection_recievers));
+        dialog.setMessage(getString(R.string.connection_receivers));
 
         User.getInstance().getCenter().loadReceivers(getActivity().getApplicationContext(), new PersistenceOperationDelegate() {
             @Override

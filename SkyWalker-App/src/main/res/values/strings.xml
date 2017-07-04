@@ -42,7 +42,7 @@
 
     <!-- Connection handling -->
     <string name="connection_started">Connecting…</string>
-    <string name="connection_recievers">Receiving antennas…</string>
+    <string name="connection_receivers">Receiving antennas…</string>
     <string name="connection_tags">Receiving tags…</string>
     <string name="connection_register_beacon">Registering as beacon…</string>
     <string name="bluetooth_checking">Checking bluetooth…</string>
